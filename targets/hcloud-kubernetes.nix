@@ -72,6 +72,9 @@
   # Necessary for overlay network
   networking.wireguard.enable = true;
 
+  virtualisation.containerd.enable = true;
+  services.kubernetes.kubelet-kubeadm.enable = true;
+
   environment.systemPackages = with pkgs; [
     wget
     vim
@@ -81,6 +84,9 @@
     lsof
     tcpdump
     bwm_ng
+
+    containerd
+    kubernetes
   ];
 
   nixpkgs.overlays = [
