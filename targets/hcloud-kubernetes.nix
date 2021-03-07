@@ -11,8 +11,47 @@
   networking.hostId = "deadcafe";
 
   services.cloud-init.enable = true;
-  environment.etc."cloud/cloud.cfg.d/90_hcloud.cfg".text = ''
-    datasource_list: [ Hetzner, None ]
+  services.cloud-init.config = ''
+    system_info:
+      distro: nixos
+    users:
+      - root
+    disable_root: false
+    preserve_hostname: false
+    cloud_init_modules:
+      - migrator
+      - seed_random
+      - bootcmd
+      - write-files
+      - growpart
+      - resizefs
+      - ca-certs
+      - rsyslog
+      - users-groups
+    cloud_config_modules:
+      - disk_setup
+      - mounts
+      - ssh-import-id
+      - set-passwords
+      - timezone
+      - disable-ec2-metadata
+      - runcmd
+      - ssh
+    cloud_final_modules:
+      - rightscale_userdata
+      - scripts-vendor
+      - scripts-per-once
+      - scripts-per-boot
+      - scripts-per-instance
+      - scripts-user
+      - ssh-authkey-fingerprints
+      - keys-to-console
+      - phone-home
+      - final-message
+      - power-state-change
+    datasource_list:
+      - Hetzner
+      - None
   '';
 
   # Use the GRUB 2 boot loader.
@@ -25,6 +64,7 @@
   # replicates the default behaviour.
   networking.useDHCP = false;
   networking.interfaces.eth0.useDHCP = true;
+  networking.hostName = "";
 
   # This seems to be the stabler choice
   networking.usePredictableInterfaceNames = false;
