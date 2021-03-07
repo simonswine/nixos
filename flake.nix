@@ -22,7 +22,7 @@
       build-target = target: {
         name = target;
 
-        value = nixpkgs.lib.nixosSystem {
+        value = pkgs.lib.makeOverridable nixpkgs.lib.nixosSystem {
           system = "x86_64-linux";
 
           modules = [
