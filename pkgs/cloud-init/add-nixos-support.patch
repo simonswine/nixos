@@ -1,12 +1,12 @@
-From 417fcc735eeecfbdff7bf8be5ee96813e6b5c52f Mon Sep 17 00:00:00 2001
+From d5650ecfdb5d41c390a35f050a98c73504d5ed91 Mon Sep 17 00:00:00 2001
 From: Christian Simon <simon@swine.de>
 Date: Sat, 6 Mar 2021 21:10:37 +0000
 Subject: [PATCH] Add nixos support
 
 ---
  cloudinit/distros/__init__.py |  1 +
- cloudinit/distros/nixos.py    | 98 +++++++++++++++++++++++++++++++++++
- 2 files changed, 99 insertions(+)
+ cloudinit/distros/nixos.py    | 99 +++++++++++++++++++++++++++++++++++
+ 2 files changed, 100 insertions(+)
  create mode 100644 cloudinit/distros/nixos.py
 
 diff --git a/cloudinit/distros/__init__.py b/cloudinit/distros/__init__.py
@@ -23,10 +23,10 @@ index 220bd11f..04951bcb 100755
  }
 diff --git a/cloudinit/distros/nixos.py b/cloudinit/distros/nixos.py
 new file mode 100644
-index 00000000..28403d60
+index 00000000..5bf01282
 --- /dev/null
 +++ b/cloudinit/distros/nixos.py
-@@ -0,0 +1,98 @@
+@@ -0,0 +1,99 @@
 +# vi: ts=4 expandtab
 +#
 +#    Copyright (C) 2012 Canonical Ltd.
@@ -58,6 +58,7 @@ index 00000000..28403d60
 +
 +LOG = logging.getLogger(__name__)
 +
++
 +class Distro(distros.Distro):
 +
 +    def __init__(self, name, cfg, paths):
@@ -86,7 +87,7 @@ index 00000000..28403d60
 +        if not conf:
 +            conf = HostnameConf('')
 +        conf.set_hostname(your_hostname)
-+        util.write_file(out_fn, str(conf), 0644)
++        util.write_file(out_fn, str(conf), 0o644)
 +
 +    def _read_system_hostname(self):
 +        sys_hostname = self._read_hostname(self.hostname_conf_fn)
