@@ -44,6 +44,12 @@
       fsType = "zfs";
     };
 
+  fileSystems."/var/lib/containerd/io.containerd.snapshotter.v1.zfs" =
+    {
+      device = "rpool/containerd";
+      fsType = "zfs";
+    };
+
   swapDevices = [ ];
 
 }
