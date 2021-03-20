@@ -9,6 +9,9 @@
     let
       pkgs = (import nixpkgs) {
         system = "x86_64-linux";
+        overlays = [
+          (import ./overlays/kubernetes/default.nix)
+        ];
       };
 
       targets = map (pkgs.lib.removeSuffix ".nix") (
@@ -45,5 +48,14 @@
             targets
         )
       );
+
+      packages = {
+        "x86_64-linux" = {
+          cloud-init = pkgs.callPackage ./pkgs/cloud-init { };
+          "kubernetes-1-18" = pkgs.kubernetes-1-18;
+          "kubernetes-1-19" = pkgs.kubernetes-1-19;
+          "kubernetes-1-20" = pkgs.kubernetes-1-20;
+        };
+      };
     };
 }
