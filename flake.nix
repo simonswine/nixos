@@ -29,6 +29,7 @@
           system = "x86_64-linux";
 
           modules = [
+            (import ./local.nix)
             (import (./targets + "/${target}.nix"))
             (import (./targets + "/${target}/hardware-configuration.nix"))
           ];
