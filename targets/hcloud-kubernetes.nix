@@ -74,6 +74,7 @@
 
   virtualisation.containerd.enable = true;
   services.kubernetes.kubelet-kubeadm.enable = true;
+  services.kubernetes.package = pkgs.kubernetes-1-18;
 
   environment.systemPackages = with pkgs; [
     wget
