@@ -4,7 +4,7 @@
   imports =
     [
       ./generic/kubernetes.nix
-      ./generic/hcloud.nix
+      ./generic/scaleway.nix
     ];
 
   boot.supportedFilesystems = [ "zfs" ];

@@ -7,12 +7,33 @@
 
   outputs = { self, nixpkgs }:
     let
+      pkgsOverlays = [
+        (import ./overlays/kubernetes/default.nix)
+      ];
+
+      pkgsConfig = {
+        packageOverrides = pkgs: {
+          cloud-init = pkgs.callPackage ./pkgs/cloud-init { };
+        };
+      };
+
       pkgs = (import nixpkgs) {
         system = "x86_64-linux";
-        overlays = [
-          (import ./overlays/kubernetes/default.nix)
-        ];
+        overlays = pkgsOverlays;
+        config = pkgsConfig;
       };
+
+      nixosModulesPkgs = {
+        nixpkgs = {
+          overlays = pkgsOverlays;
+          config = pkgsConfig;
+        };
+      };
+
+      myNixosModules = [
+        ./modules/containerd.nix
+        ./modules/kubernetes-kubelet-kubeadm.nix
+      ];
 
       targets = map (pkgs.lib.removeSuffix ".nix") (
         pkgs.lib.attrNames (
@@ -28,10 +49,11 @@
         value = pkgs.lib.makeOverridable nixpkgs.lib.nixosSystem {
           system = "x86_64-linux";
 
-          modules = [
-            (import ./local.nix)
+          modules = myNixosModules ++ [
+            nixosModulesPkgs
             (import (./targets + "/${target}.nix"))
             (import (./targets + "/${target}/hardware-configuration.nix"))
+            (import ./local.nix)
           ];
         };
       };
@@ -52,7 +74,7 @@
 
       packages = {
         "x86_64-linux" = {
-          cloud-init = pkgs.callPackage ./pkgs/cloud-init { };
+          cloud-init = pkgs.cloud-init;
           "kubernetes-1-18" = pkgs.kubernetes-1-18;
           "kubernetes-1-19" = pkgs.kubernetes-1-19;
           "kubernetes-1-20" = pkgs.kubernetes-1-20;

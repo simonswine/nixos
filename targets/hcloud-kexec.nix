@@ -6,7 +6,7 @@
   services.openssh.enable = true;
 
   kexec.autoReboot = false;
-  
+
   services.cloud-init.enable = true;
   environment.etc."cloud/cloud.cfg.d/90_hcloud.cfg".text = ''
     datasource_list: [ Hetzner, None ]
@@ -18,4 +18,3 @@
 
   system.stateVersion = "20.09";
 }
-
