@@ -31,8 +31,10 @@
       };
 
       myNixosModules = [
+        ./modules/cloud.nix
         ./modules/containerd.nix
         ./modules/kubernetes-kubelet-kubeadm.nix
+        ./modules/nixflakes.nix
       ];
 
       targets = map (pkgs.lib.removeSuffix ".nix") (

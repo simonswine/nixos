@@ -4,11 +4,11 @@
   imports =
     [
       ./generic/kubernetes.nix
-      ./generic/scaleway.nix
     ];
 
   boot.supportedFilesystems = [ "zfs" ];
   networking.hostId = "deadcafe";
+  cloud.provider = "scaleway";
 
   # Enable the OpenSSH daemon.
   services.openssh.enable = true;

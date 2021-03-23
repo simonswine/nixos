@@ -4,11 +4,11 @@
   imports =
     [
       ./generic/kubernetes.nix
-      ./generic/hcloud.nix
     ];
 
   boot.supportedFilesystems = [ "zfs" ];
   networking.hostId = "deadcafe";
+  cloud.provider = "hcloud";
 
   # Enable the OpenSSH daemon.
   services.openssh.enable = true;

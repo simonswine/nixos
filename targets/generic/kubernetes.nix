@@ -9,12 +9,7 @@
   services.kubernetes.package = pkgs.kubernetes-1-18;
 
   # Install nix flakes to allow modifications
-  nix = {
-    package = pkgs.nixFlakes;
-    extraOptions = ''
-      experimental-features = nix-command flakes
-    '';
-  };
+  programs.nixflakes.enable = true;
 
   environment.systemPackages = with pkgs; [
     wget
