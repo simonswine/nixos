@@ -32,6 +32,7 @@
 
       myNixosModules = [
         ./modules/cloud.nix
+        ./modules/cloud-init.nix
         ./modules/containerd.nix
         ./modules/kubernetes-kubelet-kubeadm.nix
         ./modules/nixflakes.nix
