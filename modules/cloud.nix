@@ -27,6 +27,9 @@ in
         "scaleway"
       ];
 
+      # use network on scaleway
+      networking.useNetworkd = true;
+
       # devices on Scaleway can't use the ID
       boot.zfs.devNodes = "/dev";
     })
@@ -99,6 +102,8 @@ in
          - [ *log_base, *log_file ]
 
         output: {all: '| tee -a /var/log/cloud-init-output.log'}
+
+        network: {config: disabled}
 
         system_info:
           distro: nixos
