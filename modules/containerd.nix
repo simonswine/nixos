@@ -36,17 +36,17 @@ in
     environment.etc."containerd/config.toml".text = ''
       version = 2
       oom_score = -999
-      
+
       [metrics]
         address = "127.0.0.1:1338"
-      
+
       [plugins."io.containerd.grpc.v1.cri".containerd]
         snapshotter = "zfs"
-      
+
       [plugins."io.containerd.grpc.v1.cri".containerd.default_runtime]
         runtime_type = "io.containerd.runtime.v1.linux"
         runtime_engine = "runc"
-      
+
       [plugins."io.containerd.grpc.v1.cri".containerd.runtimes.runc.options]
         SystemdCgroup = true
     '';

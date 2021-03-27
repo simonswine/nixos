@@ -20,8 +20,5 @@
     lsof
     tcpdump
     bwm_ng
-
-    containerd
-    kubernetes
   ];
 }

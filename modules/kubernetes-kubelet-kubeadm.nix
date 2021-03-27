@@ -29,7 +29,7 @@ in
       boot.kernel.sysctl."net.bridge.bridge-nf-call-iptables" = 1;
       boot.kernel.sysctl."net.bridge.bridge-nf-call-ip6tables" = 1;
 
-      environment.systemPackages = deps;
+      environment.systemPackages = deps ++ top.package;
 
       systemd.tmpfiles.rules = [
         "d /opt/cni/bin 0755 root root -"
@@ -46,7 +46,6 @@ in
         path = with pkgs; [ gitMinimal openssh utillinux iproute thin-provisioning-tools ] ++ deps ++ top.path;
 
         preStart = ''
-                    rm /opt/cni/bin/* || true
                     ${concatMapStrings
           (package: ''
                       echo "Linking cni package: ${package}"
