@@ -29,7 +29,7 @@ in
       boot.kernel.sysctl."net.bridge.bridge-nf-call-iptables" = 1;
       boot.kernel.sysctl."net.bridge.bridge-nf-call-ip6tables" = 1;
 
-      environment.systemPackages = deps ++ [top.package];
+      environment.systemPackages = deps ++ [ top.package ];
 
       systemd.tmpfiles.rules = [
         "d /opt/cni/bin 0755 root root -"
