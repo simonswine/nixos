@@ -54,6 +54,8 @@ in
           cfg.cni.packages}
         '';
 
+        # disable nixos firewall for kubernetes
+        networking.firewall.enable = false;
 
         serviceConfig = {
           Slice = "kubernetes.slice";
