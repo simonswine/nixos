@@ -12,7 +12,7 @@ python3Packages.buildPythonApplication {
     sha256 = "0wl5k6wbzd5kj4h1pvz0jznc6xgnl2nklc023f9mrhhdp7g29d4c";
   };
 
-  patches = [ ./add-nixos-support.patch ];
+  patches = [ ./add-nixos-support.patch ./zfs-zpool-status.patch ];
   prePatch = ''
     patchShebangs ./tools
 
