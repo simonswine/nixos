@@ -54,9 +54,6 @@ in
           cfg.cni.packages}
         '';
 
-        # disable nixos firewall for kubernetes
-        networking.firewall.enable = false;
-
         serviceConfig = {
           Slice = "kubernetes.slice";
           CPUAccounting = true;
@@ -79,6 +76,9 @@ in
 
       # Allways include cni plugins
       services.kubernetes.kubelet.cni.packages = [ pkgs.cni-plugins ];
+
+      # disable nixos firewall for kubernetes
+      networking.firewall.enable = false;
 
       boot.kernelModules = [ "br_netfilter" ];
 
