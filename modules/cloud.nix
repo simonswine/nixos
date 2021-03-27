@@ -15,6 +15,15 @@ in
   config = mkMerge [
     (mkIf (cfg.provider == "hcloud") {
       boot.loader.grub.devices = [ "/dev/disk/by-id/scsi-0QEMU_QEMU_HARDDISK_drive-scsi0-0-0-0" ];
+
+      system.activationScripts.bin-bash = stringAfter [ "stdio" ]
+        ''
+          # Create the required /bin/bash symlink; otherwise hcloud's
+          # cloud-init will break
+          mkdir -m 0755 -p /bin
+          ln -sfn "${pkgs.bash}/bin/bash" /bin/.bash.tmp
+          mv /bin/.bash.tmp /bin/bash # atomically replace /bin/bash
+        '';
     })
     (mkIf (cfg.provider == "scaleway") {
       boot.loader.grub.efiSupport = true;
