@@ -5,13 +5,13 @@ let
   cfg = config.services.cloud-init;
   path = with pkgs; [
     cloud-init
+    cloud-utils
     iproute
     nettools
     openssh
     shadow
     utillinux
     dhcp
-    gpart
   ] ++ optional cfg.btrfs.enable btrfs-progs
   ++ optional cfg.ext4.enable e2fsprogs
   ++ optional cfg.zfs.enable zfs
