@@ -41,7 +41,7 @@ with lib;
       +
       ''
         # Expose nixos version information
-        ${python}/bin/python ${./nixos.py} --destination-path ${cfg.path}/nixos.prom
+        ${python}/bin/python ${./prometheus-node-exporter-textfiles/nixos.py} --destination-path ${cfg.path}/nixos.prom
       '';
   };
 }

@@ -35,16 +35,16 @@
         };
       };
 
-      myNixosModules = [
-        ./modules/cloud-init.nix
-        ./modules/cloud.nix
-        ./modules/containerd.nix
-        ./modules/kubernetes-kubelet-kubeadm.nix
-        ./modules/nixflakes.nix
-        ./modules/prometheus-node-exporter-textfiles/default.nix
-        ./modules/prometheus-node-exporter-textfiles/smartmon.nix
-        ./modules/prometheus-node-exporter-textfiles/zfs.nix
-      ];
+      myNixosModules = pkgs.lib.mapAttrs'
+        (name: value:
+          pkgs.lib.nameValuePair
+            (pkgs.lib.removeSuffix ".nix" name)
+            (import (./modules + "/${name}"))
+        )
+        (pkgs.lib.filterAttrs
+          (_: entryType: entryType == "regular")
+          (builtins.readDir ./modules)
+        );
 
       targets = map (pkgs.lib.removeSuffix ".nix") (
         pkgs.lib.attrNames (
@@ -60,7 +60,7 @@
         value = pkgs.lib.makeOverridable nixpkgs.lib.nixosSystem {
           system = "x86_64-linux";
 
-          modules = myNixosModules ++ [
+          modules = pkgs.lib.attrValues (myNixosModules) ++ [
             nixosModulesPkgs
             (import (./targets + "/${target}.nix"))
             (import (./targets + "/${target}/hardware-configuration.nix"))
@@ -82,6 +82,8 @@
             targets
         )
       );
+
+      nixosModules = myNixosModules;
 
       packages = {
         "x86_64-linux" = {
