@@ -120,6 +120,9 @@ in
           - root
         disable_root: false
         preserve_hostname: false
+        growpart:
+          mode: auto
+          devices: ["/dev/disk/by-label/rpool"]
         cloud_init_modules:
           - migrator
           - seed_random
