@@ -16,6 +16,7 @@
           cloud-init = pkgs.callPackage ./pkgs/cloud-init { };
           prometheus-node-exporter-smartmon = pkgs.callPackage ./pkgs/prometheus-node-exporter-smartmon { };
           prometheus-node-exporter-zfs = pkgs.callPackage ./pkgs/prometheus-node-exporter-zfs { };
+          zrepl = pkgs.callPackage ./pkgs/zrepl { };
         };
       };
 
@@ -93,6 +94,7 @@
           "kubernetes-1-20" = pkgs.kubernetes-1-20;
           prometheus-node-exporter-smartmon = pkgs.prometheus-node-exporter-smartmon;
           prometheus-node-exporter-zfs = pkgs.prometheus-node-exporter-zfs;
+          zrepl = pkgs.zrepl;
         };
       };
     };
