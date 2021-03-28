@@ -7,7 +7,13 @@
   virtualisation.containerd.enable = true;
   services.kubernetes.kubelet-kubeadm.enable = true;
   services.kubernetes.package = pkgs.kubernetes-1-18;
-  services.prometheus-node-exporter-zfs.enable = true;
+  services.prometheus-node-exporter-zfs = {
+    enable = true;
+    extraArgs = [
+      "--snapshots-ignore"
+      "^rpool/containerd/"
+    ];
+  };
 
   # Install nix flakes to allow modifications
   programs.nixflakes.enable = true;
