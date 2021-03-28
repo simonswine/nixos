@@ -29,6 +29,9 @@ in
       boot.kernel.sysctl."net.bridge.bridge-nf-call-iptables" = 1;
       boot.kernel.sysctl."net.bridge.bridge-nf-call-ip6tables" = 1;
 
+      # restrict access to kernel logs
+      boot.kernel.sysctl."kernel.dmesg_restrict" = 1;
+
       environment.systemPackages = deps ++ [ top.package ];
 
       systemd.tmpfiles.rules = [

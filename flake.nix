@@ -14,6 +14,8 @@
       pkgsConfig = {
         packageOverrides = pkgs: {
           cloud-init = pkgs.callPackage ./pkgs/cloud-init { };
+          prometheus-node-exporter-smartmon = pkgs.callPackage ./pkgs/prometheus-node-exporter-smartmon { };
+          prometheus-node-exporter-zfs = pkgs.callPackage ./pkgs/prometheus-node-exporter-zfs { };
         };
       };
 
@@ -31,11 +33,14 @@
       };
 
       myNixosModules = [
-        ./modules/cloud.nix
         ./modules/cloud-init.nix
+        ./modules/cloud.nix
         ./modules/containerd.nix
         ./modules/kubernetes-kubelet-kubeadm.nix
         ./modules/nixflakes.nix
+        ./modules/prometheus-node-exporter-textfiles/default.nix
+        ./modules/prometheus-node-exporter-textfiles/smartmon.nix
+        ./modules/prometheus-node-exporter-textfiles/zfs.nix
       ];
 
       targets = map (pkgs.lib.removeSuffix ".nix") (
@@ -81,6 +86,8 @@
           "kubernetes-1-18" = pkgs.kubernetes-1-18;
           "kubernetes-1-19" = pkgs.kubernetes-1-19;
           "kubernetes-1-20" = pkgs.kubernetes-1-20;
+          prometheus-node-exporter-smartmon = pkgs.prometheus-node-exporter-smartmon;
+          prometheus-node-exporter-zfs = pkgs.prometheus-node-exporter-zfs;
         };
       };
     };
