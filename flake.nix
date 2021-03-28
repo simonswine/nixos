@@ -14,6 +14,7 @@
       pkgsConfig = {
         packageOverrides = pkgs: {
           cloud-init = pkgs.callPackage ./pkgs/cloud-init { };
+          intel-gpu-exporter = pkgs.callPackage ./pkgs/intel-gpu-exporter { };
           prometheus-node-exporter-smartmon = pkgs.callPackage ./pkgs/prometheus-node-exporter-smartmon { };
           prometheus-node-exporter-zfs = pkgs.callPackage ./pkgs/prometheus-node-exporter-zfs { };
           zrepl = pkgs.callPackage ./pkgs/zrepl { };
@@ -89,6 +90,7 @@
       packages = {
         "x86_64-linux" = {
           cloud-init = pkgs.cloud-init;
+          intel-gpu-exporter = pkgs.intel-gpu-exporter;
           "kubernetes-1-18" = pkgs.kubernetes-1-18;
           "kubernetes-1-19" = pkgs.kubernetes-1-19;
           "kubernetes-1-20" = pkgs.kubernetes-1-20;
