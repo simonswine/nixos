@@ -1,7 +1,7 @@
 { lib, buildGoModule, fetchFromGitHub }:
 
 buildGoModule rec {
-  pname = "ticker";
+  pname = "faillint";
   version = "1.5.0";
 
   src = fetchFromGitHub {

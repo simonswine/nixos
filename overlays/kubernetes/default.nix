@@ -42,12 +42,12 @@ in
 {
   "kubernetes-1-18" = kubernetesVersion {
     kver = "1.18.17";
-    khash = "1ckzxviyiz3pmfad99p810yawzb74z3zdd9icn8qyfkac8z1cl2s";
+    khash = "1iw1r04ghyd1dlq0lhj4gnx02kxa7x7a4l7q5gwc2m5m69nqlav3";
   };
 
   "kubernetes-1-19" = kubernetesVersion {
     kver = "1.19.9";
-    khash = "0642bjggm3fpd772623agqbvn1dbs7gcpf5m2l26m03rxpzmp5qp";
+    khash = "11jdbl4l5arnsh26axld0fa26sdwx55a3wr3sm38rdcx5fvlmcgm";
   };
 
   "kubernetes-1-20" = kubernetesVersion {
