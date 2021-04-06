@@ -45,7 +45,7 @@ let
 
   jobConfig = {
     type = mkOption {
-      type = types.enum [ "snap" "source" "sink" "pull" ];
+      type = types.enum [ "snap" "source" "sink" "pull" "push" ];
     };
 
     filesystems = mkOption {
