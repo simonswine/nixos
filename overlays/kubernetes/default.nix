@@ -41,17 +41,17 @@ let
 in
 {
   "kubernetes-1-18" = kubernetesVersion {
-    kver = "1.18.17";
-    khash = "1iw1r04ghyd1dlq0lhj4gnx02kxa7x7a4l7q5gwc2m5m69nqlav3";
+    kver = "1.18.18";
+    khash = "1k1x3hr2zjpahipvjs6nbsx5v7apjgmymxrp3h294vcqddqnc3ch";
   };
 
   "kubernetes-1-19" = kubernetesVersion {
-    kver = "1.19.9";
-    khash = "11jdbl4l5arnsh26axld0fa26sdwx55a3wr3sm38rdcx5fvlmcgm";
+    kver = "1.19.10";
+    khash = "0bjj6h5607zqa6dnvk306i8v8dvrj6v0lm530023yxa623g28hg3";
   };
 
   "kubernetes-1-20" = kubernetesVersion {
-    kver = "1.20.5";
-    khash = "1f9qy8rzal0c3zyd25zsv49zk9lqdv8s77f8bff0pd2kv7p86dj4";
+    kver = "1.20.6";
+    khash = "1x5khnwl57vhlpc3949jijlszkpq7k0f367b7j9l7alvwj79x3x2";
   };
 }
