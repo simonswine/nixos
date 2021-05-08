@@ -6,7 +6,7 @@
 
   virtualisation.containerd.enable = true;
   services.kubernetes.kubelet-kubeadm.enable = true;
-  services.kubernetes.package = pkgs.kubernetes-1-19;
+  services.kubernetes.package = pkgs.kubernetes-1-20;
   services.prometheus-node-exporter-zfs = {
     enable = true;
     extraArgs = [
