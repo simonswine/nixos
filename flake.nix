@@ -15,6 +15,7 @@
         packageOverrides = pkgs: {
           cloud-init = pkgs.callPackage ./pkgs/cloud-init { };
           faillint = pkgs.callPackage ./pkgs/faillint { };
+          flowercare-exporter = pkgs.callPackage ./pkgs/flowercare-exporter { };
           intel-gpu-exporter = pkgs.callPackage ./pkgs/intel-gpu-exporter { };
           prometheus-node-exporter-smartmon = pkgs.callPackage ./pkgs/prometheus-node-exporter-smartmon { };
           prometheus-node-exporter-zfs = pkgs.callPackage ./pkgs/prometheus-node-exporter-zfs { };
@@ -94,6 +95,7 @@
         "x86_64-linux" = {
           cloud-init = pkgs.cloud-init;
           faillint = pkgs.faillint;
+          flowercare-exporter = pkgs.flowercare-exporter;
           intel-gpu-exporter = pkgs.intel-gpu-exporter;
           "kubernetes-1-18" = pkgs.kubernetes-1-18;
           "kubernetes-1-19" = pkgs.kubernetes-1-19;
