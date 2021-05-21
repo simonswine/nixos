@@ -14,6 +14,7 @@
       pkgsConfig = {
         packageOverrides = pkgs: {
           cloud-init = pkgs.callPackage ./pkgs/cloud-init { };
+          get-focused-x-screen = pkgs.callPackage ./pkgs/get-focused-x-screen { };
           faillint = pkgs.callPackage ./pkgs/faillint { };
           mi-flora-exporter = pkgs.callPackage ./pkgs/mi-flora-exporter { };
           intel-gpu-exporter = pkgs.callPackage ./pkgs/intel-gpu-exporter { };
@@ -50,6 +51,17 @@
         (pkgs.lib.filterAttrs
           (_: entryType: entryType == "regular")
           (builtins.readDir ./modules)
+        );
+
+      myHomeManagerModules = pkgs.lib.mapAttrs'
+        (name: value:
+          pkgs.lib.nameValuePair
+            (pkgs.lib.removeSuffix ".nix" name)
+            (import (./home-manager/modules + "/${name}"))
+        )
+        (pkgs.lib.filterAttrs
+          (_: entryType: entryType == "regular")
+          (builtins.readDir ./home-manager/modules)
         );
 
       targets = map (pkgs.lib.removeSuffix ".nix") (
@@ -91,10 +103,13 @@
 
       nixosModules = myNixosModules;
 
+      homeManagerModules = myHomeManagerModules;
+
       packages = {
         "x86_64-linux" = {
           cloud-init = pkgs.cloud-init;
           faillint = pkgs.faillint;
+          get-focused-x-screen = pkgs.get-focused-x-screen;
           mi-flora-exporter = pkgs.mi-flora-exporter;
           intel-gpu-exporter = pkgs.intel-gpu-exporter;
           "kubernetes-1-18" = pkgs.kubernetes-1-18;
