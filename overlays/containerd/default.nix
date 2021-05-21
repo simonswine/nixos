@@ -8,5 +8,6 @@ self: super: {
       rev = "v${version}";
       sha256 = "1an4gzg7fz24nq7vb3k8ddv5r0s98x88mz0z67197brsmi4pwy58";
     };
+    buildFlags = [ "VERSION=v${version}" "REVISION=${commit}" ];
   });
 }
