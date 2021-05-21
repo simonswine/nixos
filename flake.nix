@@ -9,6 +9,7 @@
     let
       pkgsOverlays = [
         (import ./overlays/kubernetes/default.nix)
+        (import ./overlays/containerd/default.nix)
       ];
 
       pkgsConfig = {
@@ -108,6 +109,7 @@
       packages = {
         "x86_64-linux" = {
           cloud-init = pkgs.cloud-init;
+          containerd = pkgs.containerd;
           faillint = pkgs.faillint;
           get-focused-x-screen = pkgs.get-focused-x-screen;
           mi-flora-exporter = pkgs.mi-flora-exporter;
