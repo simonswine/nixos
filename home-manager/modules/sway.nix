@@ -129,7 +129,9 @@ in
               titlebar = true;
             };
 
-            fonts = [ "FontAwesome 10" "Terminus 10" ];
+            fonts = {
+              names = [ "FontAwesome 10" "Terminus 10" ];
+            };
 
             # disable bars, as we have waybar
             bars = [ ];

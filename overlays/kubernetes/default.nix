@@ -19,34 +19,34 @@ let
         sha256 = khash;
       };
 
-      postBuild = ''
-        mkdir -p docs/man/man1
-      '' +
-      (if (
-        (super.lib.versions.major kver) >= "1"
-          &&
-          (super.lib.versions.minor kver) >= "20"
-      )
-      then
-        ''
-          (cd build/pause/linux && cc pause.c -o pause && mv pause ..)
-        ''
-      else
-        ''
-          (cd build/pause && cc pause.c -o pause)
-        ''
-      );
+#      postBuild = ''
+#        mkdir -p docs/man/man1
+#      '' +
+#      (if (
+#        (super.lib.versions.major kver) >= "1"
+#          &&
+#          (super.lib.versions.minor kver) >= "20"
+#      )
+#      then
+#        ''
+#          (cd build/pause/linux && cc pause.c -o pause && mv pause ..)
+#        ''
+#      else
+#        ''
+#          (cd build/pause && cc pause.c -o pause)
+#        ''
+#      );
     }
   );
 in
 {
-  "kubernetes-1-19" = kubernetesVersion {
-    kver = "1.19.11";
-    khash = "0m7w70078pvmp5pf4bmjk9cvy92xyiljdf8lfs5xb9f9j9yppbk6";
-  };
-
   "kubernetes-1-20" = kubernetesVersion {
     kver = "1.20.7";
     khash = "06s44mj59mjsk09gcn3xcly01rqkam4hbsi1w8l7x8wjribm9q1s";
+  };
+
+  "kubernetes-1-21" = kubernetesVersion {
+    kver = "1.21.1";
+    khash = "1xz4kkyh7ygs8hd52ab0a3hhvrl137iiz4c8j0ylxa8jdz1w5640";
   };
 }

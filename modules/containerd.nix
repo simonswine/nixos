@@ -2,7 +2,7 @@
 
 with lib;
 let
-  cfg = config.virtualisation.containerd;
+  cfg = config.virtualisation.containerdxy;
 in
 {
   imports = [
@@ -13,7 +13,7 @@ in
     maintainers = lib.teams.podman.members;
   };
 
-  options.virtualisation.containerd = {
+  options.virtualisation.containerdxy = {
     enable = mkEnableOption "containerd container runtime";
 
     package = lib.mkOption {

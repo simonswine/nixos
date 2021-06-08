@@ -88,6 +88,7 @@ let
     } ''json2yaml -i $json -o $out'';
 in
 {
+  disabledModules = [ "services/backup/zrepl.nix" ];
   options = {
     services.zrepl = {
       enable = mkOption {

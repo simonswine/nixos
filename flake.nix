@@ -1,7 +1,7 @@
 {
   inputs = {
     nixpkgs = {
-      url = "github:nixos/nixpkgs/nixos-20.09";
+      url = "github:nixos/nixpkgs/nixos-21.05";
     };
   };
 
@@ -23,7 +23,6 @@
           prometheus-node-exporter-zfs = pkgs.callPackage ./pkgs/prometheus-node-exporter-zfs { };
           tickrs = pkgs.callPackage ./pkgs/tickrs { };
           tz-cli = pkgs.callPackage ./pkgs/tz-cli { };
-          zrepl = pkgs.callPackage ./pkgs/zrepl { };
         };
       };
 
@@ -114,13 +113,12 @@
           get-focused-x-screen = pkgs.get-focused-x-screen;
           mi-flora-exporter = pkgs.mi-flora-exporter;
           intel-gpu-exporter = pkgs.intel-gpu-exporter;
-          "kubernetes-1-19" = pkgs.kubernetes-1-19;
           "kubernetes-1-20" = pkgs.kubernetes-1-20;
+          "kubernetes-1-21" = pkgs.kubernetes-1-21;
           prometheus-node-exporter-smartmon = pkgs.prometheus-node-exporter-smartmon;
           prometheus-node-exporter-zfs = pkgs.prometheus-node-exporter-zfs;
           tickrs = pkgs.tickrs;
           tz-cli = pkgs.tz-cli;
-          zrepl = pkgs.zrepl;
         };
       };
     };
