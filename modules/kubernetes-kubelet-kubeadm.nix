@@ -57,13 +57,16 @@ in
           cfg.cni.packages}
         '';
 
+        unitConfig = {
+          StartLimitInterval = "0";
+        };
+
         serviceConfig = {
           Slice = "kubernetes.slice";
           CPUAccounting = true;
           MemoryAccounting = true;
           Restart = "on-failure";
           RestartSec = "10s";
-          StartLimitInterval = "0";
           EnvironmentFile = [
             "-/var/lib/kubelet/kubeadm-flags.env"
             "-/etc/default/kubelet"
