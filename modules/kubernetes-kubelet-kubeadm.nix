@@ -32,7 +32,7 @@ in
       # restrict access to kernel logs
       boot.kernel.sysctl."kernel.dmesg_restrict" = 1;
 
-      environment.systemPackages = deps ++ [ top.package ];
+      environment.systemPackages = deps ++ [ top.package pkgs.cri-tools ];
 
       systemd.tmpfiles.rules = [
         "d /opt/cni/bin 0755 root root -"
