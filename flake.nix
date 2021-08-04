@@ -21,6 +21,7 @@
           intel-gpu-exporter = pkgs.callPackage ./pkgs/intel-gpu-exporter { };
           prometheus-node-exporter-smartmon = pkgs.callPackage ./pkgs/prometheus-node-exporter-smartmon { };
           prometheus-node-exporter-zfs = pkgs.callPackage ./pkgs/prometheus-node-exporter-zfs { };
+          prometheus-snmp-exporter-config = pkgs.callPackage ./pkgs/prometheus-snmp-exporter-config { };
           tickrs = pkgs.callPackage ./pkgs/tickrs { };
           tz-cli = pkgs.callPackage ./pkgs/tz-cli { };
         };
@@ -117,6 +118,7 @@
           "kubernetes-1-21" = pkgs.kubernetes-1-21;
           prometheus-node-exporter-smartmon = pkgs.prometheus-node-exporter-smartmon;
           prometheus-node-exporter-zfs = pkgs.prometheus-node-exporter-zfs;
+          prometheus-snmp-exporter-config = pkgs.prometheus-snmp-exporter-config;
           tickrs = pkgs.tickrs;
           tz-cli = pkgs.tz-cli;
         };
