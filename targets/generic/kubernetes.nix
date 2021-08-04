@@ -4,7 +4,7 @@
   # Necessary for overlay network
   networking.wireguard.enable = true;
 
-  virtualisation.containerd.enable = true;
+  virtualisation.containerd-kubelet.enable = true;
   services.kubernetes.kubelet-kubeadm.enable = true;
   services.kubernetes.package = pkgs.kubernetes-1-20;
   services.prometheus-node-exporter-zfs = {
