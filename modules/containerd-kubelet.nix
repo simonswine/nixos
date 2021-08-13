@@ -14,6 +14,8 @@ in
       runtime-endpoint: unix:///run/containerd/containerd.sock
     '';
 
+    boot.kernelParams = [ "systemd.unified_cgroup_hierarchy=1" ];
+
     virtualisation.containerd = {
       enable = true;
       configFile = pkgs.writeText "config.toml" ''
@@ -24,11 +26,11 @@ in
           address = "127.0.0.1:1338"
 
         [plugins."io.containerd.grpc.v1.cri".containerd]
+          default_runtime_name = "runc"
           snapshotter = "zfs"
 
-        [plugins."io.containerd.grpc.v1.cri".containerd.default_runtime]
-          runtime_type = "io.containerd.runtime.v1.linux"
-          runtime_engine = "runc"
+        [plugins."io.containerd.grpc.v1.cri".containerd.runtimes.runc]
+          runtime_type = "io.containerd.runc.v2"
 
         [plugins."io.containerd.grpc.v1.cri".containerd.runtimes.runc.options]
           SystemdCgroup = true

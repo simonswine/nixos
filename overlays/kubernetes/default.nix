@@ -23,12 +23,12 @@ let
 in
 {
   "kubernetes-1-20" = kubernetesVersion {
-    kver = "1.20.9";
-    khash = "alwQ2gNi4gJ9PCwThdKPp59Kv1+cC1BLdYQ1mKKmTKg=";
+    kver = "1.20.10";
+    khash = "57Cs2/AVHmnT5uS0Tp0NQZLOovUKOkeX87/stx6ZtXY=";
   };
 
   "kubernetes-1-21" = kubernetesVersion {
-    kver = "1.21.3";
-    khash = "GMigdVuqJN6eIN0nhY5PVUEnCqjAYUzitetk2QmX5wQ=";
+    kver = "1.21.4";
+    khash = "1xOF7C6N9OUvHm0dhqBSTihprZ30+iyJEhpJd70qZyo=";
   };
 }
