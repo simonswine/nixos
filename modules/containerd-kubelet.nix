@@ -14,7 +14,8 @@ in
       runtime-endpoint: unix:///run/containerd/containerd.sock
     '';
 
-    boot.kernelParams = [ "systemd.unified_cgroup_hierarchy=1" ];
+    # disable cgroup v2, not ready yet for primetime (e.g. kubectl top nodes broken)
+    boot.kernelParams = [ "systemd.unified_cgroup_hierarchy=0" ];
 
     virtualisation.containerd = {
       enable = true;
