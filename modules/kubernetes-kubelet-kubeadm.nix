@@ -35,6 +35,7 @@ in
       environment.systemPackages = deps ++ [ top.package pkgs.cri-tools ];
 
       systemd.tmpfiles.rules = [
+        "d /etc/kubernetes/manifests 0755 root root -"
         "d /opt/cni/bin 0755 root root -"
         "d /run/kubernetes 0755 root root -"
         "d /var/lib/kubernetes 0755 root root -"
