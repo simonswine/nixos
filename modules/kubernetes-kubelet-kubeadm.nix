@@ -16,7 +16,7 @@ in
       packages = mkOption {
         description = "List of network plugin packages to install.";
         type = listOf package;
-        default = [ ];
+        default = [ pkgs.cni-plugins ];
       };
     };
   };
@@ -53,7 +53,14 @@ in
                     ${concatMapStrings
           (package: ''
                       echo "Linking cni package: ${package}"
-                      ln -fs ${package}/bin/* /opt/cni/bin
+                      for x in ${package}/bin/*; do
+                        dest="/opt/cni/bin/$(basename "''${x}")"
+                        if [[ -x "''${dest}" && ! -L ''${dest} ]]; then
+                          echo "''${dest} continue"
+                          continue
+                        fi
+                        ln -sf "''${x}" "''${dest}"
+                      done
                     '')
           cfg.cni.packages}
         '';
