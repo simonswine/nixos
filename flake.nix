@@ -14,6 +14,7 @@
 
       pkgsConfig = {
         packageOverrides = pkgs: {
+          cert-updater = pkgs.callPackage ./pkgs/cert-updater { };
           cloud-init = pkgs.callPackage ./pkgs/cloud-init { };
           get-focused-x-screen = pkgs.callPackage ./pkgs/get-focused-x-screen { };
           faillint = pkgs.callPackage ./pkgs/faillint { };
@@ -108,6 +109,7 @@
 
       packages = {
         "x86_64-linux" = {
+          cert-updater = pkgs.cert-updater;
           cloud-init = pkgs.cloud-init;
           containerd = pkgs.containerd;
           faillint = pkgs.faillint;

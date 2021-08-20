@@ -1,4 +1,4 @@
-{ stdenv,  prometheus-snmp-exporter}:
+{ stdenv, prometheus-snmp-exporter }:
 
 stdenv.mkDerivation {
   name = "prometheus-snmp-exporter-config";
