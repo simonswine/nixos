@@ -52,12 +52,12 @@ with lib;
         ExecStart = "${pkgs.cert-updater}/bin/cert-updater --apiserver-url ${cfg.apiserverUrl} --namespace ${cfg.namespace} ${cfg.name} --key-file ${cfg.keyFile} --cert-file ${cfg.certFile} --token-file ${cfg.tokenFile} --ca-cert-file ${cfg.caCertFile} --post-update-hook ${cfg.postUpdateHook}";
       };
     };
-    #systemd.timers.cert-updater = {
-    #  timerConfig = {
-    #    OnBootSec = "1 min";
-    #    OnUnitActiveSec = "1 min";
-    #  };
-    #  wantedBy = [ "timers.target" ];
-    #};
+    systemd.timers.cert-updater = {
+      timerConfig = {
+        OnCalendar = "weekly";
+        Persistent = true;
+      };
+      wantedBy = [ "timers.target" ];
+    };
   };
 }
