@@ -54,7 +54,7 @@ with lib;
     };
     systemd.timers.cert-updater = {
       timerConfig = {
-        OnCalendar = "weekly";
+        OnCalendar = "daily";
         Persistent = true;
       };
       wantedBy = [ "timers.target" ];
