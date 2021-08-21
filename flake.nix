@@ -24,6 +24,7 @@
           prometheus-node-exporter-zfs = pkgs.callPackage ./pkgs/prometheus-node-exporter-zfs { };
           prometheus-snmp-exporter-config = pkgs.callPackage ./pkgs/prometheus-snmp-exporter-config { };
           tickrs = pkgs.callPackage ./pkgs/tickrs { };
+          tplink-switch-exporter = pkgs.callPackage ./pkgs/tplink-switch-exporter { };
           tz-cli = pkgs.callPackage ./pkgs/tz-cli { };
         };
       };
@@ -122,6 +123,7 @@
           prometheus-node-exporter-zfs = pkgs.prometheus-node-exporter-zfs;
           prometheus-snmp-exporter-config = pkgs.prometheus-snmp-exporter-config;
           tickrs = pkgs.tickrs;
+          tplink-switch-exporter = pkgs.callPackage ./pkgs/tplink-switch-exporter { };
           tz-cli = pkgs.tz-cli;
         };
       };
