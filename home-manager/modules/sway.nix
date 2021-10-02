@@ -68,6 +68,7 @@ in
         xdg-desktop-portal
         pipewire
         qt5ct
+        wdisplays # this allows to configure the display
       ];
 
       wayland.windowManager.sway = {
