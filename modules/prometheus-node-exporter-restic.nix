@@ -15,7 +15,7 @@ with lib;
     systemd.services.prometheus-node-exporter-restic = {
       description = "Node exporter textfile restic";
       serviceConfig = {
-        ExecStart = "${pkgs.prometheus-node-exporter-restic}/bin/node-exporter-restic | ${pkgs.moreutils}/bin/sponge ${cfgTextfiles.path}/restic.prom'";
+        ExecStart = "${pkgs.bash}/bin/bash -euo pipefail -c '${pkgs.prometheus-node-exporter-restic}/bin/node-exporter-restic | ${pkgs.moreutils}/bin/sponge ${cfgTextfiles.path}/restic.prom'";
       };
     };
     systemd.timers.prometheus-node-exporter-restic = {
