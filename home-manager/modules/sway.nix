@@ -138,6 +138,8 @@ in
             startup = [
               # restart kanshi after reload
               { command = "systemctl --user restart kanshi"; always = true; }
+              # ensure display is in the dbus environment
+              { command = "dbus-update-activation-environment --systemd DISPLAY"; }
             ];
 
             workspaceAutoBackAndForth = true;
