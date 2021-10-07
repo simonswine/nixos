@@ -20,7 +20,7 @@ stdenv.mkDerivation {
     cp restic.sh $out/bin/node-exporter-restic
     chmod +x $out/bin/node-exporter-restic
     wrapProgram $out/bin/node-exporter-restic \
-      --set PATH ${lib.makeBinPath [ pkgs.gawk pkgs.findutils ]}
+      --set PATH ${lib.makeBinPath [ pkgs.gawk pkgs.findutils pkgs.coreutils ]}
   '';
 
   meta = {
