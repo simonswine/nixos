@@ -17,6 +17,7 @@ in
         delve
         golangci-lint
         go-junit-report
+        gotestsum
       ];
       simonswine.neovim.plugins = with pkgs.vimPlugins; [
         vim-go
