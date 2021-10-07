@@ -69,6 +69,7 @@ in
         pipewire
         qt5ct
         wdisplays # this allows to configure the display
+        wayvnc # remote desktop
       ];
 
       wayland.windowManager.sway = {
