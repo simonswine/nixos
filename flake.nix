@@ -20,9 +20,10 @@
           faillint = pkgs.callPackage ./pkgs/faillint { };
           mi-flora-exporter = pkgs.callPackage ./pkgs/mi-flora-exporter { };
           intel-gpu-exporter = pkgs.callPackage ./pkgs/intel-gpu-exporter { };
+          prometheus-snmp-exporter-config = pkgs.callPackage ./pkgs/prometheus-snmp-exporter-config { };
+          prometheus-node-exporter-restic = pkgs.callPackage ./pkgs/prometheus-node-exporter-restic { };
           prometheus-node-exporter-smartmon = pkgs.callPackage ./pkgs/prometheus-node-exporter-smartmon { };
           prometheus-node-exporter-zfs = pkgs.callPackage ./pkgs/prometheus-node-exporter-zfs { };
-          prometheus-snmp-exporter-config = pkgs.callPackage ./pkgs/prometheus-snmp-exporter-config { };
           tickrs = pkgs.callPackage ./pkgs/tickrs { };
           tplink-switch-exporter = pkgs.callPackage ./pkgs/tplink-switch-exporter { };
           tz-cli = pkgs.callPackage ./pkgs/tz-cli { };
@@ -119,9 +120,10 @@
           intel-gpu-exporter = pkgs.intel-gpu-exporter;
           "kubernetes-1-20" = pkgs.kubernetes-1-20;
           "kubernetes-1-21" = pkgs.kubernetes-1-21;
+          prometheus-snmp-exporter-config = pkgs.prometheus-snmp-exporter-config;
+          prometheus-node-exporter-restic = pkgs.prometheus-node-exporter-restic;
           prometheus-node-exporter-smartmon = pkgs.prometheus-node-exporter-smartmon;
           prometheus-node-exporter-zfs = pkgs.prometheus-node-exporter-zfs;
-          prometheus-snmp-exporter-config = pkgs.prometheus-snmp-exporter-config;
           tickrs = pkgs.tickrs;
           tplink-switch-exporter = pkgs.callPackage ./pkgs/tplink-switch-exporter { };
           tz-cli = pkgs.tz-cli;
