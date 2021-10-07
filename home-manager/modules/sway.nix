@@ -87,14 +87,11 @@ in
           # use this if they aren't displayed properly:
           export _JAVA_AWT_WM_NONREPARENTING=1
 
-          # Some bug
+          # This helps to alleviate the hidden menu bug on firefox on wayland
           export WLR_DRM_NO_MODIFIERS=1
 
           # Firefox wayland support
           export MOZ_ENABLE_WAYLAND=1
-
-          # Use legacy intel driver (better support in browsers)
-          export LIBVA_DRIVER_NAME=i965
 
           # this fixes nautilus' ability to browse network folders
           export GIO_EXTRA_MODULES="${pkgs.gnome3.gvfs}/lib/gio/modules:$GIO_EXTRA_MODULES"
