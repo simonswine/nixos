@@ -23,10 +23,9 @@ for snapshots_dir in ${SNAPSHOTS_DIRS}; do
 
    total_size=$(du -s "${dir}" | cut -f 1)
 
-   snapshots_raw=$(ls -t --full-time "${dir}/snapshots")
+   snapshots_raw=$(find "${dir}/snapshots" -mindepth 1 -maxdepth 2  -type f -printf "%T@ %p\n" | sort -n)
    snapshots_count=$(echo "${snapshots_raw}" | wc -l)
-   latest_snapshot=$(echo "${snapshots_raw}" | head -n 1 | awk '{ print $6 " " $7}')
-   latest_snapshot_unix=$(date -d "${latest_snapshot}" +"%s")
+   latest_snapshot_unix=$(echo "${snapshots_raw}" | tail -n 1 | cut -f 1 -d ' ')
 
    OUTPUT="${OUTPUT}${NAMESPACE}_repository_size_bytes{repository=\"${dir}\"} ${total_size}\n"
    OUTPUT="${OUTPUT}${NAMESPACE}_snapshots_count{repository=\"${dir}\"}  ${snapshots_count}\n"
