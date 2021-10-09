@@ -118,8 +118,9 @@
           get-focused-x-screen = pkgs.get-focused-x-screen;
           mi-flora-exporter = pkgs.mi-flora-exporter;
           intel-gpu-exporter = pkgs.intel-gpu-exporter;
-          "kubernetes-1-20" = pkgs.kubernetes-1-20;
-          "kubernetes-1-21" = pkgs.kubernetes-1-21;
+          kubernetes-1-20 = pkgs.kubernetes-1-20;
+          kubernetes-1-21 = pkgs.kubernetes-1-21;
+          kubernetes-1-22 = pkgs.kubernetes-1-22;
           prometheus-snmp-exporter-config = pkgs.prometheus-snmp-exporter-config;
           prometheus-node-exporter-restic = pkgs.prometheus-node-exporter-restic;
           prometheus-node-exporter-smartmon = pkgs.prometheus-node-exporter-smartmon;

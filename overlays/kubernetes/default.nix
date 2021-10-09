@@ -22,13 +22,18 @@ let
   );
 in
 {
-  "kubernetes-1-20" = kubernetesVersion {
-    kver = "1.20.10";
-    khash = "57Cs2/AVHmnT5uS0Tp0NQZLOovUKOkeX87/stx6ZtXY=";
+  kubernetes-1-20 = kubernetesVersion {
+    kver = "1.20.11";
+    khash = "bJwixxrY+gC28qAdq6xAN4FumBRWT5dzpEGvrwTuv3w=";
   };
 
-  "kubernetes-1-21" = kubernetesVersion {
-    kver = "1.21.4";
-    khash = "1xOF7C6N9OUvHm0dhqBSTihprZ30+iyJEhpJd70qZyo=";
+  kubernetes-1-21 = kubernetesVersion {
+    kver = "1.21.5";
+    khash = "pZJAAoUzf8VdJ2Wx1UUGMNOD7mAqCot2LtmylU9HGo8=";
+  };
+
+  kubernetes-1-22 = kubernetesVersion {
+    kver = "1.22.2";
+    khash = "O+FY9wJ0fztO7i5qJfw+cfhfBgaMWKX7IBBXJV4uuCk=";
   };
 }
