@@ -18,6 +18,7 @@
           cloud-init = pkgs.callPackage ./pkgs/cloud-init { };
           get-focused-x-screen = pkgs.callPackage ./pkgs/get-focused-x-screen { };
           faillint = pkgs.callPackage ./pkgs/faillint { };
+          mtv-dl = pkgs.callPackage ./pkgs/mtv-dl { };
           mi-flora-exporter = pkgs.callPackage ./pkgs/mi-flora-exporter { };
           intel-gpu-exporter = pkgs.callPackage ./pkgs/intel-gpu-exporter { };
           prometheus-snmp-exporter-config = pkgs.callPackage ./pkgs/prometheus-snmp-exporter-config { };
@@ -117,6 +118,7 @@
           faillint = pkgs.faillint;
           get-focused-x-screen = pkgs.get-focused-x-screen;
           mi-flora-exporter = pkgs.mi-flora-exporter;
+          mtv-dl = pkgs.mtv-dl;
           intel-gpu-exporter = pkgs.intel-gpu-exporter;
           kubernetes-1-20 = pkgs.kubernetes-1-20;
           kubernetes-1-21 = pkgs.kubernetes-1-21;
