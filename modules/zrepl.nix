@@ -197,7 +197,7 @@ in
         (name: config: nameValuePair ("zrepl-pull-" + name) ({
           description = "Run once a night";
           timerConfig = {
-            #OnCalendar = config.onCalendar;
+            OnCalendar = config.onCalendar;
             RandomizedDelaySec = 4 * 3600;
           };
           wantedBy = [ "timers.target" ];
