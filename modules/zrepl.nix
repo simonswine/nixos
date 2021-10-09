@@ -61,6 +61,10 @@ let
       default = null;
     };
 
+    replication = mkOption {
+      default = null;
+    };
+
     pruning = mkOption {
       default = null;
     };
@@ -79,6 +83,14 @@ let
       default = null;
     };
   };
+
+  pullTimerConfig = {
+    onCalendar = mkOption {
+      type = types.str;
+      default = "*-*-* 2:00:00";
+    };
+  };
+
 
   toYAML = name: attrs: pkgs.runCommandNoCC name
     {
@@ -114,7 +126,13 @@ in
       jobs = mkOption {
         default = { };
         type = with types; attrsOf (submodule [{ options = jobConfig; }]);
-        description = " Definition  of zrepl tasks.";
+        description = "Definition of zrepl tasks.";
+      };
+
+      pullTimers = mkOption {
+        default = { };
+        type = with types; attrsOf (submodule [{ options = pullTimerConfig; }]);
+        description = "Configuration of pull timers.";
       };
     };
   };
@@ -145,22 +163,46 @@ in
 
     });
 
-    systemd.services.zrepl = {
-      wantedBy = [ "multi-user.target" ];
-      after = [ "network.target" ];
-      description = "Start zrepl daemon for automatic zfs replication.";
-      path = [ pkgs.zfs pkgs.openssh ];
-      serviceConfig = {
-        Type = "simple";
-        ExecStartPre = [
-          ''${pkgs.coreutils}/bin/install -m0700 -d /var/run/zrepl''
-          ''${pkgs.coreutils}/bin/install -m0700 -d /var/run/zrepl/stdinserver''
-        ];
+    systemd.services = {
+      zrepl = {
+        wantedBy = [ "multi-user.target" ];
+        after = [ "network.target" ];
+        description = "Start zrepl daemon for automatic zfs replication.";
+        path = [ pkgs.zfs pkgs.openssh ];
+        serviceConfig = {
+          Type = "simple";
+          ExecStartPre = [
+            ''${pkgs.coreutils}/bin/install -m0700 -d /var/run/zrepl''
+            ''${pkgs.coreutils}/bin/install -m0700 -d /var/run/zrepl/stdinserver''
+          ];
 
-        ExecStart = ''${pkgs.zrepl}/bin/zrepl daemon --config /etc/zrepl/zrepl.yml'';
+          ExecStart = ''${pkgs.zrepl}/bin/zrepl daemon --config /etc/zrepl/zrepl.yml'';
+        };
+        restartTriggers = [ config.environment.etc."zrepl/zrepl.yml".source ];
       };
-      restartTriggers = [ config.environment.etc."zrepl/zrepl.yml".source ];
-    };
+    } // mapAttrs'
+      (name: config: nameValuePair ("zrepl-pull-" + name) ({
+        serviceConfig = {
+          Type = "oneshot";
+          ExecStart = [
+            "${pkgs.zrepl}/bin/zrepl signal wakeup pull-${name}"
+          ];
+          SyslogIdentifier = "zrepl-pull";
+        };
+      }))
+      cfg.pullTimers;
+
+    systemd.timers =
+      mapAttrs'
+        (name: config: nameValuePair ("zrepl-pull-" + name) ({
+          description = "Run once a night";
+          timerConfig = {
+            #OnCalendar = config.onCalendar;
+            RandomizedDelaySec = 4 * 3600;
+          };
+          wantedBy = [ "timers.target" ];
+        }))
+        cfg.pullTimers;
 
     environment.systemPackages = [ pkgs.zrepl ];
   };
