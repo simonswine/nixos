@@ -2,13 +2,13 @@
 
 buildGoModule rec {
   pname = "mi-flora-exporter";
-  version = "0.1.1";
+  version = "27bc317";
 
   src = fetchFromGitHub {
     owner = "simonswine";
     repo = "mi-flora-exporter";
-    rev = "v${version}";
-    sha256 = "0v1vaxarp6zcljzrzx9nidj2w9gnhf7kdfyys5kywpx34dk26pbf";
+    rev = "${version}";
+    sha256 = "rx/0FLNq7gcrOAYF2Lb6pdzTpPck0LOaMHVxt8maVxA=";
   };
 
   vendorSha256 = "0v2jfsr49np9qrwycvi3ac6q6xp8w6lnd4jibkw7d3dycg57radd";
