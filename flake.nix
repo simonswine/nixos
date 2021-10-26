@@ -86,9 +86,13 @@
           modules = pkgs.lib.attrValues (myNixosModules) ++ [
             nixosModulesPkgs
             (import (./targets + "/${target}.nix"))
-            (import (./targets + "/${target}/hardware-configuration.nix"))
             (import ./local.nix)
-          ];
+          ] ++ (
+            let
+              path = ./targets + "/${target}/hardware-configuration.nix";
+            in
+            if builtins.pathExists path then [ (import path) ] else [ ]
+          );
         };
       };
 
