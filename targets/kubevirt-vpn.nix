@@ -25,16 +25,21 @@ in
 
   # set hostname using DNS
   networking.hostName = "";
-
   networking.wireguard.enable = true;
+  networking.firewall.enable = false;
 
   environment.systemPackages = with pkgs;
     [
       vim
       git
       wireguard-tools
+      kubectl
     ];
 
+  environment.variables = {
+    "KUBERNETES_SERVICE_HOST" = "172.16.0.1";
+    "KUBERNETES_SERVICE_PORT" = "443";
+  };
 
   services.prometheus.exporters =
     {
@@ -47,7 +52,55 @@ in
 
   # Enable the OpenSSH daemon.
   services.openssh.enable = true;
-  users.users.root.openssh.authorizedKeys.keys = authorizedKeys;
+  users.users.root =
+    {
+      openssh.authorizedKeys.keys = authorizedKeys;
+      password = "nixos";
+    };
+
+  # mount wireguard config
+  fileSystems."/run/secrets/wireguard" =
+    {
+      device = "/dev/disk/by-id/virtio-wireguard-config";
+      options = [ "uid=0" "gid=0" "dmode=0700" "mode=0600" "norock" ];
+    };
+  systemd.services.wireguard-config = {
+    wantedBy = [ "multi-user.target" ];
+    after = [ "run-secrets-wireguard.mount" ];
+    requires = [ "run-secrets-wireguard.mount" ];
+    before = [ "network.target" ];
+    description = "Copy wireguard config to correct folder.";
+    serviceConfig = {
+      Type = "oneshot";
+      ExecStart = pkgs.writeScript "wireguard-config.sh"
+        ''
+          #!${pkgs.bash}/bin/bash
+
+          set -euo pipefail
+          set -x
+
+          DEST_DIR=/etc/systemd/network
+          SOURCE_DIR=/run/secrets/wireguard
+
+          mkdir -p "''${DEST_DIR}"
+
+          umask 027
+          for file in "''${SOURCE_DIR}/"*; do
+            test -f "''${file}" || continue
+            dest="''${DEST_DIR}/$(basename "''${file}")"
+            cat "$file" > "$dest"
+            chown root:systemd-network "$dest"
+          done
+        '';
+    };
+  };
+
+  # mount service account secret
+  fileSystems."/run/secrets/kubernetes.io/serviceaccount" =
+    {
+      device = "/dev/disk/by-id/virtio-service-account";
+      options = [ "uid=0" "gid=0" "dmode=0700" "mode=0600" "norock" ];
+    };
 
   system.stateVersion = "21.05";
 }
