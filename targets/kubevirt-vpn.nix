@@ -65,10 +65,12 @@ in
       options = [ "uid=0" "gid=0" "dmode=0700" "mode=0600" "norock" ];
     };
   systemd.services.wireguard-config = {
-    wantedBy = [ "multi-user.target" ];
+    # ensure copy happens before networkd gets started
+    wantedBy = [ "systemd-networkd.service" ];
+    before = [ "systemd-networkd.service" ];
+
     after = [ "run-secrets-wireguard.mount" ];
     requires = [ "run-secrets-wireguard.mount" ];
-    before = [ "network.target" ];
     description = "Copy wireguard config to correct folder.";
     serviceConfig = {
       Type = "oneshot";
