@@ -104,5 +104,59 @@ in
       options = [ "uid=0" "gid=0" "dmode=0700" "mode=0600" "norock" ];
     };
 
+  # setup socks proxy
+  services.dante = {
+    enable = true;
+    config = ''
+      # uncomment for more debug logging
+      #debug: 1
+
+      # interface specification
+      internal: enp1s0 port = 1080
+      internal: lo port = 1080
+      external: wg-prometheus
+
+
+      #authentication methods
+      clientmethod: none
+      socksmethod: none
+
+      # allow all clients to connect from anywhere
+      client pass {
+        from: 0.0.0.0/0 to: 0.0.0.0/0
+        log: error # connect disconnect
+      }
+
+      # allow clients connecting to those networks
+      socks pass {
+              from: 0.0.0.0/0 to: 172.20.0.0/16
+              command: bind connect udpassociate
+              proxyprotocol: socks_v5
+              log: error # connect disconnect iooperation
+      }
+      socks pass {
+              from: 0.0.0.0/0 to: 172.18.0.0/16
+              command: bind connect udpassociate
+              proxyprotocol: socks_v5
+              log: error # connect disconnect iooperation
+      }
+
+
+      # allow path back
+      socks pass {
+              from: 172.20.0.0/16 to: 0.0.0.0/0
+              command: bindreply udpreply
+              proxyprotocol: socks_v5
+              log: error # connect disconnect iooperation
+      }
+      socks pass {
+              from: 172.18.0.0/16 to: 0.0.0.0/0
+              command: bindreply udpreply
+              proxyprotocol: socks_v5
+              log: error # connect disconnect iooperation
+      }
+    '';
+  };
+
   system.stateVersion = "21.05";
 }
