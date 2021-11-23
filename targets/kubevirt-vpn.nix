@@ -55,7 +55,6 @@ in
   users.users.root =
     {
       openssh.authorizedKeys.keys = authorizedKeys;
-      password = "nixos";
     };
 
   # mount wireguard config
@@ -155,6 +154,32 @@ in
               proxyprotocol: socks_v5
               log: error # connect disconnect iooperation
       }
+    '';
+  };
+
+  # filter traffic coming in from the VPN
+  services.iptables-restore = {
+    enable = true;
+    rulesV4 = ''
+      *filter
+      :INPUT ACCEPT [0:0]
+      :FORWARD ACCEPT [0:0]
+      :OUTPUT ACCEPT [0:0]
+      -A INPUT -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+      -A INPUT -i wg-prometheus -p icmp -m icmp --icmp-type echo-request -j ACCEPT
+      -A INPUT -i wg-prometheus -j DROP
+      -A FORWARD -i wg-prometheus -j DROP
+      COMMIT
+    '';
+    rulesV6 = ''
+      *filter
+      :INPUT ACCEPT [0:0]
+      :FORWARD ACCEPT [0:0]
+      :OUTPUT ACCEPT [0:0]
+      -A INPUT -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+      -A INPUT -i wg-prometheus -j DROP
+      -A FORWARD -i wg-prometheus -j DROP
+      COMMIT
     '';
   };
 
