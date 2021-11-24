@@ -18,6 +18,8 @@ in
         golangci-lint
         go-junit-report
         gotestsum
+        gopls
+        gotags
       ];
       simonswine.neovim.plugins = with pkgs.vimPlugins; [
         vim-go
