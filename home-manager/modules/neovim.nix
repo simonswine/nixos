@@ -34,6 +34,7 @@ in
         vim-colors-solarized
         vim-airline
         LanguageClient-neovim
+        tagbar
       ] ++ cfg.plugins;
 
       extraConfig =
@@ -92,6 +93,9 @@ in
           set laststatus=2
           let g:airline_powerline_fonts = 1
           let g:airline_detect_paste=1
+
+          " Tagbar
+          let tagbar_ctags_bin='${pkgs.universal-ctags}/bin/ctags'
 
           " Setup correct path to ag
           let g:ackprg = '${pkgs.silver-searcher}/bin/ag --vimgrep'
