@@ -35,6 +35,11 @@ in
         vim-airline
         LanguageClient-neovim
         tagbar
+
+        # git support for vim
+        vim-fugitive
+        vim-rhubarb
+
       ] ++ cfg.plugins;
 
       extraConfig =
