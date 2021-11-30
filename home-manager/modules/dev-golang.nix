@@ -13,7 +13,7 @@ in
     mkIf cfg.enable {
       # install core golang dev packages
       home.packages = with pkgs; [
-        go
+        go_1_17
         delve
         golangci-lint
         go-junit-report
