@@ -13,13 +13,14 @@ in
     mkIf cfg.enable {
       # install core golang dev packages
       home.packages = with pkgs; [
-        go_1_17
         delve
-        golangci-lint
         go-junit-report
-        gotestsum
+        go_1_17
+        golangci-lint
         gopls
         gotags
+        gotestsum
+        modularise
       ];
       simonswine.neovim.plugins = with pkgs.vimPlugins; [
         vim-go
