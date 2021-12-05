@@ -20,6 +20,8 @@ with lib;
 
   config = mkIf cfg.enable {
     security.wrappers.mi-flora-exporter = {
+      owner = "root";
+      group = "root";
       source = "${pkgs.mi-flora-exporter}/bin/mi-flora-exporter";
       capabilities = "cap_net_admin+eip";
     };
