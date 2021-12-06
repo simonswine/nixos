@@ -18,11 +18,61 @@
     ];
   };
 
+  # make /etc/hosts writeable, required by docker-machine provisioning
+  environment.etc.hosts.mode = "0644";
+
+  # allow access to encrypted docker port
+  networking.firewall.allowedTCPPorts = [ 2376 ];
+
+  # make docker-machine to detect a centos 8
+  environment.etc.os-release.text = lib.mkForce ''
+    NAME="CentOS Linux"
+    VERSION="8 (Core)"
+    ID="centos"
+    ID_LIKE="rhel fedora"
+    VERSION_ID="8"
+    PRETTY_NAME="CentOS Linux 8 (Core)"
+    ANSI_COLOR="0;31"
+    CPE_NAME="cpe:/o:centos:centos:8"
+    HOME_URL="https://www.centos.org/"
+    BUG_REPORT_URL="https://bugs.centos.org/"
+
+    CENTOS_MANTISBT_PROJECT="CentOS-8"
+    CENTOS_MANTISBT_PROJECT_VERSION="8"
+    REDHAT_SUPPORT_PRODUCT="centos"
+    REDHAT_SUPPORT_PRODUCT_VERSION="8"
+  '';
+
+  environment.variables = {
+    PATH = "/nix/var/nix/profiles/default/bin:/nix/var/nix/profiles/default/sbin:/bin:/sbin:/usr/bin:/usr/sbin";
+  };
+
   environment.systemPackages = with pkgs;
     [
       vim
       git
       cachix
+      # Provide a fake yum, so docker-machine is happy
+      (pkgs.writeShellScriptBin "yum" "exit 0")
+
+      # Allow docker-machine to "write" to the override of docker.service.d
+      (pkgs.writeShellScriptBin "tee" ''
+        if [ "$1" = "/etc/systemd/system/docker.service.d/10-machine.conf" ]; then
+          # Take the ExecStart line
+          EXTRA_ARGS=`cat /dev/stdin | grep -P -o '^ExecStart=/usr/bin/dockerd \K(.*)'`
+
+          # Remove unwanted flags
+          EXTRA_ARGS=''${EXTRA_ARGS/-H unix:\/\/\/var\/run\/docker.sock /}
+          EXTRA_ARGS=''${EXTRA_ARGS/--storage-driver overlay2 /}
+
+          # Write to file
+          mkdir -p /run/sysconfig
+          echo "EXTRA_ARGS=\"''${EXTRA_ARGS}\"" | ${pkgs.coreutils}/bin/tee "/run/sysconfig/docker"
+          exit 0
+        fi
+        exec ${pkgs.coreutils}/bin/tee "$@"
+      '')
+
     ];
 
   # Enable the OpenSSH daemon.
@@ -32,6 +82,13 @@
   virtualisation.docker = {
     enable = true;
     storageDriver = "zfs";
+    extraOptions = "$EXTRA_ARGS";
+  };
+  # Read the docker-machine flags from runtime file
+  systemd.services.docker = {
+    serviceConfig = {
+      EnvironmentFile = "-/run/sysconfig/docker";
+    };
   };
 
   services.gitlab-runner = {
