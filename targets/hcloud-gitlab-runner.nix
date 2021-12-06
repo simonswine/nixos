@@ -18,6 +18,33 @@
     ];
   };
 
+  environment.etc.os-release.text = lib.mkForce ''
+    NAME="CentOS Linux"
+    VERSION="8 (Core)"
+    ID="centos"
+    ID_LIKE="rhel fedora"
+    VERSION_ID="8"
+    PRETTY_NAME="CentOS Linux 8 (Core)"
+    ANSI_COLOR="0;31"
+    CPE_NAME="cpe:/o:centos:centos:8"
+    HOME_URL="https://www.centos.org/"
+    BUG_REPORT_URL="https://bugs.centos.org/"
+
+    CENTOS_MANTISBT_PROJECT="CentOS-8"
+    CENTOS_MANTISBT_PROJECT_VERSION="8"
+    REDHAT_SUPPORT_PRODUCT="centos"
+    REDHAT_SUPPORT_PRODUCT_VERSION="8"
+  '';
+
+  environment.variables = {
+    PATH = "/nix/var/nix/profiles/default/bin:/nix/var/nix/profiles/default/sbin:/bin:/sbin:/usr/bin:/usr/sbin";
+  };
+
+  systemd.tmpfiles.rules =
+    [
+      "d /etc/systemd/system/docker.service.d 0755 root root"
+    ];
+
   environment.systemPackages = with pkgs;
     [
       vim
