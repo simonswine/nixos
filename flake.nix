@@ -116,11 +116,12 @@
 
       homeManagerModules = myHomeManagerModules;
 
+      docker = {
+        gitlab-runnerx = pkgs.callPackage ./docker/gitlab-runner { };
+      };
+
       packages = {
         "x86_64-linux" = {
-          docker = {
-            gitlab-runner = pkgs.callPackage ./docker/gitlab-runner { };
-          };
           cert-updater = pkgs.cert-updater;
           cloud-init = pkgs.cloud-init;
           containerd = pkgs.containerd;
