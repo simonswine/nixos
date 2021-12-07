@@ -18,6 +18,25 @@
     ];
   };
 
+  # make /etc/hosts writeable, required by docker-machine provisioning
+  environment.etc.hosts.mode = "0644";
+
+  #environment.etc."systemd/system/docker.service.d/10-machine.conf" = {
+  #  mode = "0644";
+  #  text = "";
+  #};
+
+  system.activationScripts.docker-service-overrides = ''
+    if [ -d /etc/systemd/system/docker.service.d ]; then
+      overrides_dest=$(readlink -f /etc/systemd/system/docker.service.d/overrides.conf)
+      mount -t tmpfs none /etc/systemd/system/docker.service.d
+      ln -s "$${overrides_dest}" /etc/systemd/system/docker.service.d/overrides.conf
+    fi 
+  '';
+
+  # allow access to encrypted docker port
+  networking.firewall.allowedTCPPorts = [ 2376 ];
+
   environment.etc.os-release.text = lib.mkForce ''
     NAME="CentOS Linux"
     VERSION="8 (Core)"
@@ -39,11 +58,6 @@
   environment.variables = {
     PATH = "/nix/var/nix/profiles/default/bin:/nix/var/nix/profiles/default/sbin:/bin:/sbin:/usr/bin:/usr/sbin";
   };
-
-  systemd.tmpfiles.rules =
-    [
-      "d /etc/systemd/system/docker.service.d 0755 root root"
-    ];
 
   environment.systemPackages = with pkgs;
     [

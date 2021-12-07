@@ -1,7 +1,7 @@
 {
   inputs = {
     nixpkgs = {
-      url = "github:nixos/nixpkgs/nixos-21.05";
+      url = "github:nixos/nixpkgs/nixos-21.11";
     };
   };
 
