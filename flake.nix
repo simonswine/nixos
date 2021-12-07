@@ -16,6 +16,7 @@
         packageOverrides = pkgs: {
           cert-updater = pkgs.callPackage ./pkgs/cert-updater { };
           cloud-init = pkgs.callPackage ./pkgs/cloud-init { };
+          docker-machine-driver-hetzner = pkgs.callPackage ./pkgs/docker-machine-driver-hetzner { };
           faillint = pkgs.callPackage ./pkgs/faillint { };
           get-focused-x-screen = pkgs.callPackage ./pkgs/get-focused-x-screen { };
           intel-gpu-exporter = pkgs.callPackage ./pkgs/intel-gpu-exporter { };
@@ -123,6 +124,7 @@
           cert-updater = pkgs.cert-updater;
           cloud-init = pkgs.cloud-init;
           containerd = pkgs.containerd;
+          docker-machine-driver-hetzner = pkgs.docker-machine-driver-hetzner;
           faillint = pkgs.faillint;
           get-focused-x-screen = pkgs.get-focused-x-screen;
           intel-gpu-exporter = pkgs.intel-gpu-exporter;
