@@ -21,22 +21,10 @@
   # make /etc/hosts writeable, required by docker-machine provisioning
   environment.etc.hosts.mode = "0644";
 
-  #environment.etc."systemd/system/docker.service.d/10-machine.conf" = {
-  #  mode = "0644";
-  #  text = "";
-  #};
-
-  system.activationScripts.docker-service-overrides = ''
-    if [ -d /etc/systemd/system/docker.service.d ]; then
-      overrides_dest=$(readlink -f /etc/systemd/system/docker.service.d/overrides.conf)
-      mount -t tmpfs none /etc/systemd/system/docker.service.d
-      ln -s "$${overrides_dest}" /etc/systemd/system/docker.service.d/overrides.conf
-    fi 
-  '';
-
   # allow access to encrypted docker port
   networking.firewall.allowedTCPPorts = [ 2376 ];
 
+  # make docker-machine to detect a centos 8
   environment.etc.os-release.text = lib.mkForce ''
     NAME="CentOS Linux"
     VERSION="8 (Core)"
@@ -64,6 +52,27 @@
       vim
       git
       cachix
+      # Provide a fake yum, so docker-machine is happy
+      (pkgs.writeShellScriptBin "yum" "exit 0")
+
+      # Allow docker-machine to "write" to the override of docker.service.d
+      (pkgs.writeShellScriptBin "tee" ''
+        if [ "$1" = "/etc/systemd/system/docker.service.d/10-machine.conf" ]; then
+          # Take the ExecStart line
+          EXTRA_ARGS=`cat /dev/stdin | grep -P -o '^ExecStart=/usr/bin/dockerd \K(.*)'`
+
+          # Remove unwanted flags
+          EXTRA_ARGS=''${EXTRA_ARGS/-H unix:\/\/\/var\/run\/docker.sock /}
+          EXTRA_ARGS=''${EXTRA_ARGS/--storage-driver overlay2 /}
+
+          # Write to file
+          mkdir -p /run/sysconfig
+          echo "EXTRA_ARGS=\"''${EXTRA_ARGS}\"" | ${pkgs.coreutils}/bin/tee "/run/sysconfig/docker"
+          exit 0
+        fi
+        exec ${pkgs.coreutils}/bin/tee "$@"
+      '')
+
     ];
 
   # Enable the OpenSSH daemon.
@@ -73,6 +82,13 @@
   virtualisation.docker = {
     enable = true;
     storageDriver = "zfs";
+    extraOptions = "$EXTRA_ARGS";
+  };
+  # Read the docker-machine flags from runtime file
+  systemd.services.docker = {
+    serviceConfig = {
+      EnvironmentFile = "-/run/sysconfig/docker";
+    };
   };
 
   services.gitlab-runner = {
