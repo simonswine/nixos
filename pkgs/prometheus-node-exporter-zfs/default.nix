@@ -2,13 +2,13 @@
 
 python3Packages.buildPythonApplication rec {
   pname = "prometheus-node-exporter-zfs";
-  version = "1ae4b227044e633e00f440ec676c53c8e3315016";
+  version = "fb831ed78c7c4321b1d897ddc906e274f79e4e30";
 
   src = fetchFromGitHub {
     owner = "simonswine";
     repo = "node-exporter-textfile-collector-scripts";
     rev = "${version}";
-    sha256 = "0lxjblz32sxlkfhdsgcy6h6fhac0pmci9q0bp4iak9p6nnvk89bw";
+    sha256 = "42Z+S/ww/VndbzlQwgWgIEfCRrhE1zcvzf8YRdHMjIU=";
   };
 
   pythonPath = with python3Packages; [ prometheus_client ];
@@ -31,7 +31,7 @@ python3Packages.buildPythonApplication rec {
   '';
 
   meta = {
-    homepage = https://github.com/simonswine/node-exporter-textfile-collector-scripts/blob/1ae4b227044e633e00f440ec676c53c8e3315016/zfs.py;
+    homepage = https://github.com/simonswine/node-exporter-textfile-collector-scripts/blob/fb831ed78c7c4321b1d897ddc906e274f79e4e30/zfs.py;
     description = "A textfile exporter script for zfs metrics.";
     license = lib.licenses.asl20;
     maintainers = [ lib.maintainers.simonswine ];
