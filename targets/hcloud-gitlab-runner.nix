@@ -20,6 +20,7 @@ in
 
 {
   boot.supportedFilesystems = [ "zfs" ];
+  boot.binfmt.emulatedSystems = [ "aarch64-linux" ];
   networking.hostId = "deadcafe";
   cloud.provider = "hcloud";
 
