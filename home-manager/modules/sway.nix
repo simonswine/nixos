@@ -62,7 +62,7 @@ in
         slurp # screen select
         wf-recorder # screen record
         grim # screenshot tool
-        rofi # rofi
+        wofi # wofi
         dmenu # Dmenu is the default in the config but i recommend wofi since its wayland native
         xdg-desktop-portal-wlr
         xdg-desktop-portal
@@ -145,14 +145,14 @@ in
             workspaceAutoBackAndForth = true;
 
             keybindings = lib.mkOptionDefault {
-              # use rofi as main menu
-              "${modifier}+d" = "exec ${pkgs.rofi}/bin/rofi -m ${x_focused_screen} -show drun -run-command '${pkgs.sway}/bin/swaymsg exec -- {cmd}'";
+              # use wofi as main menu
+              "${modifier}+d" = "exec ${pkgs.wofi}/bin/wofi --insensitive --allow-images --show drun";
 
-              # implement window switcher based on rofi
+              # implement window switcher based on wofi
               "${modifier}+Tab" = "exec ${config.xdg.configHome}/sway/window-jump.sh";
 
               # power menu
-              "${modifier}+Escape" = "exec ${config.xdg.configHome}/sway/rofi-power.sh";
+              "${modifier}+Escape" = "exec ${config.xdg.configHome}/sway/wofi-power.sh";
 
               # wifi menu
               "${modifier}+End" = "exec ~/.dotfiles/rofi/modi/nmcli";
@@ -162,7 +162,7 @@ in
               "${modifier}+Shift+Print" = "exec ${pkgs.slurp}/bin/slurp | ${pkgs.grim}/bin/grim -g - ${screenshot_destination}";
 
               # clipboard history
-              "${modifier}+c" = "exec ${pkgs.clipman}/bin/clipman pick -t rofi -T\"-m ${x_focused_screen}\"";
+              "${modifier}+c" = "exec ${pkgs.clipman}/bin/clipman pick --tool wofi";
 
               # move whole workspace to other output
               "${modifier}+Control+h" = "move workspace to output left";
@@ -188,6 +188,85 @@ in
           };
       };
 
+
+      xdg.configFile."wofi/style.css" = {
+        text = ''
+          /*
+           * wofi style. Colors are from authors below.
+           * Base16 Gruvbox dark, medium
+           * Author: Dawid Kurek (dawikur@gmail.com), morhetz (https://github.com/morhetz/gruvbox)
+           *
+           */
+          @define-color base00 #282828;
+          @define-color base01 #3C3836;
+          @define-color base02 #504945;
+          @define-color base03 #665C54;
+          @define-color base04 #BDAE93;
+          @define-color base06 #D5C4A1;
+          @define-color base06 #EBDBB2;
+          @define-color base07 #FBF1C7;
+          @define-color base08 #FB4934;
+          @define-color base09 #FE8019;
+          @define-color base0A #FABD2F;
+          @define-color base0B #B8BB26;
+          @define-color base0C #8EC07C;
+          @define-color base0D #83A598;
+          @define-color base0E #D3869B;
+          @define-color base0F #D65D0E;
+
+          window {
+            opacity: 0.9;
+            border:  0px;
+            border-radius: 10px;
+            font-family: monospace;
+            font-size: 18px;
+          }
+
+          #input {
+            border-radius: 10px 10px 0px 0px;
+            border:  0px;
+            padding: 10px;
+            margin: 0px;
+            font-size: 28px;
+            color: #222222;
+            background-color: #ab6f60;
+          }
+
+          #inner-box {
+            margin: 0px;
+            color: @base06;
+            background-color: @base00;
+          }
+
+          #outer-box {
+            margin: 0px;
+            background-color: @base00;
+            border-radius: 10px;
+          }
+
+          #selected {
+            background-color: #ab6f60;
+          }
+
+          #entry {
+            padding: 0px;
+            margin: 0px;
+            background-color: @base00;
+          }
+
+          #scroll {
+            margin: 5px;
+            background-color: @base00;
+          }
+
+          #text {
+            margin: 0px;
+            padding: 2px 2px 2px 10px;
+          }
+
+        '';
+      };
+
       xdg.configFile."sway/lock.sh" = {
         executable = true;
         text = ''
@@ -197,16 +276,16 @@ in
         '';
       };
 
-      xdg.configFile."sway/rofi-power.sh" = {
+      xdg.configFile."sway/wofi-power.sh" = {
         executable = true;
         text = ''
           #!${pkgs.stdenv.shell}
 
           set -euo pipefail
 
-          entries="Lock,Logout,Suspend,Reboot,Shutdown"
+          entries="Lock\nLogout\nSuspend\nReboot\nShutdown"
 
-          selected=$(echo $entries | ${pkgs.rofi}/bin/rofi -m ${x_focused_screen} -dmenu -sep ',' -p "power" -i | ${pkgs.gawk}/bin/awk '{print tolower($1)}')
+          selected=$(echo -e $entries | ${pkgs.wofi}/bin/wofi --show dmenu --prompt "power" --insensitive | ${pkgs.gawk}/bin/awk '{print tolower($1)}')
 
           case $selected in
             lock)
@@ -275,8 +354,8 @@ in
           # Get available windows
           windows=$(${pkgs.sway}/bin/swaymsg -t get_tree | ${pkgs.jq}/bin/jq -r '.. | objects | select(.type=="con" and .name != null)| "\(.id)\t\(.name)"')
 
-          # Select window with rofi
-          selected=$(echo "$windows" | ${pkgs.rofi}/bin/rofi -m ${x_focused_screen} -p "window" -dmenu -i | ${pkgs.gawk}/bin/awk '{print $1}')
+          # Select window with wofi
+          selected=$(echo "$windows" | ${pkgs.wofi}/bin/wofi -p "window" --show dmenu --insensitive | ${pkgs.gawk}/bin/awk '{print $1}')
 
           # Tell sway to focus said window
           ${pkgs.sway}/bin/swaymsg [con_id="$selected"] focus
