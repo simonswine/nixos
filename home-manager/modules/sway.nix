@@ -139,7 +139,15 @@ in
                 envVars = (builtins.concatStringsSep " " [ "DISPLAY" "WAYLAND_DISPLAY" "SWAYSOCK" "XDG_CURRENT_DESKTOP" ]);
               in
               [
-                { command = "dbus-update-activation-environment --systemd ${envVars}; systemctl --user import-environment ${envVars}; systemctl --user start sway-session.target"; }
+                {
+                  command = "${pkgs.writeScript "import-environment" ''
+                    set -euo pipefail
+
+                    dbus-update-activation-environment --systemd ${envVars}
+                    ${pkgs.systemd}/bin/systemctl --user import-environment ${envVars}
+                    ${pkgs.systemd}/bin/systemctl --user start sway-session.target
+                  ''}";
+                }
               ];
 
             workspaceAutoBackAndForth = true;
