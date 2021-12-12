@@ -56,7 +56,6 @@ in
         xorg.xeyes # for testing if app is wayland or xorg
         waybar # status bar
         mako # notification daemon
-        kanshi # autorandr
         wl-clipboard
         clipman # clipboard manager
         slurp # screen select
@@ -74,7 +73,7 @@ in
 
       wayland.windowManager.sway = {
         enable = true;
-        systemdIntegration = true;
+        systemdIntegration = false;
         wrapperFeatures = { gtk = true; };
 
         extraSessionCommands = ''
@@ -135,12 +134,13 @@ in
             # disable bars, as we have waybar
             bars = [ ];
 
-            startup = [
-              # restart kanshi after reload
-              { command = "systemctl --user restart kanshi"; always = true; }
-              # ensure display is in the dbus environment
-              { command = "dbus-update-activation-environment --systemd DISPLAY"; }
-            ];
+            startup =
+              let
+                envVars = (builtins.concatStringsSep " " [ "DISPLAY" "WAYLAND_DISPLAY" "SWAYSOCK" "XDG_CURRENT_DESKTOP" ]);
+              in
+              [
+                { command = "dbus-update-activation-environment --systemd ${envVars}; systemctl --user import-environment ${envVars}; systemctl --user start sway-session.target"; }
+              ];
 
             workspaceAutoBackAndForth = true;
 
@@ -188,6 +188,15 @@ in
           };
       };
 
+      systemd.user.targets.sway-session = {
+        Unit = {
+          Description = "sway compositor session";
+          Documentation = [ "man:systemd.special(7)" ];
+          BindsTo = [ "graphical-session.target" ];
+          Wants = [ "graphical-session-pre.target" ];
+          After = [ "graphical-session-pre.target" ];
+        };
+      };
 
       xdg.configFile."wofi/style.css" = {
         text = ''

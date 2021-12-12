@@ -307,7 +307,7 @@ in
 
         export PATH=$HOME/.nix-profile/bin:$HOME/bin:$PATH
 
-        CONFIG_PATH=$(mktemp /tmp/waybar-config.XXXXXX)
+        CONFIG_PATH=$(${pkgs.coreutils}/bin/mktemp /tmp/waybar-config.XXXXXX)
 
         # generate config, ensure that small width disable are using a reduced bar
         ${pkgs.jsonnet}/bin/jsonnet --ext-code "outputs=$(${pkgs.sway}/bin/swaymsg -t get_outputs)" "${configJsonnet}" > "''${CONFIG_PATH}"
@@ -334,7 +334,9 @@ in
           RestartSec = "1sec";
         };
 
-        Install = { WantedBy = [ "graphical-session.target" ]; };
+        Install = {
+          WantedBy = [ "sway-session.target" ];
+        };
       };
     };
 }
