@@ -23,17 +23,17 @@ let
 in
 {
   kubernetes-1-20 = kubernetesVersion {
-    kver = "1.20.11";
-    khash = "bJwixxrY+gC28qAdq6xAN4FumBRWT5dzpEGvrwTuv3w=";
+    kver = "1.20.14";
+    khash = "4knYDSvBYJ+BkmRz87M8bcevtmgaQyaKdPYjsqEJrBg=";
   };
 
   kubernetes-1-21 = kubernetesVersion {
-    kver = "1.21.5";
-    khash = "pZJAAoUzf8VdJ2Wx1UUGMNOD7mAqCot2LtmylU9HGo8=";
+    kver = "1.21.8";
+    khash = "h47tjn+o4q/DvtS2rpaBvNyw7Cu9iu0Ou7LmE0WmH04=";
   };
 
   kubernetes-1-22 = kubernetesVersion {
-    kver = "1.22.2";
-    khash = "O+FY9wJ0fztO7i5qJfw+cfhfBgaMWKX7IBBXJV4uuCk=";
+    kver = "1.22.5";
+    khash = "Hj9npIUwMqfYtTsuLvgk04KDlLixefLT2L23S7JOcM4=";
   };
 }
