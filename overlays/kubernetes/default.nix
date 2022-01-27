@@ -22,18 +22,18 @@ let
   );
 in
 {
-  kubernetes-1-20 = kubernetesVersion {
-    kver = "1.20.14";
-    khash = "4knYDSvBYJ+BkmRz87M8bcevtmgaQyaKdPYjsqEJrBg=";
-  };
-
   kubernetes-1-21 = kubernetesVersion {
-    kver = "1.21.8";
-    khash = "h47tjn+o4q/DvtS2rpaBvNyw7Cu9iu0Ou7LmE0WmH04=";
+    kver = "1.21.9";
+    khash = "RE3JvQ06G02etba0JhQ/2OIPlGz5lrEn+G4deQG/d34=";
   };
 
   kubernetes-1-22 = kubernetesVersion {
-    kver = "1.22.5";
-    khash = "Hj9npIUwMqfYtTsuLvgk04KDlLixefLT2L23S7JOcM4=";
+    kver = "1.22.6";
+    khash = "NL00GOdkVLVHTlj1RK1+stssioy+0xbtiKn4FZnCuzs=";
+  };
+
+  kubernetes-1-23 = kubernetesVersion {
+    kver = "1.23.3";
+    khash = "Ccf+9mwDv1Fs0+xN8yDkUjh4A3aGox7rBGesyYtkUDs=";
   };
 }

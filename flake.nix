@@ -129,9 +129,9 @@
           faillint = pkgs.faillint;
           get-focused-x-screen = pkgs.get-focused-x-screen;
           intel-gpu-exporter = pkgs.intel-gpu-exporter;
-          kubernetes-1-20 = pkgs.kubernetes-1-20;
           kubernetes-1-21 = pkgs.kubernetes-1-21;
           kubernetes-1-22 = pkgs.kubernetes-1-22;
+          kubernetes-1-23 = pkgs.kubernetes-1-23;
           mi-flora-exporter = pkgs.mi-flora-exporter;
           modularise = pkgs.callPackage ./pkgs/modularise { };
           mtv-dl = pkgs.mtv-dl;
