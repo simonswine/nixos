@@ -154,7 +154,7 @@ in
 
             keybindings = lib.mkOptionDefault {
               # use wofi as main menu
-              "${modifier}+d" = "exec ${pkgs.wofi}/bin/wofi --insensitive --allow-images --show drun";
+              "${modifier}+d" = "exec ${pkgs.wofi}/bin/wofi --insensitive --allow-images --show drun --define drun-print_command=true | sed 's/%.//' | xargs swaymsg exec --";
 
               # implement window switcher based on wofi
               "${modifier}+Tab" = "exec ${config.xdg.configHome}/sway/window-jump.sh";
