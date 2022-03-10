@@ -19,6 +19,8 @@
           faillint = pkgs.callPackage ./pkgs/faillint { };
           get-focused-x-screen = pkgs.callPackage ./pkgs/get-focused-x-screen { };
           intel-gpu-exporter = pkgs.callPackage ./pkgs/intel-gpu-exporter { };
+          kvmd = pkgs.callPackage ./pkgs/kvmd { };
+          kvmd-oled = pkgs.callPackage ./pkgs/kvmd-oled { };
           mi-flora-exporter = pkgs.callPackage ./pkgs/mi-flora-exporter { };
           modularise = pkgs.callPackage ./pkgs/modularise { };
           mtv-dl = pkgs.callPackage ./pkgs/mtv-dl { };
@@ -117,6 +119,8 @@
             kubernetes-1-21 = pkgs.kubernetes-1-21;
             kubernetes-1-22 = pkgs.kubernetes-1-22;
             kubernetes-1-23 = pkgs.kubernetes-1-23;
+            kvmd = pkgs.kvmd;
+            kvmd-oled = pkgs.kvmd-oled;
             mi-flora-exporter = pkgs.mi-flora-exporter;
             modularise = pkgs.callPackage ./pkgs/modularise { };
             mtv-dl = pkgs.mtv-dl;
