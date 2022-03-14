@@ -29,6 +29,7 @@
           prometheus-node-exporter-smartmon = pkgs.callPackage ./pkgs/prometheus-node-exporter-smartmon { };
           prometheus-node-exporter-zfs = pkgs.callPackage ./pkgs/prometheus-node-exporter-zfs { };
           prometheus-snmp-exporter-config = pkgs.callPackage ./pkgs/prometheus-snmp-exporter-config { };
+          rpi-device-tree-overlays = pkgs.callPackage ./pkgs/rpi-device-tree-overlays { };
           tickrs = pkgs.callPackage ./pkgs/tickrs { };
           tplink-switch-exporter = pkgs.callPackage ./pkgs/tplink-switch-exporter { };
           tz-cli = pkgs.callPackage ./pkgs/tz-cli { };
@@ -130,6 +131,7 @@
             prometheus-node-exporter-smartmon = pkgs.prometheus-node-exporter-smartmon;
             prometheus-node-exporter-zfs = pkgs.prometheus-node-exporter-zfs;
             prometheus-snmp-exporter-config = pkgs.prometheus-snmp-exporter-config;
+            rpi-device-tree-overlays = pkgs.rpi-device-tree-overlays;
             tickrs = pkgs.tickrs;
             tplink-switch-exporter = pkgs.callPackage ./pkgs/tplink-switch-exporter { };
             tz-cli = pkgs.tz-cli;
