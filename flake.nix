@@ -21,6 +21,7 @@
           intel-gpu-exporter = pkgs.callPackage ./pkgs/intel-gpu-exporter { };
           kvmd = pkgs.callPackage ./pkgs/kvmd { };
           kvmd-oled = pkgs.callPackage ./pkgs/kvmd-oled { };
+          kvmd-ustreamer = pkgs.callPackage ./pkgs/kvmd-ustreamer { };
           mi-flora-exporter = pkgs.callPackage ./pkgs/mi-flora-exporter { };
           modularise = pkgs.callPackage ./pkgs/modularise { };
           mtv-dl = pkgs.callPackage ./pkgs/mtv-dl { };
@@ -121,6 +122,7 @@
             kubernetes-1-23 = pkgs.kubernetes-1-23;
             kvmd = pkgs.kvmd;
             kvmd-oled = pkgs.kvmd-oled;
+            kvmd-ustreamer = pkgs.kvmd-ustreamer;
             mi-flora-exporter = pkgs.mi-flora-exporter;
             modularise = pkgs.callPackage ./pkgs/modularise { };
             mtv-dl = pkgs.mtv-dl;
