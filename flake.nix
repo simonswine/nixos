@@ -29,6 +29,8 @@
           tickrs = pkgs.callPackage ./pkgs/tickrs { };
           tplink-switch-exporter = pkgs.callPackage ./pkgs/tplink-switch-exporter { };
           tz-cli = pkgs.callPackage ./pkgs/tz-cli { };
+          yasdi = pkgs.callPackage ./pkgs/yasdi { };
+          yasdi-exporter = pkgs.callPackage ./pkgs/yasdi-exporter { };
         };
       };
       nixosModulesPkgs = {
@@ -127,6 +129,8 @@
             tickrs = pkgs.tickrs;
             tplink-switch-exporter = pkgs.callPackage ./pkgs/tplink-switch-exporter { };
             tz-cli = pkgs.tz-cli;
+            yasdi = pkgs.yasdi;
+            yasdi-exporter = pkgs.yasdi-exporter;
           };
 
           nixosConfigurations = builtins.listToAttrs (
