@@ -19,6 +19,7 @@
           docker-machine-driver-hetzner = pkgs.callPackage ./pkgs/docker-machine-driver-hetzner { };
           faillint = pkgs.callPackage ./pkgs/faillint { };
           get-focused-x-screen = pkgs.callPackage ./pkgs/get-focused-x-screen { };
+          goda = pkgs.callPackage ./pkgs/goda { };
           intel-gpu-exporter = pkgs.callPackage ./pkgs/intel-gpu-exporter { };
           mi-flora-exporter = pkgs.callPackage ./pkgs/mi-flora-exporter { };
           modularise = pkgs.callPackage ./pkgs/modularise { };
@@ -117,6 +118,7 @@
             docker-machine-driver-hetzner = pkgs.docker-machine-driver-hetzner;
             faillint = pkgs.faillint;
             get-focused-x-screen = pkgs.get-focused-x-screen;
+            goda = pkgs.goda;
             intel-gpu-exporter = pkgs.intel-gpu-exporter;
             kubernetes-1-21 = pkgs.kubernetes-1-21;
             kubernetes-1-22 = pkgs.kubernetes-1-22;
