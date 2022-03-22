@@ -109,8 +109,7 @@ in
           {
             modifier = modifier;
 
-            terminal = "${pkgs.alacritty}/bin/alacritty";
-
+            terminal = "${pkgs.xfce.terminal}/bin/xfce4-terminal";
 
             gaps = {
               inner = 10;
