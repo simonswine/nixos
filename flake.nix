@@ -13,6 +13,7 @@
 
       pkgsConfig = {
         packageOverrides = pkgs: {
+          benchstat = pkgs.callPackage ./pkgs/benchstat { };
           cert-updater = pkgs.callPackage ./pkgs/cert-updater { };
           cloud-init = pkgs.callPackage ./pkgs/cloud-init { };
           docker-machine-driver-hetzner = pkgs.callPackage ./pkgs/docker-machine-driver-hetzner { };
@@ -109,6 +110,7 @@
           };
 
           packages = {
+            benchstat = pkgs.benchstat;
             cert-updater = pkgs.cert-updater;
             cloud-init = pkgs.cloud-init;
             containerd = pkgs.containerd;
