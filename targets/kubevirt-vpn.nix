@@ -47,10 +47,6 @@ in
   services.prometheus.exporters =
     {
       wireguard.enable = true;
-      openvpn = {
-        enable = true;
-        statusPaths = [ "/etc/openvpn/swine.status" ];
-      };
     };
 
   # Enable the OpenSSH daemon.
