@@ -4,6 +4,11 @@ let
     "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPQ5dGULRFzfKTZPYk9OG95EL/hvE/F8zqHTUHtXTYIt 2017-ed25519-simon@swine.de"
     "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQCh2jwszS843PG/pCib2YGAyx6GdtBllxFlUtoAPXHFtD0cXcM7Ckza+uHTHrNuSIOmFP7f7wSi3ANTBOvuQAB9JWWkQ7nyqzeErFqx9EEutJ7uDrj5V6Bn4f1Gj2KAOo6qH1TQ7zPUm4GTjsLitsN3fAu4NASSuTbBZdtSWYwNjZ/+mG2UR4pXFW599UoKw2Aok5w3WadCGGdj/jMNG5uQ1IhI6gv6z4seMqKvGhgHBwO+ujcxDMWcgMsp1A2nG9dGpLAic7KV9Z3UkzfaDDZwRuvSRazFGhfBqqZV3NcgMYVQ6lZ+x+yUQHIDgY+3OS7VCN32DLzCw9ryC0xf2848g+5EjWWuxwaMJH0qTZUNzKQgSDSBXJP2R9HNOmqhrZqw9GqfUWbpnuo+8l1ssFQWcnM0UmBDdyJ0dJRwnuTt6PObjTug/c2iUBAlB+Lgw+42GJCWjiAK8e52ahG6Xt7FlhMlqSVQLzfei2jfSpzSQ1j//ZNuidPQrDR5kLvcKh2Xn8FmN/eyTxIgMA1a4cybSex4xIDL9FGnjrjF6nwk+4TwgtPHbVl4LCNj1nKmQAbpMgxXpQo2gEUlvjCzJ6WWcYP4vmLLDC7CcIG4zVPpL2X7BpH5EW6B9/TD/2RfHA7qiCoAah3czN5WmIRZbSsCoPF3DSGuk626Ap0hOO9wwQ== 2017-rsa-simon@swine.de"
   ];
+
+  kubeEnvironment = {
+    "KUBERNETES_SERVICE_HOST" = "172.16.0.1";
+    "KUBERNETES_SERVICE_PORT" = "443";
+  };
 in
 
 {
@@ -36,10 +41,8 @@ in
       kubectl
     ];
 
-  environment.variables = {
-    "KUBERNETES_SERVICE_HOST" = "172.16.0.1";
-    "KUBERNETES_SERVICE_PORT" = "443";
-  };
+  environment.variables = kubeEnvironment;
+  systemd.globalEnvironment = kubeEnvironment;
 
   services.prometheus.exporters =
     {
@@ -102,6 +105,34 @@ in
       device = "/dev/disk/by-id/virtio-service-account";
       options = [ "uid=0" "gid=0" "dmode=0700" "mode=0600" "norock" ];
     };
+
+
+  # use kubernetes API to fetch ssh host keys instead of generating new ones
+  systemd.services.sshd = {
+    serviceConfig.ExecStartPre = lib.mkForce (pkgs.writeScript
+      "fetch-ssh-host-keys.sh"
+      ''
+        #!${pkgs.bash}/bin/bash
+
+        set -euo pipefail
+
+        mkdir -p /etc/ssh
+
+        data_json=$(${pkgs.kubectl}/bin/kubectl get secrets prometheus-vpn-ssh-host-keys -o json)
+        for f in $(echo "''${data_json}" | ${pkgs.jq}/bin/jq -r '.data | keys[]'); do
+          echo "creating $f"
+          fpath="/etc/ssh/$f"
+          touch "$fpath"
+          if [[ "$f" == *_key ]]; then
+            chmod 0600 "$fpath"
+          else
+            chmod 0644 "$fpath"
+          fi
+          echo "''${data_json}" | ${pkgs.jq}/bin/jq -r '.data["'$f'"]' | base64 -d > "$fpath"
+        done
+      '');
+    after = [ "run-secrets-kubernetes.io-serviceaccount.mount" ];
+  };
 
   # setup socks proxy
   services.dante = {
