@@ -67,6 +67,34 @@
           (builtins.readDir ./home-manager/modules)
         );
 
+
+      targets = map (nixpkgs.lib.removeSuffix ".nix") (
+        nixpkgs.lib.attrNames (
+          nixpkgs.lib.filterAttrs
+            (_: entryType: entryType == "regular")
+            (builtins.readDir ./targets)
+        )
+      );
+
+      build-target = target: system: {
+        name = target;
+
+        value = nixpkgs.lib.makeOverridable nixpkgs.lib.nixosSystem {
+          system = system;
+
+          modules = nixpkgs.lib.attrValues (myNixosModules) ++ [
+            nixosModulesPkgs
+            (import (./targets + "/${target}.nix"))
+            (import ./local.nix)
+          ] ++ (
+            let
+              path = ./targets + "/${target}/hardware-configuration.nix";
+            in
+            if builtins.pathExists path then [ (import path) ] else [ ]
+          );
+        };
+      };
+
     in
 
     flake-utils.lib.eachDefaultSystem
@@ -78,32 +106,6 @@
             config = pkgsConfig;
           };
 
-          targets = map (nixpkgs.lib.removeSuffix ".nix") (
-            nixpkgs.lib.attrNames (
-              nixpkgs.lib.filterAttrs
-                (_: entryType: entryType == "regular")
-                (builtins.readDir ./targets)
-            )
-          );
-
-          build-target = target: {
-            name = target;
-
-            value = nixpkgs.lib.makeOverridable nixpkgs.lib.nixosSystem {
-              system = system;
-
-              modules = nixpkgs.lib.attrValues (myNixosModules) ++ [
-                nixosModulesPkgs
-                (import (./targets + "/${target}.nix"))
-                (import ./local.nix)
-              ] ++ (
-                let
-                  path = ./targets + "/${target}/hardware-configuration.nix";
-                in
-                if builtins.pathExists path then [ (import path) ] else [ ]
-              );
-            };
-          };
         in
         rec {
           docker = {
@@ -137,19 +139,20 @@
             yasdi-exporter = pkgs.yasdi-exporter;
           };
 
-          nixosConfigurations = builtins.listToAttrs (
-            nixpkgs.lib.flatten (
-              map
-                (
-                  target: [
-                    (build-target target)
-                  ]
-                )
-                targets
-            )
-          );
         }
       ) // {
+
+      nixosConfigurations = builtins.listToAttrs (
+        nixpkgs.lib.flatten (
+          map
+            (
+              target: [
+                (build-target target "x86_64-linux")
+              ]
+            )
+            targets
+        )
+      );
 
       nixosModules = myNixosModules;
       homeManagerModules = myHomeManagerModules;
