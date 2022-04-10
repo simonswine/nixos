@@ -1,12 +1,12 @@
 self: super: {
   containerd = super.containerd.overrideAttrs (old: rec {
-    version = "1.5.9";
-    commit = "1407cab509ff0d96baa4f0eb6ff9980270e6e620";
+    version = "1.5.11";
+    commit = "3df54a852345ae127d1fa3092b95168e4a88e2f8";
     src = super.fetchFromGitHub rec {
       owner = "containerd";
       repo = "containerd";
       rev = "v${version}";
-      sha256 = "v5seKJMfZUVMbydxKiTSy0OSwen6I/3DrGJnL2DyqHg=";
+      sha256 = "BbWNrPRISGoJAo8TXE5lmjLlEKe0t1wq1/yJnbq5Ejo=";
     };
     buildPhase = ''
       runHook preBuild
