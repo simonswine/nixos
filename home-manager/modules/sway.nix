@@ -41,7 +41,25 @@ in
       '';
     }}/bin/${name})";
 
-      lock = "${pkgs.swaylock-effects}/bin/swaylock --debug --clock --image ${cfg.background} --indicator --indicator-thickness 7 --indicator-radius 150 --effect-vignette 0.4:0.4 --font 'monospace' --datestr '%a, %Y-%m-%d'";
+      lock = pkgs.writeScript "swaylock" ''
+        #!${pkgs.bash}/bin/bash
+
+        set -euo pipefail
+        set +x
+
+        echo "hello-world" >> /tmp/my-log
+
+        exec ${pkgs.swaylock-effects}/bin/swaylock \
+                --debug \
+                --clock \
+                --image ${cfg.background} \
+                --indicator \
+                --indicator-thickness 7 \
+                --indicator-radius 150 \
+                --effect-vignette 0.4:0.4 \
+                --font 'monospace' \
+                --datestr '%a, %Y-%m-%d' "$@"
+      '';
 
       screenshot_destination = "${config.home.homeDirectory}/Images/screenshots/scrn-$(date +\"%Y-%m-%d-%H-%M-%S\").png";
     in
@@ -50,8 +68,6 @@ in
       gtk.theme.name = cfg.gtk_theme_name;
 
       home.packages = with pkgs; [
-        swaylock-effects # lockscreen
-        swayidle
         xwayland # for legacy apps
         xorg.xeyes # for testing if app is wayland or xorg
         waybar # status bar
@@ -140,6 +156,8 @@ in
               [
                 {
                   command = "${pkgs.writeScript "import-environment" ''
+                    #!${pkgs.bash}/bin/bash
+
                     set -euo pipefail
 
                     dbus-update-activation-environment --systemd ${envVars}
@@ -283,19 +301,10 @@ in
         '';
       };
 
-      xdg.configFile."sway/lock.sh" = {
-        executable = true;
-        text = ''
-          #!${pkgs.stdenv.shell}
-
-          exec ${lock}
-        '';
-      };
-
       xdg.configFile."sway/wofi-power.sh" = {
         executable = true;
         text = ''
-          #!${pkgs.stdenv.shell}
+          #!${pkgs.bash}/bin/bash
 
           set -euo pipefail
 
@@ -305,7 +314,7 @@ in
 
           case $selected in
             lock)
-              exec ${config.xdg.configHome}/sway/lock.sh;;
+              exec ${lock};;
             logout)
               ${pkgs.sway}/bin/swaymsg exit;;
             suspend)
@@ -379,28 +388,31 @@ in
       };
       systemd.user.services.swayidle = {
         Unit = {
-          Description = "swayidle ";
+          Description = "Idle manager for Wayland";
+          Documentation = "man:swayidle(1)";
           PartOf = [ "graphical-session.target" ];
         };
 
-        Service =
-          let
-            lock-escaped = (builtins.replaceStrings [ "%" ] [ "%%" ] lock);
-          in
-          {
-            ExecStart = [
-              ''
-                ${pkgs.swayidle}/bin/swayidle -w -d \
-                  timeout 1200 "exec ${lock-escaped} -f" \
-                  timeout 2700 '${pkgs.sway}/bin/swaymsg "output * dpms off"' \
-                  resume '${pkgs.sway}/bin/swaymsg "output * dpms on"' \
-                  before-sleep "exec ${lock-escaped} -f"
-              ''
-            ];
-          };
+        Service = {
+          Type = "simple";
+          Restart = "always";
+          Environment = [
+            "PATH=${lib.makeBinPath [ pkgs.sway ]}:/run/current-system/sw/bin/"
+          ];
+          ExecStart = [
+            ''
+              ${pkgs.unstable.swayidle}/bin/swayidle -w -d \
+                timeout 1200 'swaymsg exec -- "${lock} -f"'
+                timeout 2700 'swaymsg "output * dpms off"' \
+                resume 'swaymsg "output * dpms on"' \
+                before-sleep 'swaymsg exec -- "${lock} -f"'
+            ''
+          ];
+        };
         Install = {
           WantedBy = [ "sway-session.target" ];
         };
       };
     };
 }
+
