@@ -402,7 +402,7 @@ in
           ExecStart = [
             ''
               ${pkgs.unstable.swayidle}/bin/swayidle -w -d \
-                timeout 1200 'swaymsg exec -- "${lock} -f"'
+                timeout 1200 'swaymsg exec -- "${lock} -f"' \
                 timeout 2700 'swaymsg "output * dpms off"' \
                 resume 'swaymsg "output * dpms on"' \
                 before-sleep 'swaymsg exec -- "${lock} -f"'
