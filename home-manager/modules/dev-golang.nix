@@ -7,15 +7,31 @@ in
 {
   options.simonswine.dev.golang = {
     enable = mkEnableOption "simonswine golang development config";
+
+    package = mkOption {
+      type = types.package;
+      default = pkgs.go_1_17;
+      defaultText = literalExpression "pkgs.go_1_17";
+      description = ''
+        Which package to use for Go.
+      '';
+    };
+
+
   };
 
   config =
     mkIf cfg.enable {
+
+      home.sessionVariables = {
+        GOROOT = "${cfg.package}/share/go";
+      };
+
       # install core golang dev packages
       home.packages = with pkgs; [
         delve
         go-junit-report
-        go_1_17
+        cfg.package
         golangci-lint
         gopls
         gotags
