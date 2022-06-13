@@ -6,7 +6,9 @@ let
       "cmd/kubectl"
       "cmd/kubelet"
     ];
+
   };
+
 
   kubernetesVersion = { kver, khash }: upstream.overrideAttrs (
     old: rec {
@@ -18,6 +20,31 @@ let
         rev = "v${version}";
         sha256 = khash;
       };
+
+      nativeBuildInputs = [ super.makeWrapper super.which super.go_1_18 super.rsync super.installShellFiles ];
+
+      installPhase =
+        ''
+          runHook preInstall
+          for p in $WHAT; do
+            install -D _output/local/go/bin/''${p##*/} -t $out/bin
+          done
+          cc build/pause/linux/pause.c -o pause
+          install -D pause -t $pause/bin
+          rm docs/man/man1/kubectl*
+          installManPage docs/man/man1/*.[1-9]
+
+          installShellCompletion --cmd kubectl \
+            --bash <($out/bin/kubectl completion bash) \
+            --fish <($out/bin/kubectl completion fish) \
+            --zsh <($out/bin/kubectl completion zsh)
+
+          installShellCompletion --cmd kubeadm \
+            --bash <($out/bin/kubeadm completion bash) \
+            --zsh <($out/bin/kubeadm completion zsh)
+          runHook postInstall
+        '';
+
     }
   );
 in
@@ -35,5 +62,10 @@ in
   kubernetes-1-23 = kubernetesVersion {
     kver = "1.23.7";
     khash = "YHlcopB47HVLO/4QI8HxjMBzCpcHVnlAz3EOmZI+EG8=";
+  };
+
+  kubernetes-1-24 = kubernetesVersion {
+    kver = "1.24.1";
+    khash = "Sia0bM121IWLTFSacs0cNqiqKtsdfG6jV597bNk4raI=";
   };
 }
