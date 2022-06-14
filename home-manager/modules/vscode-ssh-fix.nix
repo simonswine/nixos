@@ -15,7 +15,7 @@ with lib;
     enable = mkEnableOption "auto-fix service for vscode-server in NixOS";
     nodePackage = mkOption {
       type = package;
-      default = pkgs.nodejs-14_x;
+      default = pkgs.nodejs-16_x;
     };
     findPackage = mkOption {
       type = package;
