@@ -50,22 +50,22 @@ let
 in
 {
   kubernetes-1-21 = kubernetesVersion {
-    kver = "1.21.13";
-    khash = "iqYmLo5tg6p/H4LitA3TYLMYWXT3bM5PNOvEMwUMMyI=";
+    kver = "1.21.14";
+    khash = "6LxkLqQMmCncndd4RXLmN04su2IsBXQDWMB7NYoG4is=";
   };
 
   kubernetes-1-22 = kubernetesVersion {
-    kver = "1.22.10";
-    khash = "2q/38sHr4lQiYkscNZZPPHKJ/nJ/Tfoj05dMZk3w0PI=";
+    kver = "1.22.11";
+    khash = "0LHWwmsOFtKIDpehPprNF25fRmALQHy30nOurnotzB0=";
   };
 
   kubernetes-1-23 = kubernetesVersion {
-    kver = "1.23.7";
-    khash = "YHlcopB47HVLO/4QI8HxjMBzCpcHVnlAz3EOmZI+EG8=";
+    kver = "1.23.8";
+    khash = "mu+jBSypoMNxOugLbS3foH4C4AqSZnlic4Bf1v9dYc8=";
   };
 
   kubernetes-1-24 = kubernetesVersion {
-    kver = "1.24.1";
-    khash = "Sia0bM121IWLTFSacs0cNqiqKtsdfG6jV597bNk4raI=";
+    kver = "1.24.2";
+    khash = "QnomBV2PLWaSTjFD6ZRc6TfdQJyupJWg20yP3mcT1Sc=";
   };
 }
