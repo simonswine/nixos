@@ -21,7 +21,14 @@ let
         sha256 = khash;
       };
 
-      nativeBuildInputs = [ super.makeWrapper super.which super.go_1_18 super.rsync super.installShellFiles ];
+      nativeBuildInputs =
+        let
+          go =
+            if builtins.compareVersions kver "1.24.0" >= 0
+            then super.go_1_18
+            else super.go_1_17;
+        in
+        [ super.makeWrapper super.which go super.rsync super.installShellFiles ];
 
       installPhase =
         ''
