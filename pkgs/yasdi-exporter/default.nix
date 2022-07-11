@@ -10,7 +10,7 @@ buildGoModule {
     rev = "a4d2ea7d5010ce518be9f24f9cbff27107555781";
     sha256 = "T4PPbhFkZ6oAn0vTzhS1czps2/nH+iYv4JY/wqdN30U=";
   };
-  vendorSha256 = "6Bzg8SvnYB/F8GR58NIqkmKgA/07lkLKBhejfyzNFgo=";
+  vendorSha256 = "3vc2o5ywylrUr2fCxNoqKVWcOmFQGSHj/+fWVbvaJ/4=";
 
   nativeBuildInputs = [ makeWrapper ];
 
