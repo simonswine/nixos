@@ -2,15 +2,15 @@
 
 buildGoModule {
   name = "benchstat";
-  version = "2022-03-22";
+  version = "2022-04-11";
 
   src = fetchgit {
     url = "https://go.googlesource.com/perf";
-    rev = "96728ec1d780dddcaaa538b0eb0eefa5c07faf8f";
-    sha256 = "F4csowAFvTgJrDtnfISfdfoaFNhpJRV15zN6FbfTaN0=";
+    rev = "84e58bfe0a7e5416369e236afa007d5d9c58a0fa";
+    sha256 = "1q3tjPrWZtBIXf/W+0XhFvCciQp1DHTeI3PRKaqsLTI=";
   };
 
-  vendorSha256 = "QE/X/D6Mld/1ns1MLR3xdqs7ezsjlTG8M9zAtPIw35Y=";
+  vendorSha256 = "d/4LB2ei3g0f1AiDwCDVBcvL+GUbdUvb5IqcorEb01s=";
 
   subPackages = [ "cmd/benchstat" ];
 }
