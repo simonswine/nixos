@@ -102,8 +102,6 @@ in
           # use this if they aren't displayed properly:
           export _JAVA_AWT_WM_NONREPARENTING=1
 
-          # This helps to alleviate the hidden menu bug on firefox on wayland
-          export WLR_DRM_NO_MODIFIERS=1
 
           # Firefox wayland support
           export MOZ_ENABLE_WAYLAND=1
