@@ -14,6 +14,7 @@ in
       jsonnet
     ];
     simonswine.neovim = {
+      lsp_servers.jsonnet = [ "${pkgs.jsonnet-language-server}/bin/jsonnet-language-server" ];
       plugins = with pkgs.vimPlugins; [ vim-jsonnet ];
       extraConfig = ''
         " JSONNET
