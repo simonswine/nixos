@@ -35,10 +35,26 @@ in
         vim-airline
         LanguageClient-neovim
         tagbar
+        nerdtree
+
+        pkgs.vim-markdown-composer
 
         # git support for vim
         vim-fugitive
         vim-rhubarb
+
+        (pkgs.vimPlugins.nvim-treesitter.withPlugins (plugins: with pkgs.tree-sitter-grammars; [
+          tree-sitter-beancount
+          tree-sitter-dockerfile
+          tree-sitter-gomod
+          tree-sitter-html
+          tree-sitter-json
+          tree-sitter-make
+          tree-sitter-markdown
+          tree-sitter-nix
+          tree-sitter-yaml
+        ]
+        ))
 
       ] ++ cfg.plugins;
 
@@ -104,6 +120,19 @@ in
 
           " Setup correct path to ag
           let g:ackprg = '${pkgs.silver-searcher}/bin/ag --vimgrep'
+
+          lua << EOF
+          require'nvim-treesitter.configs'.setup {
+            highlight = {
+              enable = true,
+              disable = {},
+            },
+            indent = {
+              enable = true,
+              disable = {},
+            },
+          }
+          EOF
 
         '' +
         ''
