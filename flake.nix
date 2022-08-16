@@ -33,6 +33,7 @@
           tickrs = pkgs.callPackage ./pkgs/tickrs { };
           tplink-switch-exporter = pkgs.callPackage ./pkgs/tplink-switch-exporter { };
           tz-cli = pkgs.callPackage ./pkgs/tz-cli { };
+          vim-markdown-composer = pkgs.callPackage ./pkgs/vim-markdown-composer { };
           yasdi = pkgs.callPackage ./pkgs/yasdi { };
           yasdi-exporter = pkgs.callPackage ./pkgs/yasdi-exporter { };
         };
@@ -139,6 +140,7 @@
             tickrs = pkgs.tickrs;
             tplink-switch-exporter = pkgs.callPackage ./pkgs/tplink-switch-exporter { };
             tz-cli = pkgs.tz-cli;
+            vim-markdown-composer = pkgs.vim-markdown-composer;
             yasdi = pkgs.yasdi;
             yasdi-exporter = pkgs.yasdi-exporter;
           };
