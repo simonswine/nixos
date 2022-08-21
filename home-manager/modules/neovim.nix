@@ -39,6 +39,8 @@ in
 
         pkgs.vim-markdown-composer
 
+        ack-vim
+
         # git support for vim
         vim-fugitive
         vim-rhubarb
