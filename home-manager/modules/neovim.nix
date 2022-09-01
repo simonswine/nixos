@@ -34,12 +34,14 @@ in
         vim-colors-solarized
         vim-airline
         LanguageClient-neovim
-        tagbar
         nerdtree
 
         pkgs.vim-markdown-composer
 
         ack-vim
+
+        fzf-vim
+        vista-vim
 
         # git support for vim
         vim-fugitive
@@ -117,8 +119,10 @@ in
           let g:airline_powerline_fonts = 1
           let g:airline_detect_paste=1
 
-          " Tagbar
-          let tagbar_ctags_bin='${pkgs.universal-ctags}/bin/ctags'
+          " Vista
+          let g:vista_ctags_executable = '${pkgs.universal-ctags}/bin/ctags'
+          let g:vista_fzf_preview = ['right:50%']
+          let g:vista_icon_indent = ["╰─▸ ", "├─▸ "]
 
           " Setup correct path to ag
           let g:ackprg = '${pkgs.silver-searcher}/bin/ag --vimgrep'
