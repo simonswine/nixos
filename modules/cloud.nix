@@ -112,10 +112,10 @@ in
 
         output: {all: '| tee -a /var/log/cloud-init-output.log'}
 
-        network: {config: disabled}
-
         system_info:
           distro: nixos
+          network:
+            renderers: [ 'networkd' ]
         users:
           - root
         disable_root: false
