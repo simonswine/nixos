@@ -57,6 +57,7 @@ in
       networking.usePredictableInterfaceNames = false;
 
       services.cloud-init = {
+        enable = true;
         network.enable = true;
         config = ''
           # logging config from ubuntu 20.04
