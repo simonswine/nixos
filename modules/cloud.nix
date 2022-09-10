@@ -36,9 +36,6 @@ in
         "scaleway"
       ];
 
-      # use network on scaleway
-      networking.useNetworkd = true;
-
       # devices on Scaleway can't use the ID
       boot.zfs.devNodes = "/dev";
     })
@@ -46,6 +43,9 @@ in
       # Use the GRUB 2 boot loader.
       boot.loader.grub.enable = true;
       boot.loader.grub.version = 2;
+
+      # use networkd
+      networking.useNetworkd = true;
 
       # The global useDHCP flag is deprecated, therefore explicitly set to false here.
       # Per-interface useDHCP will be mandatory in the future, so this generated config
