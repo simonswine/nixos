@@ -53,6 +53,9 @@ in
       networking.useDHCP = false;
       networking.interfaces.eth0.useDHCP = true;
 
+      # disable dhcpcd
+      networking.dhcpcd.enable = false;
+
       # take hostname from DHCP
       networking.hostName = "";
 
