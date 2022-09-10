@@ -1,17 +1,16 @@
 { config, lib, pkgs, ... }:
 
 with lib;
+
 let
   cfg = config.services.cloud-init;
   path = with pkgs; [
     cloud-init
-    cloud-utils
-    iproute
+    iproute2
     nettools
     openssh
     shadow
-    utillinux
-    dhcp
+    util-linux
   ] ++ optional cfg.btrfs.enable btrfs-progs
   ++ optional cfg.ext4.enable e2fsprogs
   ++ optional cfg.zfs.enable zfs
@@ -64,11 +63,22 @@ in
         '';
       };
 
+      network.enable = mkOption {
+        type = types.bool;
+        default = false;
+        description = ''
+          Allow the cloud-init service to configure network interfaces
+          through systemd-networkd.
+        '';
+      };
+
       config = mkOption {
         type = types.str;
         default = ''
           system_info:
             distro: nixos
+            network:
+              renderers: [ 'networkd' ]
           users:
              - root
 
@@ -110,7 +120,7 @@ in
            - final-message
            - power-state-change
         '';
-        description = ''cloud-init configuration.'';
+        description = "cloud-init configuration.";
       };
 
     };
@@ -121,10 +131,13 @@ in
 
     environment.etc."cloud/cloud.cfg".text = cfg.config;
 
+    systemd.network.enable = cfg.network.enable;
+
     systemd.services.cloud-init-local =
       {
         description = "Initial cloud-init job (pre-networking)";
         wantedBy = [ "multi-user.target" ];
+        before = [ "systemd-networkd.service" ];
         path = path;
         serviceConfig =
           {

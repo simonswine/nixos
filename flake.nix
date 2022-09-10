@@ -16,7 +16,6 @@
         packageOverrides = pkgs: {
           benchstat = pkgs.callPackage ./pkgs/benchstat { };
           cert-updater = pkgs.callPackage ./pkgs/cert-updater { };
-          #cloud-init = pkgs.callPackage ./pkgs/cloud-init { };
           docker-machine-driver-hetzner = pkgs.callPackage ./pkgs/docker-machine-driver-hetzner { };
           faillint = pkgs.callPackage ./pkgs/faillint { };
           get-focused-x-screen = pkgs.callPackage ./pkgs/get-focused-x-screen { };
