@@ -44,6 +44,9 @@ in
       boot.loader.grub.enable = true;
       boot.loader.grub.version = 2;
 
+      boot.initrd.availableKernelModules = [ "virtio_net" "virtio_pci" "virtio_mmio" "virtio_blk" "virtio_scsi" "9p" "9pnet_virtio" ];
+      boot.initrd.kernelModules = [ "virtio_balloon" "virtio_console" "virtio_rng" ];
+
       # The global useDHCP flag is deprecated, therefore explicitly set to false here.
       # Per-interface useDHCP will be mandatory in the future, so this generated config
       # replicates the default behaviour.
