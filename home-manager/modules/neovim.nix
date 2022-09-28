@@ -3,6 +3,16 @@
 with lib;
 let
   cfg = config.simonswine.neovim;
+
+  copilot-git = pkgs.vimUtils.buildVimPlugin {
+    name = "vim-easygrep";
+    src = pkgs.fetchFromGitHub {
+      owner = "github";
+      repo = "copilot.vim";
+      rev = "af9da6457790b651871b687b8f47d130cde083fc";
+      sha256 = "K3Qs9L9kM2AJtwY7FqoBRIthTpqdg0YRD28WfJjodrY=";
+    };
+  };
 in
 {
   options.simonswine.neovim = {
@@ -30,11 +40,13 @@ in
       vimAlias = true;
       vimdiffAlias = true;
 
-      plugins = with pkgs.vimPlugins; [
+      plugins = (with pkgs.vimPlugins; [
         vim-colors-solarized
         vim-airline
         LanguageClient-neovim
         nerdtree
+
+        copilot-git
 
         pkgs.vim-markdown-composer
 
@@ -60,7 +72,7 @@ in
         ]
         ))
 
-      ] ++ cfg.plugins;
+      ]) ++ cfg.plugins;
 
       extraConfig =
         let
