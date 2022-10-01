@@ -17,6 +17,14 @@ in
       '';
     };
 
+    delvePackage = mkOption {
+      type = types.package;
+      default = pkgs.delve;
+      defaultText = literalExpression "pkgs.delve";
+      description = ''
+        Which package to use for delve.
+      '';
+    };
 
   };
 
@@ -29,7 +37,7 @@ in
 
       # install core golang dev packages
       home.packages = with pkgs; [
-        delve
+        cfg.delvePackage
         go-junit-report
         cfg.package
         golangci-lint
