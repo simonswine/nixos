@@ -101,14 +101,23 @@ in
   virtualisation.docker = {
     enable = true;
     storageDriver = "zfs";
-    extraOptions = "$EXTRA_ARGS";
   };
   # Read the docker-machine flags from runtime file
-  systemd.services.docker = {
-    serviceConfig = {
-      EnvironmentFile = "-/run/sysconfig/docker";
+  systemd.services.docker =
+    let
+      cfg = config.virtualisation.docker;
+      settingsFormat = pkgs.formats.json { };
+      daemonSettingsFile = settingsFormat.generate "daemon.json" (builtins.removeAttrs cfg.daemon.settings [ "hosts" ]);
+    in
+    {
+      serviceConfig = {
+        ExecStart = lib.mkForce [
+          ""
+          "${cfg.package}/bin/dockerd --config-file=${daemonSettingsFile} -H fd:// $EXTRA_ARGS"
+        ];
+        EnvironmentFile = "-/run/sysconfig/docker";
+      };
     };
-  };
 
   system.activationScripts.gitlab-runner-nix.text =
     ''
