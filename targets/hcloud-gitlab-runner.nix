@@ -12,7 +12,7 @@ let
     mkdir -p -m 0755 /nix/var/nix/profiles/per-user/root
     mkdir -p -m 0700 "$HOME/.nix-defexpr"
     . ${pkgs.nix}/etc/profile.d/nix.sh
-    ${pkgs.nix}/bin/nix-channel --add https://nixos.org/channels/nixos-21.11 nixpkgs
+    ${pkgs.nix}/bin/nix-channel --add https://nixos.org/channels/nixos-22.05 nixpkgs
     ${pkgs.nix}/bin/nix-channel --update nixpkgs
     ${pkgs.nix}/bin/nix-env -i ${builtins.concatStringsSep " " (with pkgs; [ nixFlakes cacert git openssh ])}
   '';
