@@ -31,7 +31,7 @@ let
 in
 pkgs.dockerTools.buildImage {
   name = "simonswine/gitlab-ci-runner";
-  tag = "0.1.2";
+  tag = "0.2.0";
 
   contents = [
     pkgs.pkgsStatic.busybox
