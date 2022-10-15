@@ -6,6 +6,7 @@ let
   cfg = config.services.cloud-init;
   path = with pkgs; [
     cloud-init
+    cloud-utils
     iproute2
     nettools
     openssh
