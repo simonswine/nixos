@@ -25,6 +25,7 @@
           mi-flora-exporter = pkgs.callPackage ./pkgs/mi-flora-exporter { };
           modularise = pkgs.callPackage ./pkgs/modularise { };
           mtv-dl = pkgs.callPackage ./pkgs/mtv-dl { };
+          nut-exporter = pkgs.callPackage ./pkgs/nut-exporter { };
           prometheus-node-exporter-restic = pkgs.callPackage ./pkgs/prometheus-node-exporter-restic { };
           prometheus-node-exporter-smartmon = pkgs.callPackage ./pkgs/prometheus-node-exporter-smartmon { };
           prometheus-node-exporter-zfs = pkgs.callPackage ./pkgs/prometheus-node-exporter-zfs { };
@@ -98,7 +99,6 @@
       };
 
     in
-
     flake-utils.lib.eachDefaultSystem
       (system:
         let
@@ -132,6 +132,7 @@
             mi-flora-exporter = pkgs.mi-flora-exporter;
             modularise = pkgs.callPackage ./pkgs/modularise { };
             mtv-dl = pkgs.mtv-dl;
+            nut-exporter = pkgs.nut-exporter;
             prometheus-node-exporter-restic = pkgs.prometheus-node-exporter-restic;
             prometheus-node-exporter-smartmon = pkgs.prometheus-node-exporter-smartmon;
             prometheus-node-exporter-zfs = pkgs.prometheus-node-exporter-zfs;
