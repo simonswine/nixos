@@ -47,7 +47,7 @@ in
       ];
       simonswine.neovim = {
         extraConfig = ''
-          let g:go_gopls_options = ['-remote=unix;/run/user/' + expand('$UID') + '/gopls-daemon-socket', '-logfile=auto', '-debug=:0', '-rpc.trace']
+          let g:go_gopls_options = ['-remote=unix;/run/user/' . expand('$UID') . '/gopls-daemon-socket', '-logfile=auto', '-debug=:0', '-rpc.trace']
         '';
         plugins = with pkgs.vimPlugins; [
           vim-go
