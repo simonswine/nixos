@@ -21,15 +21,6 @@ let
         sha256 = khash;
       };
 
-      nativeBuildInputs =
-        let
-          go =
-            if builtins.compareVersions kver "1.24.0" >= 0
-            then super.go_1_18
-            else super.go_1_17;
-        in
-        [ super.makeWrapper super.which go super.rsync super.installShellFiles ];
-
       installPhase =
         ''
           runHook preInstall
@@ -56,23 +47,18 @@ let
   );
 in
 {
-  kubernetes-1-21 = kubernetesVersion {
-    kver = "1.21.14";
-    khash = "6LxkLqQMmCncndd4RXLmN04su2IsBXQDWMB7NYoG4is=";
-  };
-
-  kubernetes-1-22 = kubernetesVersion {
-    kver = "1.22.13";
-    khash = "rXWia+45NY8+9jnf52nTXE1YwvusickHn/Pu+NRvY2o=";
-  };
-
   kubernetes-1-23 = kubernetesVersion {
-    kver = "1.23.10";
-    khash = "ujSy6akbk4SvMIQdBJkNMwaRNEfFKJmVrN3lNtFudkA=";
+    kver = "1.23.14";
+    khash = "IXH7PyKg5cdZSOWXUoy/c5k0mYo6B+WQd/3D2U8t5Mc=";
   };
 
   kubernetes-1-24 = kubernetesVersion {
-    kver = "1.24.4";
-    khash = "8lkNJ3OV4t/47LsaGgu7rOhuedCsDmU5QRoLDPuFbjc=";
+    kver = "1.24.8";
+    khash = "QmhRTtJHU12C0vsFe2RRM3SYqaFe1aqGx0Irf4Gy1zY=";
+  };
+
+  kubernetes-1-25 = kubernetesVersion {
+    kver = "1.25.4";
+    khash = "1k0L8QUj/764X0Y7qxjFMnatTGKeRPBUroHjSMMe5M4=";
   };
 }
