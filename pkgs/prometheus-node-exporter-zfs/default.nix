@@ -28,6 +28,8 @@ buildPythonApplication rec {
     sha256 = "42Z+S/ww/VndbzlQwgWgIEfCRrhE1zcvzf8YRdHMjIU=";
   };
 
+  format = "other";
+
   pythonPath = [ _prometheus_client ];
 
   nativeBuildInputs = [ makeWrapper ];
