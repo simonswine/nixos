@@ -21,7 +21,7 @@ in
         autocmd BufWritePre *.rs :call LanguageClient#textDocument_formatting_sync()
       '';
 
-      lsp_servers.rust = [ "${pkgs.rls}/bin/rls" ];
+      lsp_servers.rust = [ "${pkgs.rust-analyzer}/bin/rust-analyzer" ];
     };
   };
 }
