@@ -102,6 +102,8 @@ in
           # use this if they aren't displayed properly:
           export _JAVA_AWT_WM_NONREPARENTING=1
 
+          # This enables wayland for slack and others chromium based applications
+          export NIXOS_OZONE_WL=1
 
           # Firefox wayland support
           export MOZ_ENABLE_WAYLAND=1
