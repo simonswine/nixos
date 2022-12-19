@@ -7,11 +7,11 @@ buildGoModule rec {
   src = fetchFromGitHub {
     owner = "simonswine";
     repo = "intel-gpu-exporter";
-    rev = "ec6dfe4";
-    sha256 = "0rqq87pf3l73pdgiqn6qgzc926v2vncxi3z3k7b53snj7jw32z1x";
+    rev = "98b453b79fd93d7b5e5fadc6de7b76df407f0c2d";
+    sha256 = "EyTPHKMIY5AD0KBhVZLA8K0q6ZXfazXKsmLEmr8t/bE=";
   };
 
-  vendorSha256 = "0isp0pawhwxabl9cbb5p6wmx2ky4hbkhm0ywk1zc6b4vi9zrcyvn";
+  vendorSha256 = "SR57IEuqD/2y2i39MYnGQ2+O0YHEb7roKZ+vJc/vUoc=";
 
   subPackages = [ "." ];
 
