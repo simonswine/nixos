@@ -6,11 +6,12 @@ let
 
   copilot-git = pkgs.vimUtils.buildVimPlugin {
     name = "vim-easygrep";
+    version = "1.8.0";
     src = pkgs.fetchFromGitHub {
       owner = "github";
       repo = "copilot.vim";
-      rev = "af9da6457790b651871b687b8f47d130cde083fc";
-      sha256 = "K3Qs9L9kM2AJtwY7FqoBRIthTpqdg0YRD28WfJjodrY=";
+      rev = "324ec9eb69e20971b58340d0096c3caac7bc2089";
+      sha256 = "b3c/EQmObPKnT5pBbhAbAySGt2E+1UC0Zqm2vJJiv/4=";
     };
   };
 in
