@@ -14,7 +14,7 @@ in
 
   config = mkMerge [
     (mkIf (cfg.provider == "hcloud") {
-      boot.loader.grub.devices = [ "/dev/disk/by-id/scsi-0QEMU_QEMU_HARDDISK_drive-scsi0-0-0-0" ];
+      boot.loader.grub.devices = [ "/dev/sda" ];
 
       system.activationScripts.bin-bash = stringAfter [ "stdio" ]
         ''
