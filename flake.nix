@@ -20,6 +20,7 @@
           faillint = pkgs.callPackage ./pkgs/faillint { };
           get-focused-x-screen = pkgs.callPackage ./pkgs/get-focused-x-screen { };
           goda = pkgs.callPackage ./pkgs/goda { };
+          heatmiser-exporter = pkgs.callPackage ./pkgs/heatmiser-exporter { };
           intel-gpu-exporter = pkgs.callPackage ./pkgs/intel-gpu-exporter { };
           jsonnet-language-server = pkgs.callPackage ./pkgs/jsonnet-language-server { };
           mi-flora-exporter = pkgs.callPackage ./pkgs/mi-flora-exporter { };
@@ -122,6 +123,7 @@
             faillint = pkgs.faillint;
             get-focused-x-screen = pkgs.get-focused-x-screen;
             goda = pkgs.goda;
+            heatmiser-exporter = pkgs.callPackage ./pkgs/heatmiser-exporter { };
             intel-gpu-exporter = pkgs.intel-gpu-exporter;
             jsonnet-language-server = pkgs.jsonnet-language-server;
             kubernetes-1-23 = pkgs.kubernetes-1-23;
