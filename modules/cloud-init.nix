@@ -12,6 +12,7 @@ let
     openssh
     shadow
     util-linux
+    dhcp
   ] ++ optional cfg.btrfs.enable btrfs-progs
   ++ optional cfg.ext4.enable e2fsprogs
   ++ optional cfg.zfs.enable zfs
