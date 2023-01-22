@@ -102,9 +102,6 @@ in
           # use this if they aren't displayed properly:
           export _JAVA_AWT_WM_NONREPARENTING=1
 
-          # Test something
-          export WLR_RENDERER=vulkan
-
           # This enables wayland for slack and others chromium based applications
           export NIXOS_OZONE_WL=1
 
