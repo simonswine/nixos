@@ -25,10 +25,15 @@ def main():
                         default='./nixos.prom')
     args = parser.parse_args(sys.argv[1:])
 
+    # prefer the nixos-verison from current-system
+    versionPath = '/run/current-system/sw/bin/nixos-version'
+    if not os.path.exists(versionPath):
+        versionPath = '/nix/var/nix/profiles/system/sw/bin/nixos-version'
+
     # load versions from command
     versions = json.loads(
         subprocess.run(
-            ['/run/current-system/sw/bin/nixos-version', '--json'],
+            [versionPath, '--json'],
             stdout=subprocess.PIPE,
         ).stdout.decode('utf-8'),
     )
@@ -36,7 +41,7 @@ def main():
     versions = {rewrite_key(k): v for k, v in versions.items()}
 
     # figure out current generation
-    current_system = os.readlink('/run/current-system')
+    current_system = os.readlink(os.path.dirname(os.path.dirname(os.path.dirname(versionPath))))
     time_system = 0
     profiles_dir = '/nix/var/nix/profiles'
     for f in os.listdir(profiles_dir):
