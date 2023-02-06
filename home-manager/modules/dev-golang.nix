@@ -47,7 +47,13 @@ in
       ];
       simonswine.neovim = {
         extraConfig = ''
+          " Run gopls under a systemd supervised daemon
           let g:go_gopls_options = ['-remote=unix;/run/user/' . expand('$UID') . '/gopls-daemon-socket', '-logfile=auto', '-debug=:0', '-rpc.trace']
+
+          " Configure golangci-lint to use the repositories linters, rathern than anything special
+          let g:go_metalinter_command = 'golangci-lint'
+          let g:go_metalinter_autosave_enabled = []
+          let g:go_metalinter_enabled = []
         '';
         plugins = with pkgs.vimPlugins; [
           vim-go
