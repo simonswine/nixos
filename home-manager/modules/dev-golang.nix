@@ -71,7 +71,7 @@ in
           ExecStartPre = "/run/current-system/sw/bin/rm -f %t/gopls-daemon-socket";
           ExecStart = "${pkgs.gopls}/bin/gopls -listen=\"unix;%t/gopls-daemon-socket\" -logfile=auto -debug=:0";
           Restart = "always";
-          MemoryLimit = "6G";
+          MemoryLimit = "4G";
           IOSchedulingClass = "3";
           OOMScoreAdjust = "500";
           CPUSchedulingPolicy = "idle";
