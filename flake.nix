@@ -27,6 +27,7 @@
           mi-flora-exporter = pkgs.callPackage ./pkgs/mi-flora-exporter { };
           modularise = pkgs.callPackage ./pkgs/modularise { };
           mtv-dl = pkgs.callPackage ./pkgs/mtv-dl { };
+          g810-led = pkgs.callPackage ./pkgs/g810-led { };
           nut-exporter = pkgs.callPackage ./pkgs/nut-exporter { };
           prometheus-node-exporter-restic = pkgs.callPackage ./pkgs/prometheus-node-exporter-restic { };
           prometheus-node-exporter-smartmon = pkgs.callPackage ./pkgs/prometheus-node-exporter-smartmon { };
@@ -124,6 +125,7 @@
             docker-machine-driver-hetzner = pkgs.docker-machine-driver-hetzner;
             faillint = pkgs.faillint;
             get-focused-x-screen = pkgs.get-focused-x-screen;
+            g810-led = pkgs.g810-led;
             goda = pkgs.goda;
             heatmiser-exporter = pkgs.callPackage ./pkgs/heatmiser-exporter { };
             intel-gpu-exporter = pkgs.intel-gpu-exporter;
