@@ -72,6 +72,7 @@ in
           tree-sitter-yaml
         ]
         ))
+        nvim-treesitter-context
 
       ]) ++ cfg.plugins;
 
