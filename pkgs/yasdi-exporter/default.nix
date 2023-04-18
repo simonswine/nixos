@@ -7,10 +7,10 @@ buildGoModule {
   src = fetchFromGitHub {
     owner = "simonswine";
     repo = "yasdi_exporter";
-    rev = "a4d2ea7d5010ce518be9f24f9cbff27107555781";
-    sha256 = "T4PPbhFkZ6oAn0vTzhS1czps2/nH+iYv4JY/wqdN30U=";
+    rev = "dcea9a5377e321b8baef32e47209ebed694a39dc";
+    sha256 = "93eLb54d1+xvqz5+u0SsXkAshHX3EMe/GNCVQebEe0Q=";
   };
-  vendorSha256 = "3vc2o5ywylrUr2fCxNoqKVWcOmFQGSHj/+fWVbvaJ/4=";
+  vendorSha256 = "bfvPvZ8ZJ9G3XAJNJaFrP1AaQNyVw20Awdc0CgEtPs8=";
 
   nativeBuildInputs = [ makeWrapper ];
 
