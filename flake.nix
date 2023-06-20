@@ -21,6 +21,7 @@
           faillint = pkgs.callPackage ./pkgs/faillint { };
           get-focused-x-screen = pkgs.callPackage ./pkgs/get-focused-x-screen { };
           goda = pkgs.callPackage ./pkgs/goda { };
+          growatt-proxy-exporter = pkgs.callPackage ./pkgs/growatt-proxy-exporter { };
           heatmiser-exporter = pkgs.callPackage ./pkgs/heatmiser-exporter { };
           intel-gpu-exporter = pkgs.callPackage ./pkgs/intel-gpu-exporter { };
           jsonnet-language-server = pkgs.callPackage ./pkgs/jsonnet-language-server { };
@@ -127,6 +128,7 @@
             get-focused-x-screen = pkgs.get-focused-x-screen;
             g810-led = pkgs.g810-led;
             goda = pkgs.goda;
+            growatt-proxy-exporter = pkgs.growatt-proxy-exporter;
             heatmiser-exporter = pkgs.callPackage ./pkgs/heatmiser-exporter { };
             intel-gpu-exporter = pkgs.intel-gpu-exporter;
             jsonnet-language-server = pkgs.jsonnet-language-server;
