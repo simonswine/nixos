@@ -24,6 +24,13 @@ in
   };
 
   config = mkIf cfg.enable {
+    home.packages = with pkgs;[
+      fzf
+      kubectl
+      tmux
+      direnv
+    ];
+
     programs.zsh = {
       enable = true;
       oh-my-zsh = {

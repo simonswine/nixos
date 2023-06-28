@@ -17,9 +17,8 @@ buildGoModule rec {
 
   meta = with lib; {
     description = "modularise allows to split out go modules out of a parent project.";
-    homepage = "https://github.com/modularise/modularisehttps://github.com/xperimental/flowercare-exporter";
+    homepage = "https://github.com/modularise/modularise";
     license = licenses.mit;
     maintainers = with maintainers; [ simonswine ];
-    platforms = platforms.linux;
   };
 }

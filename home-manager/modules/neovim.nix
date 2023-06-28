@@ -172,7 +172,7 @@ in
 
         '' + cfg.extraConfig;
     };
-    systemd.user.tmpfiles.rules = [
+    systemd.user.tmpfiles.rules = lib.mkIf pkgs.stdenv.isLinux [
       "d %h/.vim/backup 0700 - - -"
       "d %h/.vim/swap 0700 - - -"
       "d %h/.vim/undo 0700 - - -"
