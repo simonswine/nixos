@@ -6,7 +6,7 @@ stdenv.mkDerivation rec {
   pname = "g810-led";
   version = "0.4.3";
 
-  src = fetchFromGitHub  {
+  src = fetchFromGitHub {
     owner = "MatMoul";
     repo = "g810-led";
     rev = "v${version}";
