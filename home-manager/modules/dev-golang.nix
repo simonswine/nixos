@@ -45,6 +45,7 @@ in
         gotestsum
         modularise
         benchstat
+        gopatch
       ];
       simonswine.neovim = {
         extraConfig =
