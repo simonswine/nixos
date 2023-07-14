@@ -12,6 +12,8 @@ in
   config = mkIf cfg.enable {
     home.packages = with pkgs; [
       jsonnet
+      jsonnet-bundler
+      tanka
     ];
     simonswine.neovim = {
       lsp_servers.jsonnet = [ "${pkgs.jsonnet-language-server}/bin/jsonnet-language-server" ];
