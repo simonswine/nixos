@@ -10,8 +10,8 @@ in
 
     package = mkOption {
       type = types.package;
-      default = pkgs.go_1_18;
-      defaultText = literalExpression "pkgs.go_1_17";
+      default = pkgs.go_1_20;
+      defaultText = literalExpression "pkgs.go_1_20";
       description = ''
         Which package to use for Go.
       '';
