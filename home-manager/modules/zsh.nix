@@ -40,7 +40,6 @@ in
           "git"
           "docker"
           "docker-compose"
-          "tmux"
           "golang"
           "fzf"
           "kubectl"
