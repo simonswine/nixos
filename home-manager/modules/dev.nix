@@ -22,6 +22,11 @@ in
         simonswine.dev.jsonnet.enable = true;
         simonswine.dev.beancount.enable = true;
 
+        home.packages = with pkgs;[
+          git
+          git-crypt
+        ];
+
       }
     )
     (mkIf cfg.grafanaLabs
