@@ -14,9 +14,8 @@ in
       beancount
       fava
     ];
-    simonswine.neovim = {
-      plugins = with pkgs.vimPlugins; [ vim-beancount ];
-      # TODO: lsp_servers.beancount see https://github.com/polarmutex/beancount-language-server
-    };
+    simonswine.neovim.lsp_servers.beancount = [
+      "${pkgs.beancount-language-server}/bin/beancount-language-server"
+    ];
   };
 }
