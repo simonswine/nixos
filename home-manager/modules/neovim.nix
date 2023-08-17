@@ -4,14 +4,14 @@ with lib;
 let
   cfg = config.simonswine.neovim;
 
-  copilot-git = pkgs.vimUtils.buildVimPlugin {
-    name = "vim-easygrep";
-    version = "1.8.0";
+  copilot-git = pkgs.vimUtils.buildVimPlugin rec {
+    name = "copilot.vim";
+    version = "1.10.0";
     src = pkgs.fetchFromGitHub {
       owner = "github";
       repo = "copilot.vim";
-      rev = "324ec9eb69e20971b58340d0096c3caac7bc2089";
-      sha256 = "b3c/EQmObPKnT5pBbhAbAySGt2E+1UC0Zqm2vJJiv/4=";
+      rev = "v${version}";
+      sha256 = "knODjN+zM6XXwGGZxqXTJoJlR8L0iTWcM81CG7WGbR0=";
     };
   };
 in
@@ -137,6 +137,17 @@ in
           let g:vista_ctags_executable = '${pkgs.universal-ctags}/bin/ctags'
           let g:vista_fzf_preview = ['right:50%']
           let g:vista_icon_indent = ["╰─▸ ", "├─▸ "]
+
+          " Copilot
+          let g:copilot_filetypes = {
+             \ '*': v:false,
+             \ 'go': v:true,
+             \ 'jsonnet': v:true,
+             \ 'json': v:true,
+             \ 'yaml': v:true,
+             \ 'python': v:true,
+             \ 'nix': v:true,
+             \ }
 
           " Setup correct path to ag
           let g:ackprg = '${pkgs.silver-searcher}/bin/ag --vimgrep'
