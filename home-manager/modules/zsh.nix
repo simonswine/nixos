@@ -24,6 +24,10 @@ in
   };
 
   config = mkIf cfg.enable {
+    home.sessionVariables = {
+      KUBECTL_EXTERNAL_DIFF = "${pkgs.dyff}/bin/dyff between --omit-header --set-exit-code --color on --truecolor on";
+    };
+
     home.packages = with pkgs;[
       fzf
       kubectl
