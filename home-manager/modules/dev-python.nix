@@ -10,6 +10,6 @@ in
   };
 
   config = mkIf cfg.enable {
-    simonswine.neovim.lsp_servers.pyls = [ "${pkgs.python311Packages.python-lsp-server}/bin/pylsp" ];
+    simonswine.neovim.lsp_servers.python = [ "${pkgs.python311Packages.python-lsp-server}/bin/pylsp" ];
   };
 }
