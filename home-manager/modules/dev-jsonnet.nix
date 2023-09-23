@@ -14,6 +14,7 @@ in
       jsonnet
       jsonnet-bundler
       tanka
+      nodePackages.js-yaml
     ];
     simonswine.neovim = {
       lsp_servers.jsonnet = [ "${pkgs.jsonnet-language-server}/bin/jsonnet-language-server" ];
