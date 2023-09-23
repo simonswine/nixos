@@ -44,14 +44,17 @@ in
       plugins = (with pkgs.vimPlugins; [
         vim-colors-solarized
         vim-airline
-        LanguageClient-neovim
         nerdtree
 
         copilot-git
 
+
         pkgs.vim-markdown-composer
 
         ack-vim
+
+        coq_nvim
+        nvim-lspconfig
 
         fzf-vim
         vista-vim
@@ -153,7 +156,67 @@ in
           let g:ackprg = '${pkgs.silver-searcher}/bin/ag --vimgrep'
 
           lua << EOF
-          require'nvim-treesitter.configs'.setup {
+          local treesitter = require "nvim-treesitter.configs"
+          local lspconfig = require('lspconfig')
+          local coq = require('coq')
+
+          -- Setup language servers.
+          lspconfig.beancount.setup(coq.lsp_ensure_capabilities({
+            cmd = { '${pkgs.beancount-language-server}/bin/beancount-language-server', '--stdio' },
+          }))
+          lspconfig.gopls.setup(coq.lsp_ensure_capabilities({
+            cmd = { '${pkgs.gopls}/bin/gopls' },
+          }))
+          lspconfig.pylsp.setup(coq.lsp_ensure_capabilities({
+            cmd = { '${pkgs.python3Packages.python-lsp-server}/bin/pylsp' },
+          }))
+          lspconfig.rust_analyzer.setup(coq.lsp_ensure_capabilities({
+            cmd = { '${pkgs.rust-analyzer}/bin/rust-analyzer' },
+          }))
+          lspconfig.jsonnet_ls.setup(coq.lsp_ensure_capabilities({
+            cmd = { '${pkgs.jsonnet-language-server}/bin/jsonnet-language-server' },
+          }))
+
+
+          -- Global mappings.
+          -- See `:help vim.diagnostic.*` for documentation on any of the below functions
+          vim.keymap.set('n', '<space>e', vim.diagnostic.open_float)
+          vim.keymap.set('n', '[d', vim.diagnostic.goto_prev)
+          vim.keymap.set('n', ']d', vim.diagnostic.goto_next)
+          vim.keymap.set('n', '<space>q', vim.diagnostic.setloclist)
+
+          -- Use LspAttach autocommand to only map the following keys
+          -- after the language server attaches to the current buffer
+          vim.api.nvim_create_autocmd('LspAttach', {
+            group = vim.api.nvim_create_augroup('UserLspConfig', {}),
+            callback = function(ev)
+              -- Enable completion triggered by <c-x><c-o>
+              vim.bo[ev.buf].omnifunc = 'v:lua.vim.lsp.omnifunc'
+
+              -- Buffer local mappings.
+              -- See `:help vim.lsp.*` for documentation on any of the below functions
+              local opts = { buffer = ev.buf }
+              vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, opts)
+              vim.keymap.set('n', 'gd', vim.lsp.buf.definition, opts)
+              vim.keymap.set('n', 'K', vim.lsp.buf.hover, opts)
+              vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, opts)
+              vim.keymap.set('n', '<C-k>', vim.lsp.buf.signature_help, opts)
+              vim.keymap.set('n', '<space>wa', vim.lsp.buf.add_workspace_folder, opts)
+              vim.keymap.set('n', '<space>wr', vim.lsp.buf.remove_workspace_folder, opts)
+              vim.keymap.set('n', '<space>wl', function()
+                print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
+              end, opts)
+              vim.keymap.set('n', '<space>D', vim.lsp.buf.type_definition, opts)
+              vim.keymap.set('n', '<space>rn', vim.lsp.buf.rename, opts)
+              vim.keymap.set({ 'n', 'v' }, '<space>ca', vim.lsp.buf.code_action, opts)
+              vim.keymap.set('n', 'gr', vim.lsp.buf.references, opts)
+              vim.keymap.set('n', '<space>f', function()
+                vim.lsp.buf.format { async = true }
+              end, opts)
+            end,
+          })
+
+          treesitter.setup {
             highlight = {
               enable = true,
               disable = {},
@@ -163,24 +226,8 @@ in
               disable = {},
             },
           }
+
           EOF
-
-        '' +
-        ''
-          " language client config
-          nnoremap <silent> gh :call LanguageClient#textDocument_hover()<CR>
-          nnoremap <silent> gd :call LanguageClient#textDocument_definition()<CR>
-          nnoremap <silent> gr :call LanguageClient#textDocument_references()<CR>
-          nnoremap <silent> gs :call LanguageClient#textDocument_documentSymbol()<CR>
-          nnoremap <silent> <F2> :call LanguageClient#textDocument_rename()<CR>
-          nnoremap <silent> <F3> :call LanguageClient#textDocument_formatting()<CR>
-
-          let g:LanguageClient_serverCommands = {
-        '' + lsp_servers_config +
-        ''
-
-          \ }
-
         '' + cfg.extraConfig;
     };
     systemd.user.tmpfiles.rules = lib.mkIf pkgs.stdenv.isLinux [
