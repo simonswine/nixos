@@ -145,8 +145,7 @@
             prometheus-node-exporter-smartmon = pkgs.prometheus-node-exporter-smartmon;
             prometheus-node-exporter-zfs = pkgs.prometheus-node-exporter-zfs;
             prometheus-snmp-exporter-config = pkgs.prometheus-snmp-exporter-config;
-            rofi = pkgs.callPackage ./pkgs/rofi { };
-          sleepwatcher = pkgs.callPackage ./pkgs/sleepwatcher { };
+            sleepwatcher = pkgs.callPackage ./pkgs/sleepwatcher { };
             tplink-switch-exporter = pkgs.callPackage ./pkgs/tplink-switch-exporter { };
             tz-cli = pkgs.tz-cli;
             vim-markdown-composer = pkgs.vim-markdown-composer;
