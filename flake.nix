@@ -133,10 +133,10 @@
             heatmiser-exporter = pkgs.callPackage ./pkgs/heatmiser-exporter { };
             intel-gpu-exporter = pkgs.intel-gpu-exporter;
             jsonnet-language-server = pkgs.jsonnet-language-server;
-            kubernetes-1-23 = pkgs.kubernetes-1-23;
             kubernetes-1-24 = pkgs.kubernetes-1-24;
             kubernetes-1-25 = pkgs.kubernetes-1-25;
             kubernetes-1-26 = pkgs.kubernetes-1-26;
+            kubernetes-1-27 = pkgs.kubernetes-1-27;
             mi-flora-exporter = pkgs.mi-flora-exporter;
             modularise = pkgs.callPackage ./pkgs/modularise { };
             mtv-dl = pkgs.mtv-dl;
