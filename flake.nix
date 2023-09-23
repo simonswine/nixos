@@ -34,6 +34,7 @@
           prometheus-node-exporter-smartmon = pkgs.callPackage ./pkgs/prometheus-node-exporter-smartmon { };
           prometheus-node-exporter-zfs = pkgs.callPackage ./pkgs/prometheus-node-exporter-zfs { };
           prometheus-snmp-exporter-config = pkgs.callPackage ./pkgs/prometheus-snmp-exporter-config { };
+          sleepwatcher = pkgs.callPackage ./pkgs/sleepwatcher { };
           tplink-switch-exporter = pkgs.callPackage ./pkgs/tplink-switch-exporter { };
           tz-cli = pkgs.callPackage ./pkgs/tz-cli { };
           vim-markdown-composer = pkgs.callPackage ./pkgs/vim-markdown-composer { };
@@ -125,8 +126,8 @@
             dhclient = pkgs.dhclient;
             docker-machine-driver-hetzner = pkgs.docker-machine-driver-hetzner;
             faillint = pkgs.faillint;
-            get-focused-x-screen = pkgs.get-focused-x-screen;
             g810-led = pkgs.g810-led;
+            get-focused-x-screen = pkgs.get-focused-x-screen;
             goda = pkgs.goda;
             growatt-proxy-exporter = pkgs.growatt-proxy-exporter;
             heatmiser-exporter = pkgs.callPackage ./pkgs/heatmiser-exporter { };
@@ -144,11 +145,14 @@
             prometheus-node-exporter-smartmon = pkgs.prometheus-node-exporter-smartmon;
             prometheus-node-exporter-zfs = pkgs.prometheus-node-exporter-zfs;
             prometheus-snmp-exporter-config = pkgs.prometheus-snmp-exporter-config;
+            rofi = pkgs.callPackage ./pkgs/rofi { };
+          sleepwatcher = pkgs.callPackage ./pkgs/sleepwatcher { };
             tplink-switch-exporter = pkgs.callPackage ./pkgs/tplink-switch-exporter { };
             tz-cli = pkgs.tz-cli;
             vim-markdown-composer = pkgs.vim-markdown-composer;
             yasdi = pkgs.yasdi;
             yasdi-exporter = pkgs.yasdi-exporter;
+
           };
 
         }
