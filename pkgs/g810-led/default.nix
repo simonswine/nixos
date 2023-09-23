@@ -7,7 +7,7 @@ stdenv.mkDerivation rec {
   version = "0.4.3";
 
   src = fetchFromGitHub {
-    owner = "MatMoul";
+    owner = "Digicrat";
     repo = "g810-led";
     rev = "v${version}";
     sha256 = "GKHtQ7DinqfhclDdPO94KtTLQhhonAoWS4VOvs6CMhY=";
@@ -15,15 +15,16 @@ stdenv.mkDerivation rec {
 
   buildInputs = [ hidapi ];
 
-  patchPhase = ''
+  patches = [
+    ./0001-OSX-Makefile-changes.patch
+  ];
+
+  buildPhase = ''
     sed -i "s#/usr/bin/#$out/bin/#g" udev/g810-led.rules
     sed -i "s#/usr/bin/#$out/bin/#g" systemd/g810-led.service
     sed -i "s#/usr/bin/#$out/bin/#g" systemd/g810-led-reboot.service
     sed -i "s#/etc/g810-led/profile#$out/etc/g810-led/samples/group_keys#g" systemd/g810-led.service
     sed -i "s#/etc/g810-led/reboot#$out/etc/g810-led/samples/all_off#g" systemd/g810-led-reboot.service
-  '';
-
-  buildPhase = ''
     make bin
   '';
 
