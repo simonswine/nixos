@@ -1,4 +1,4 @@
-{ stdenv, fetchurl, darwin}:
+{ stdenv, fetchurl, darwin }:
 
 stdenv.mkDerivation rec {
   pname = "sleepwatcher";
@@ -12,8 +12,8 @@ stdenv.mkDerivation rec {
   buildInputs = [ darwin.apple_sdk.frameworks.Carbon ];
 
   buildPhase = ''
-   mkdir -p bin
-   cc -O3 -mmacosx-version-min=10.4 -o bin/sleepwatcher ./sources/sleepwatcher.c -framework IOKit -framework CoreFoundation
+    mkdir -p bin
+    cc -O3 -mmacosx-version-min=10.4 -o bin/sleepwatcher ./sources/sleepwatcher.c -framework IOKit -framework CoreFoundation
   '';
 
   installPhase = ''
