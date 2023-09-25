@@ -1,8 +1,18 @@
-{ pkgs }:
+{ dockerTools
+, pkgsStatic
+, cacert
+, gitlab-runner
+, docker-machine
+, docker-machine-driver-hetzner
+, openssh
+, runtimeShell
+, writeTextDir
+, buildEnv
+}:
 
 let
   uid = 65534;
-  nonRootShadowSetup = { user, group ? user, uid, gid ? uid }: with pkgs; [
+  nonRootShadowSetup = { user, group ? user, uid, gid ? uid }: [
     (
       writeTextDir "etc/shadow" ''
         root:!x:::::::
@@ -29,18 +39,22 @@ let
     )
   ];
 in
-pkgs.dockerTools.buildImage {
+dockerTools.buildImage {
   name = "simonswine/gitlab-ci-runner";
-  tag = "0.2.0";
+  tag = "0.3.0";
 
-  contents = [
-    pkgs.pkgsStatic.busybox
-    pkgs.cacert
-    pkgs.gitlab-runner
-    pkgs.docker-machine
-    pkgs.docker-machine-driver-hetzner
-    pkgs.openssh
-  ] ++ nonRootShadowSetup { uid = uid; user = "nobody"; group = "nogroup"; };
+  copyToRoot = buildEnv {
+    name = "image-root";
+    paths = [
+      pkgsStatic.busybox
+      cacert
+      gitlab-runner
+      docker-machine
+      docker-machine-driver-hetzner
+      openssh
+    ] ++ nonRootShadowSetup { uid = uid; user = "nobody"; group = "nogroup"; };
+    pathsToLink = [ "/bin" "/etc" ];
+  };
 
   runAsRoot = ''
     mkdir -p ./data
