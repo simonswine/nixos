@@ -6,7 +6,7 @@ self: super: {
       owner = "containerd";
       repo = "containerd";
       rev = "v${version}";
-      sha256 = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=";
+      sha256 = "5Tw7xltrsp+yGrdJ0O4MoFUvIaEiCQpMip5X1kfV/iM=";
     };
     buildPhase = ''
       runHook preBuild
