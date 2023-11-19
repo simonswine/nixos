@@ -137,6 +137,7 @@
             kubernetes-1-25 = pkgs.kubernetes-1-25;
             kubernetes-1-26 = pkgs.kubernetes-1-26;
             kubernetes-1-27 = pkgs.kubernetes-1-27;
+            kubernetes-1-28 = pkgs.kubernetes-1-28;
             mi-flora-exporter = pkgs.mi-flora-exporter;
             modularise = pkgs.callPackage ./pkgs/modularise { };
             mtv-dl = pkgs.mtv-dl;
