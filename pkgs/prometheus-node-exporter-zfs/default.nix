@@ -1,58 +1,36 @@
-{ pkgs, makeWrapper, stdenv, fetchFromGitHub, python3Packages, lib }:
+{ lib
+, buildGoModule
+, fetchFromGitHub
+, zfs
+, makeWrapper
+}:
 
-with python3Packages;
-
-let
-  _prometheus_client = buildPythonApplication rec {
-    pname = "prometheus_client";
-    version = "0.11.0";
-
-    src = python3Packages.fetchPypi {
-      inherit pname version;
-      sha256 = "Oouq3my4C8/kMpfjPnYj8xGNZg1BOHWTdY4vseoXOoY=";
-    };
-
-    doCheck = false;
-  };
-
-in
-
-buildPythonApplication rec {
-  pname = "prometheus-node-exporter-zfs";
-  version = "fb831ed78c7c4321b1d897ddc906e274f79e4e30";
+buildGoModule rec {
+  pname = "zfs-event-exporter";
+  version = "15c214a249db90ab43c932606e5cdf1240622e07";
 
   src = fetchFromGitHub {
     owner = "simonswine";
-    repo = "node-exporter-textfile-collector-scripts";
+    repo = "zfs-event-exporter";
     rev = "${version}";
-    sha256 = "42Z+S/ww/VndbzlQwgWgIEfCRrhE1zcvzf8YRdHMjIU=";
+    hash = "sha256-qpyJKlB5/kNghdnlXl+/NIO3RjSDIBXVkDCouXBgI9A=";
   };
 
-  format = "other";
-
-  pythonPath = [ _prometheus_client ];
+  vendorHash = "sha256-foQ9Era09LF3cla2XfV6+kI0PO4qzBc8Es9yU/1Gx2I=";
 
   nativeBuildInputs = [ makeWrapper ];
 
-  buildInputs = pythonPath;
-
-  dontConfigure = true;
-  dontBuild = true;
-  dontPatchELF = true;
-  doCheck = false;
-
-  installPhase = ''
-    mkdir -p $out/bin/
-    cp zfs.py $out/bin/node-exporter-zfs
-    chmod +x $out/bin/node-exporter-zfs
+  fixupPhase = ''
+    mv $out/bin/zfs-event-exporter $out/bin/node-exporter-zfs
     wrapProgram $out/bin/node-exporter-zfs \
-      --set PATH ${lib.makeBinPath [ pkgs.zfs ]}
+      --set PATH ${lib.makeBinPath [ zfs ]}
   '';
 
-  meta = {
-    homepage = https://github.com/simonswine/node-exporter-textfile-collector-scripts/blob/fb831ed78c7c4321b1d897ddc906e274f79e4e30/zfs.py;
-    description = "A textfile exporter script for zfs metrics.";
-    license = lib.licenses.asl20;
-    maintainers = [ lib.maintainers.simonswine ];
+  meta = with lib; {
+    description = "A node exporter exporter script for zfs metrics.";
+    homepage = "https://github.com/xperimental/flowercare-exporter";
+    license = licenses.asl20;
+    maintainers = with maintainers; [ simonswine ];
+    platforms = platforms.linux;
   };
 }
