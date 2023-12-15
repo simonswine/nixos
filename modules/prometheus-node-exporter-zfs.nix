@@ -8,7 +8,10 @@ let
     "debug"
     "--text-file-output"
     "${cfgTextfiles.path}/zfs.prom"
-  ] ++ cfg.extraArgs;
+  ]
+  ++ cfg.extraArgs
+  ++ lib.lists.concatMap (x: [ "--exclude-snapshot-name" x ]) cfg.excludeSnapshotName
+  ;
 in
 with lib;
 
@@ -17,6 +20,11 @@ with lib;
     enable = mkEnableOption "prometheus-node-exporter-zfs";
 
     extraArgs = mkOption {
+      type = types.listOf types.str;
+      default = [ ];
+    };
+
+    excludeSnapshotName = mkOption {
       type = types.listOf types.str;
       default = [ ];
     };

@@ -7,16 +7,16 @@
 
 buildGoModule rec {
   pname = "zfs-event-exporter";
-  version = "15c214a249db90ab43c932606e5cdf1240622e07";
+  version = "2ef7737";
 
   src = fetchFromGitHub {
     owner = "simonswine";
     repo = "zfs-event-exporter";
     rev = "${version}";
-    hash = "sha256-qpyJKlB5/kNghdnlXl+/NIO3RjSDIBXVkDCouXBgI9A=";
+    hash = "sha256-Vwl2+WawcEeEJsT32xDsy4bubA1HVwCdBnXDufVLpEo=";
   };
 
-  vendorHash = "sha256-foQ9Era09LF3cla2XfV6+kI0PO4qzBc8Es9yU/1Gx2I=";
+  vendorHash = "sha256-KX4CaoDXkhkbkEHgA66JY8FX26XNLvnw2eJg5bfBZtM=";
 
   nativeBuildInputs = [ makeWrapper ];
 
