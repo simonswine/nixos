@@ -65,6 +65,7 @@ in
 
         (pkgs.vimPlugins.nvim-treesitter.withPlugins (plugins: with pkgs.tree-sitter-grammars; [
           tree-sitter-beancount
+          tree-sitter-c
           tree-sitter-dockerfile
           tree-sitter-gomod
           tree-sitter-html
@@ -175,6 +176,9 @@ in
           }))
           lspconfig.jsonnet_ls.setup(coq.lsp_ensure_capabilities({
             cmd = { '${pkgs.jsonnet-language-server}/bin/jsonnet-language-server' },
+          }))
+          lspconfig.clangd.setup(coq.lsp_ensure_capabilities({
+            cmd = { '${pkgs.clang-tools}/bin/clangd' },
           }))
 
 
