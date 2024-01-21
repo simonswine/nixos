@@ -89,7 +89,7 @@ in
 
       wayland.windowManager.sway = {
         enable = true;
-        systemdIntegration = false;
+        systemd.enable = false;
         wrapperFeatures = { gtk = true; };
 
         extraSessionCommands = ''
