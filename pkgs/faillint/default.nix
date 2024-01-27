@@ -8,10 +8,10 @@ buildGoModule rec {
     owner = "fatih";
     repo = "faillint";
     rev = "v${version}";
-    sha256 = "0viqq29w8jvqpirldx3n0r1j17kmgwqy4z0grj0j77yq13p60jmr";
+    hash = "sha256-uUpg7gjYnyOBzA984jF/dZ4gQwZ29EZzvHhLxJPAOG4=";
   };
 
-  vendorSha256 = "0yrmpz44w4zccnb0cpmx7ycw7xi6bc9s19yw7h3bdq3s9bmcd95k";
+  vendorHash = "sha256-s6TG6kp64LYGPNynoBNbJvbDmT+9XgaWZewTTsi/NXs=";
 
   subPackages = [ "." ];
 

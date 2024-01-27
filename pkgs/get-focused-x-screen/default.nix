@@ -9,10 +9,10 @@ buildGoModule rec {
     owner = "simonswine";
     repo = "get-focused-x-screen";
     rev = "v${version}";
-    sha256 = "1x3z2yqxrsgcdi18b5ln3w9zqascnng992i7gfkwwvzs1yvdl4b7";
+    hash = "sha256-ZxHatg/6b86neyeKlJ61TCv8Ex+WloVCbOzp3LEXf/Q=";
   };
 
-  vendorSha256 = "0kp0538632yqrbw1rxyrn15m5grq43nr60npynszydla20ai82f6";
+  vendorHash = "sha256-xgkUFRCKNv+19dcCk+0gOL9SS7DZ9xz4ytiLYdAo4E4=";
 
   subPackages = [ "." ];
 

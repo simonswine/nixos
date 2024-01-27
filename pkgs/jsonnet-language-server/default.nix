@@ -10,7 +10,7 @@ buildGoModule rec {
     rev = "v${version}";
     sha256 = "hI8eGfHC7la52nImg6BaBxdl9oD/J9q3F3+xbsHrn30=";
   };
-  vendorSha256 = "UEQogVVlTVnSRSHH2koyYaR9l50Rn3075opieK5Fu7I=";
+  vendorHash = "sha256-UEQogVVlTVnSRSHH2koyYaR9l50Rn3075opieK5Fu7I=";
 
   meta = with lib; {
     description = "A Language Server Protocol server for Jsonnet";

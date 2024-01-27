@@ -8,10 +8,10 @@ buildGoModule rec {
     owner = "simonswine";
     repo = "mi-flora-exporter";
     rev = "${version}";
-    sha256 = "rx/0FLNq7gcrOAYF2Lb6pdzTpPck0LOaMHVxt8maVxA=";
+    hash = "sha256-rx/0FLNq7gcrOAYF2Lb6pdzTpPck0LOaMHVxt8maVxA=";
   };
 
-  vendorSha256 = "0v2jfsr49np9qrwycvi3ac6q6xp8w6lnd4jibkw7d3dycg57radd";
+  vendorHash = "sha256-ral8ymO+jXb4XFGSZqnh6HaDDVMjbuZ5xunaRLJ2Umw=";
 
   subPackages = [ "." ];
 

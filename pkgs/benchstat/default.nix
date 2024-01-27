@@ -10,7 +10,7 @@ buildGoModule {
     sha256 = "1q3tjPrWZtBIXf/W+0XhFvCciQp1DHTeI3PRKaqsLTI=";
   };
 
-  vendorSha256 = "d/4LB2ei3g0f1AiDwCDVBcvL+GUbdUvb5IqcorEb01s=";
+  vendorHash = "sha256-d/4LB2ei3g0f1AiDwCDVBcvL+GUbdUvb5IqcorEb01s=";
 
   subPackages = [ "cmd/benchstat" ];
 }

@@ -11,7 +11,7 @@ buildGoModule rec {
     sha256 = "W6Z6WDn3r19ClVLoSuHQTXx1L1oUF2Jy4XApHGtTvXA=";
   };
 
-  vendorSha256 = "fZcUbCyJ9KXig+I7SX8+sKCXUTMDDpI3guJiBwbN/3Q=";
+  vendorHash = "sha256-fZcUbCyJ9KXig+I7SX8+sKCXUTMDDpI3guJiBwbN/3Q=";
 
   subPackages = [ "." ];
 
