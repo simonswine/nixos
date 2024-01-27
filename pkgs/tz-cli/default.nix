@@ -2,16 +2,16 @@
 
 buildGoModule rec {
   pname = "tz-cli";
-  version = "0.4";
+  version = "0.7.0";
 
   src = fetchFromGitHub {
     owner = "oz";
     repo = "tz";
     rev = "v${version}";
-    sha256 = "1wmrvl5n1x1id30p0nsn05mjxiyvmdva18j3g5fh137ixrmd7afz";
+    hash = "sha256-Mnb0GdJ9dgaUanWBP5JOo6++6MfrUgncBRp4NIbhxf0=";
   };
 
-  vendorSha256 = "0z36y9pf1j7wdwnrbs0h965sdf7l6g8c82in5vwascg8ivnbr1ja";
+  vendorHash = "sha256-lcCra4LyebkmelvBs0Dd2mn6R64Q5MaUWc5AP8V9pec=";
 
   subPackages = [ "." ];
 
