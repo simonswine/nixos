@@ -30,6 +30,7 @@
           mtv-dl = pkgs.callPackage ./pkgs/mtv-dl { };
           g810-led = pkgs.callPackage ./pkgs/g810-led { };
           nut-exporter = pkgs.callPackage ./pkgs/nut-exporter { };
+          phpspy = pkgs.callPackage ./pkgs/phpspy { };
           prometheus-node-exporter-restic = pkgs.callPackage ./pkgs/prometheus-node-exporter-restic { };
           prometheus-node-exporter-smartmon = pkgs.callPackage ./pkgs/prometheus-node-exporter-smartmon { };
           prometheus-node-exporter-zfs = pkgs.callPackage ./pkgs/prometheus-node-exporter-zfs { };
@@ -142,6 +143,7 @@
             modularise = pkgs.callPackage ./pkgs/modularise { };
             mtv-dl = pkgs.mtv-dl;
             nut-exporter = pkgs.nut-exporter;
+            phpspy = pkgs.phpspy;
             prometheus-node-exporter-restic = pkgs.prometheus-node-exporter-restic;
             prometheus-node-exporter-smartmon = pkgs.prometheus-node-exporter-smartmon;
             prometheus-node-exporter-zfs = pkgs.prometheus-node-exporter-zfs;
