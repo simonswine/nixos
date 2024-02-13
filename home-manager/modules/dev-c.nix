@@ -12,6 +12,8 @@ in
   config = mkIf cfg.enable {
     home.packages = with pkgs; [
       gcc
+      gdb
+      elfutils
     ];
     simonswine.neovim =
       let
