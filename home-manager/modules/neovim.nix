@@ -180,6 +180,9 @@ in
           lspconfig.clangd.setup(coq.lsp_ensure_capabilities({
             cmd = { '${pkgs.clang-tools}/bin/clangd' },
           }))
+          lspconfig.tsserrver.setup(coq.lsp_ensure_capabilities({
+            cmd = { '${pkgs.nodePackages.typescript-language-server}/bin/typescript-language-server', '--stdio' },
+          }))
 
 
           -- Global mappings.
