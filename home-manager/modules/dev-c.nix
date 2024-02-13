@@ -12,9 +12,8 @@ in
   config = mkIf cfg.enable {
     home.packages = with pkgs; [
       gcc
-      gdb
-      elfutils
-    ];
+    ] ++ (if pkgs.stdenv.isLinux then [ gdb elfutils ] else [ ]);
+
     simonswine.neovim =
       let
         lsp = [ "${pkgs.ccls}/bin/ccls" ];
