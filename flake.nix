@@ -35,6 +35,8 @@
           prometheus-node-exporter-smartmon = pkgs.callPackage ./pkgs/prometheus-node-exporter-smartmon { };
           prometheus-node-exporter-zfs = pkgs.callPackage ./pkgs/prometheus-node-exporter-zfs { };
           prometheus-snmp-exporter-config = pkgs.callPackage ./pkgs/prometheus-snmp-exporter-config { };
+          pyroscope = pkgs.callPackage ./pkgs/pyroscope { };
+          profilecli = pkgs.callPackage ./pkgs/profilecli { };
           sleepwatcher = pkgs.callPackage ./pkgs/sleepwatcher { };
           tplink-switch-exporter = pkgs.callPackage ./pkgs/tplink-switch-exporter { };
           tz-cli = pkgs.callPackage ./pkgs/tz-cli { };
@@ -148,6 +150,8 @@
             prometheus-node-exporter-smartmon = pkgs.prometheus-node-exporter-smartmon;
             prometheus-node-exporter-zfs = pkgs.prometheus-node-exporter-zfs;
             prometheus-snmp-exporter-config = pkgs.prometheus-snmp-exporter-config;
+            pyroscope = pkgs.pyroscope;
+            profilecli = pkgs.profilecli;
             sleepwatcher = pkgs.callPackage ./pkgs/sleepwatcher { };
             tplink-switch-exporter = pkgs.callPackage ./pkgs/tplink-switch-exporter { };
             tz-cli = pkgs.tz-cli;
