@@ -30,10 +30,6 @@ in
 
   config = mkIf cfg.enable (mkMerge [
     {
-      home.sessionVariables = {
-        GOROOT = "${cfg.package}/share/go";
-      };
-
       # install core golang dev packages
       home.packages = with pkgs; [
         cfg.delvePackage
