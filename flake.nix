@@ -25,6 +25,7 @@
           heatmiser-exporter = pkgs.callPackage ./pkgs/heatmiser-exporter { };
           intel-gpu-exporter = pkgs.callPackage ./pkgs/intel-gpu-exporter { };
           jsonnet-language-server = pkgs.callPackage ./pkgs/jsonnet-language-server { };
+          miio = pkgs.callPackage ./pkgs/python-miio { };
           mi-flora-exporter = pkgs.callPackage ./pkgs/mi-flora-exporter { };
           modularise = pkgs.callPackage ./pkgs/modularise { };
           mtv-dl = pkgs.callPackage ./pkgs/mtv-dl { };
@@ -141,6 +142,7 @@
             kubernetes-1-26 = pkgs.kubernetes-1-26;
             kubernetes-1-27 = pkgs.kubernetes-1-27;
             kubernetes-1-28 = pkgs.kubernetes-1-28;
+            miio = pkgs.miio;
             mi-flora-exporter = pkgs.mi-flora-exporter;
             modularise = pkgs.callPackage ./pkgs/modularise { };
             mtv-dl = pkgs.mtv-dl;
