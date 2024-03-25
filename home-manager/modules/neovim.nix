@@ -6,12 +6,12 @@ let
 
   copilot-git = pkgs.vimUtils.buildVimPlugin rec {
     name = "copilot.vim";
-    version = "1.10.0";
+    version = "1.26.0";
     src = pkgs.fetchFromGitHub {
       owner = "github";
       repo = "copilot.vim";
       rev = "v${version}";
-      sha256 = "knODjN+zM6XXwGGZxqXTJoJlR8L0iTWcM81CG7WGbR0=";
+      hash = "sha256-tcLrto1Y66MtPnfIcU2PBOxqE0xilVl4JyKU6ddS7bA=";
     };
   };
 in
