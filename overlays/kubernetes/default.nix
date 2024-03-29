@@ -47,28 +47,23 @@ let
   );
 in
 {
-  kubernetes-1-24 = kubernetesVersion {
-    kver = "1.24.17";
-    khash = "js0NhYL5WCvlufEyYUvk9xVlbU7minpinn7w/QY+CnA=";
-  };
-
-  kubernetes-1-25 = kubernetesVersion {
-    kver = "1.25.16";
-    khash = "Je+PeMF7Ivg5gD/y8l0piXfO60/TClz28lyvyyCnXkA=";
-  };
-
   kubernetes-1-26 = kubernetesVersion {
-    kver = "1.26.11";
-    khash = "0xOiVivkZF85kUI9LdAsoWdth966cMGjOxspeVVpQAc=";
+    kver = "1.26.15";
+    khash = "zegGiZM3nCxbYzwtTTgbzphAerdigSyxESpmmK3HSgI=";
   };
 
   kubernetes-1-27 = kubernetesVersion {
-    kver = "1.27.8";
-    khash = "90tmK7OcEeCdKHYN3aWrGrnv+yiVTx62cPllo+IA4PQ=";
+    kver = "1.27.12";
+    khash = "VHBGWG95Q2El7petoQavJd4b2SSKRz6t5MztXy1dBzs=";
   };
 
   kubernetes-1-28 = kubernetesVersion {
-    kver = "1.28.4";
-    khash = "aaGcAIyy0hFJGFfOq5FaF0qAlygXcs2WcwgvMe5dkbo=";
+    kver = "1.28.8";
+    khash = "lQUXmnEw5dZdMC8kFb4eBtbF+sll3NOIT0NRCCEqp2M=";
+  };
+
+  kubernetes-1-29 = kubernetesVersion {
+    kver = "1.29.3";
+    khash = "mtYxFy2d892uMLrtaR6ao07gjbThuGa7bzauwvJ0WOo=";
   };
 }
