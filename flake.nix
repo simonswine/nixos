@@ -128,12 +128,13 @@
 
           packages = {
 
-            kexec = nixos-generators.nixosGenerate {
+            hcloud-kexec = nixos-generators.nixosGenerate {
+              system = system;
               modules = [
-                # you can include your own nixos configuration here, i.e.
-                # ./configuration.nix
+                ./targets/hcloud-kexec.nix
+                ./targets/hcloud-kexec/hardware-configuration.nix
               ];
-              format = "kexec_bundle";
+              format = "kexec-bundle";
             };
 
 
