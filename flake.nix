@@ -2,9 +2,13 @@
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-23.11";
     flake-utils.url = "github:numtide/flake-utils";
+    nixos-generators = {
+      url = "github:nix-community/nixos-generators";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
-  outputs = { self, nixpkgs, flake-utils }:
+  outputs = { self, nixpkgs, flake-utils, nixos-generators }:
     let
       pkgsOverlays = [
         (import ./overlays/kubernetes/default.nix)
@@ -123,6 +127,16 @@
           };
 
           packages = {
+
+            kexec = nixos-generators.nixosGenerate {
+              modules = [
+                # you can include your own nixos configuration here, i.e.
+                # ./configuration.nix
+              ];
+              format = "kexec_bundle";
+            };
+
+
             benchstat = pkgs.benchstat;
             cert-updater = pkgs.cert-updater;
             cloud-init = pkgs.cloud-init;
