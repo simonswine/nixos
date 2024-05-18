@@ -14,13 +14,8 @@ in
       gcc
     ] ++ (if pkgs.stdenv.isLinux then [ gdb elfutils ] else [ ]);
 
-    simonswine.neovim =
-      let
-        lsp = [ "${pkgs.ccls}/bin/ccls" ];
-      in
-      {
-        lsp_servers.c = lsp;
-        lsp_servers.cpp = lsp;
-      };
+    simonswine.neovim.lspconfig.clangd.cmd = [
+      "${pkgs.clang-tools}/bin/clangd"
+    ];
   };
 }

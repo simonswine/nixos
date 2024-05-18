@@ -15,7 +15,9 @@ in
     ];
     simonswine.neovim = {
       plugins = with pkgs.vimPlugins; [ vim-nix ];
-      lsp_servers.nix = [ "${pkgs.rnix-lsp}/bin/rnix-lsp" ];
+      lspconfig.nixd.cmd = [
+        "${pkgs.nixd}/bin/nixd"
+      ];
     };
   };
 }

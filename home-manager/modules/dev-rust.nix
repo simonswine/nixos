@@ -20,8 +20,7 @@ in
         " Rust
         autocmd BufWritePre *.rs :call LanguageClient#textDocument_formatting_sync()
       '';
-
-      lsp_servers.rust = [ "${pkgs.rust-analyzer}/bin/rust-analyzer" ];
+      lspconfig.rust_analyzer.cmd = [ "${pkgs.rust-analyzer}/bin/rust-analyzer" ];
     };
   };
 }

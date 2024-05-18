@@ -14,13 +14,10 @@ in
       nodejs
       nodePackages.yarn
     ];
-    simonswine.neovim.lsp_servers =
-      let
-        lsp = [ "${pkgs.nodePackages.typescript-language-server}/bin/typescript-typescript-langserver" "--stdio" ];
-      in
-      {
-        typescript = lsp;
-        "typescript.tsx" = lsp;
-      };
+    simonswine.neovim.lspconfig.tsserver.cmd = [
+      "${pkgs.nodePackages.typescript-language-server}/bin/typescript-typescript-langserver"
+      "--stdio"
+
+    ];
   };
 }

@@ -55,6 +55,9 @@ in
         plugins = with pkgs.vimPlugins; [
           vim-go
         ];
+        lspconfig.gopls.cmd = [
+          "${pkgs.gopls}/bin/gopls"
+        ];
       };
     }
     (mkIf pkgs.stdenv.isLinux {

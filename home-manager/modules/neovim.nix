@@ -19,9 +19,9 @@ in
   options.simonswine.neovim = {
     enable = mkEnableOption "simonswine nvim config";
 
-    lsp_servers = mkOption {
+    lspconfig = mkOption {
       default = { };
-      type = types.attrsOf (types.listOf types.str);
+      type = types.attrsOf types.anything;
     };
 
     plugins = mkOption {
@@ -80,14 +80,16 @@ in
 
       ]) ++ cfg.plugins;
 
+
+
       extraConfig =
         let
-          lsp_servers_config = builtins.concatStringsSep "\n" (
+          lspconfigLua = builtins.concatStringsSep "\n" (
             attrValues (mapAttrs
-              (name: cmd:
-                ''\ '${name}': ['${(builtins.concatStringsSep "', '" cmd)}'],''
+              (name: config:
+                "lspconfig.${name}.setup(coq.lsp_ensure_capabilities(${generators.toLua {} config}))"
               )
-              cfg.lsp_servers));
+              cfg.lspconfig));
         in
         ''
           " No temporary files in working directories
@@ -162,28 +164,7 @@ in
           local coq = require('coq')
 
           -- Setup language servers.
-          lspconfig.beancount.setup(coq.lsp_ensure_capabilities({
-            cmd = { '${pkgs.beancount-language-server}/bin/beancount-language-server', '--stdio' },
-          }))
-          lspconfig.gopls.setup(coq.lsp_ensure_capabilities({
-            cmd = { '${pkgs.gopls}/bin/gopls' },
-          }))
-          lspconfig.pylsp.setup(coq.lsp_ensure_capabilities({
-            cmd = { '${pkgs.python3Packages.python-lsp-server}/bin/pylsp' },
-          }))
-          lspconfig.rust_analyzer.setup(coq.lsp_ensure_capabilities({
-            cmd = { '${pkgs.rust-analyzer}/bin/rust-analyzer' },
-          }))
-          lspconfig.jsonnet_ls.setup(coq.lsp_ensure_capabilities({
-            cmd = { '${pkgs.jsonnet-language-server}/bin/jsonnet-language-server' },
-          }))
-          lspconfig.clangd.setup(coq.lsp_ensure_capabilities({
-            cmd = { '${pkgs.clang-tools}/bin/clangd' },
-          }))
-          lspconfig.tsserver.setup(coq.lsp_ensure_capabilities({
-            cmd = { '${pkgs.nodePackages.typescript-language-server}/bin/typescript-language-server', '--stdio' },
-          }))
-
+          ${lspconfigLua}
 
           -- Global mappings.
           -- See `:help vim.diagnostic.*` for documentation on any of the below functions

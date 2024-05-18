@@ -10,6 +10,9 @@ in
   };
 
   config = mkIf cfg.enable {
-    simonswine.neovim.lsp_servers.ruby = [ "${pkgs.solargraph}/bin/solargraph" "stdio" ];
+    simonswine.neovim.lspconfig.solargraph.cmd = [
+      "${pkgs.solargraph}/bin/solargraph"
+      "stdio"
+    ];
   };
 }

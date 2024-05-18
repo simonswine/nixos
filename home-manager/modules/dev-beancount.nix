@@ -14,8 +14,9 @@ in
       beancount
       fava
     ];
-    simonswine.neovim.lsp_servers.beancount = [
+    simonswine.neovim.lspconfig.beancount.cmd = [
       "${pkgs.beancount-language-server}/bin/beancount-language-server"
+      "--stdio"
     ];
   };
 }

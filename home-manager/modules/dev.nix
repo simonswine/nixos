@@ -35,6 +35,8 @@ in
         simonswine.dev.jsonnet.enable = true;
         simonswine.dev.typescript.enable = true;
         simonswine.dev.rego.enable = true;
+        simonswine.dev.dotnet.enable = true;
+        simonswine.dev.java.enable = true;
 
         home.packages = with pkgs; [
           drone-cli
