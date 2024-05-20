@@ -15,7 +15,7 @@ in
       nodePackages.yarn
     ];
     simonswine.neovim.lspconfig.tsserver.cmd = [
-      "${pkgs.nodePackages.typescript-language-server}/bin/typescript-typescript-langserver"
+      "${pkgs.nodePackages.typescript-language-server}/bin/typescript-language-server"
       "--stdio"
 
     ];
