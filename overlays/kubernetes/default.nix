@@ -53,17 +53,17 @@ in
   };
 
   kubernetes-1-27 = kubernetesVersion {
-    kver = "1.27.12";
-    khash = "VHBGWG95Q2El7petoQavJd4b2SSKRz6t5MztXy1dBzs=";
+    kver = "1.27.15";
+    khash = "d74YbTvnJerOGyh80mXTONs+B38kC4SVs8xsED8JEu0=";
   };
 
   kubernetes-1-28 = kubernetesVersion {
-    kver = "1.28.8";
-    khash = "lQUXmnEw5dZdMC8kFb4eBtbF+sll3NOIT0NRCCEqp2M=";
+    kver = "1.28.11";
+    khash = "A8aFK1+2SbSP90Vb5NZ2y5vLi8pEPKUH199IG003NAI=";
   };
 
   kubernetes-1-29 = kubernetesVersion {
-    kver = "1.29.3";
-    khash = "mtYxFy2d892uMLrtaR6ao07gjbThuGa7bzauwvJ0WOo=";
+    kver = "1.29.6";
+    khash = "wedk7Vm15s91zRWBgYlvfmsx8IoR2jt4Oc3AED6e4Rk=";
   };
 }
