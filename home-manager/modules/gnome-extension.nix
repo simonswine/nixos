@@ -2,7 +2,7 @@
 
 with lib;
 let
-  cfg = config.simonswine.neovim;
+  cfg = config.simonswine.gnome-extensions;
 
   packages = with pkgs.gnomeExtensions; [
     appindicator
