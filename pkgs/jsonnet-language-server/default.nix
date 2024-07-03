@@ -2,20 +2,20 @@
 
 buildGoModule rec {
   pname = "jsonnet-language-server";
-  version = "0.7.2";
+  version = "0.13.1";
 
   src = fetchFromGitHub {
     owner = "grafana";
     repo = "jsonnet-language-server";
     rev = "v${version}";
-    sha256 = "hI8eGfHC7la52nImg6BaBxdl9oD/J9q3F3+xbsHrn30=";
+    hash = "sha256-4tJrEipVbiYQY0L9sDH0f/qT8WY7c3md/Bar/dST+VI=";
   };
-  vendorHash = "sha256-UEQogVVlTVnSRSHH2koyYaR9l50Rn3075opieK5Fu7I=";
+  vendorHash = "sha256-/mfwBHaouYN8JIxPz720/7MlMVh+5EEB+ocnYe4B020=";
 
   meta = with lib; {
     description = "A Language Server Protocol server for Jsonnet";
     homepage = "https://github.com/grafana/jsonnet-language-server";
-    license = licenses.agpl3;
+    license = licenses.agpl3Only;
     maintainers = with maintainers; [ jdbaldry simonswine ];
   };
 }
