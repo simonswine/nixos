@@ -13,7 +13,6 @@
       pkgsOverlays = [
         (import ./overlays/kubernetes/default.nix)
         (import ./overlays/containerd/default.nix)
-        (import ./overlays/cloud-init/default.nix)
       ];
 
       pkgsConfig = {

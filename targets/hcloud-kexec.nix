@@ -10,9 +10,5 @@
     datasource_list: [ Hetzner, None ]
   '';
 
-  nixpkgs.overlays = [
-    (import ../overlays/cloud-init/default.nix)
-  ];
-
   system.stateVersion = "23.11";
 }
