@@ -1,0 +1,24 @@
+From 313f3f07095bdaf90f08c8a792d70f735ded9a78 Mon Sep 17 00:00:00 2001
+From: Christian Simon <simon@swine.de>
+Date: Sat, 27 Mar 2021 18:39:09 +0000
+Subject: [PATCH] Ensure zfs device names are gather with full disk path
+
+---
+ cloudinit/config/cc_resizefs.py | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/cloudinit/config/cc_resizefs.py b/cloudinit/config/cc_resizefs.py
+index 394579467..915df56c6 100644
+--- a/cloudinit/config/cc_resizefs.py
++++ b/cloudinit/config/cc_resizefs.py
+@@ -155,7 +155,7 @@ def get_device_info_from_zpool(zpool) -> Optional[str]:
+         LOG.debug("Cannot get zpool info, no /dev/zfs")
+         return None
+     try:
+-        zpoolstatus, err = subp.subp(["zpool", "status", zpool])
++        zpoolstatus, err = subp.subp(['zpool', 'status', '-P', zpool])
+         if err:
+             LOG.info(
+                 "zpool status returned error: [%s] for zpool [%s]",
+--
+2.44.1
