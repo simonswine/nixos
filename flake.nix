@@ -18,6 +18,7 @@
 
       pkgsConfig = {
         packageOverrides = pkgs: {
+          austin = pkgs.callPackage ./pkgs/austin { };
           benchstat = pkgs.callPackage ./pkgs/benchstat { };
           cert-updater = pkgs.callPackage ./pkgs/cert-updater { };
           dhclient = pkgs.callPackage ./pkgs/dhclient { };
@@ -138,6 +139,7 @@
             };
 
 
+            austin = pkgs.callPackage ./pkgs/austin { };
             benchstat = pkgs.benchstat;
             cert-updater = pkgs.cert-updater;
             cloud-init = pkgs.cloud-init;
