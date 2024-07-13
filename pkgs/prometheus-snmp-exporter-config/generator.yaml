@@ -1,3 +1,8 @@
+auths:
+  public_v2:
+    community: public
+    version: 2
+
 modules:
   # Default IF-MIB interfaces table with ifIndex.
   if_mib:
