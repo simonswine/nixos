@@ -69,6 +69,10 @@ let
       default = null;
     };
 
+    recv = mkOption {
+      default = null;
+    };
+
     snapshotting = mkOption {
       default = null;
     };
