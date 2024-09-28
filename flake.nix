@@ -22,6 +22,7 @@
           benchstat = pkgs.callPackage ./pkgs/benchstat { };
           cert-updater = pkgs.callPackage ./pkgs/cert-updater { };
           dhclient = pkgs.callPackage ./pkgs/dhclient { };
+          docker-machine = pkgs.callPackage ./pkgs/docker-machine { };
           docker-machine-driver-hetzner = pkgs.callPackage ./pkgs/docker-machine-driver-hetzner { };
           faillint = pkgs.callPackage ./pkgs/faillint { };
           get-focused-x-screen = pkgs.callPackage ./pkgs/get-focused-x-screen { };
@@ -122,9 +123,10 @@
           };
 
         in
-        rec {
+        {
+
           docker = {
-            gitlab-runnerx = pkgs.callPackage ./docker/gitlab-runner { };
+            gitlab-runner = pkgs.callPackage ./docker/gitlab-runner { };
           };
 
           packages = {
@@ -145,6 +147,7 @@
             cloud-init = pkgs.cloud-init;
             containerd = pkgs.containerd;
             dhclient = pkgs.dhclient;
+            docker-machine = pkgs.docker-machine;
             docker-machine-driver-hetzner = pkgs.docker-machine-driver-hetzner;
             faillint = pkgs.faillint;
             g810-led = pkgs.g810-led;

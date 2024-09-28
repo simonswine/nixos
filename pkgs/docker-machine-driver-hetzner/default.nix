@@ -2,16 +2,16 @@
 
 buildGoModule rec {
   pname = "docker-machine-driver-hetzner";
-  version = "3.5.0";
+  version = "5.0.2";
 
   src = fetchFromGitHub rec {
     owner = "JonasProgrammer";
     repo = "docker-machine-driver-hetzner";
     rev = version;
-    sha256 = "Fnfh8q619jzT+mzyh8RGjzaS0qRpXqz7bWm3wwVcFzw=";
+    hash = "sha256-5mSlKedXSHNKnjfx+qVXplReSMZ5SKQBXt9Ct+ivgjk=";
   };
 
-  vendorHash = "sha256-0rKGTO66JVGN/77oZODvtVR8hZBd2JEtt/tjy9/oe8M=";
+  vendorHash = "sha256-NIKjuC1Z18Sf6oCSXJ6L3a4sZ0ft/2SXwVf7elWB1kg=";
 
   subPackages = [ "." ];
 
