@@ -27,6 +27,7 @@
           faillint = pkgs.callPackage ./pkgs/faillint { };
           get-focused-x-screen = pkgs.callPackage ./pkgs/get-focused-x-screen { };
           goda = pkgs.callPackage ./pkgs/goda { };
+          grafana-alloy = pkgs.callPackage ./pkgs/grafana-alloy { };
           growatt-proxy-exporter = pkgs.callPackage ./pkgs/growatt-proxy-exporter { };
           heatmiser-exporter = pkgs.callPackage ./pkgs/heatmiser-exporter { };
           intel-gpu-exporter = pkgs.callPackage ./pkgs/intel-gpu-exporter { };
@@ -153,6 +154,7 @@
             g810-led = pkgs.g810-led;
             get-focused-x-screen = pkgs.get-focused-x-screen;
             goda = pkgs.goda;
+            grafana-alloy = pkgs.grafana-alloy;
             growatt-proxy-exporter = pkgs.growatt-proxy-exporter;
             heatmiser-exporter = pkgs.callPackage ./pkgs/heatmiser-exporter { };
             intel-gpu-exporter = pkgs.intel-gpu-exporter;
