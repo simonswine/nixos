@@ -85,14 +85,12 @@
           (builtins.readDir ./home-manager/modules)
         );
 
-
-      targets = map (nixpkgs.lib.removeSuffix ".nix") (
+      targets =
         nixpkgs.lib.attrNames (
           nixpkgs.lib.filterAttrs
-            (_: entryType: entryType == "regular")
+            (_: entryType: entryType == "directory")
             (builtins.readDir ./targets)
-        )
-      );
+        );
 
       build-target = target: system: {
         name = target;
@@ -102,7 +100,7 @@
 
           modules = nixpkgs.lib.attrValues (myNixosModules) ++ [
             nixosModulesPkgs
-            (import (./targets + "/${target}.nix"))
+            (import (./targets + "/${target}/default.nix"))
             (import ./local.nix)
           ] ++ (
             let
