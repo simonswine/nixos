@@ -21,6 +21,7 @@
           austin = pkgs.callPackage ./pkgs/austin { };
           benchstat = pkgs.callPackage ./pkgs/benchstat { };
           cert-updater = pkgs.callPackage ./pkgs/cert-updater { };
+          dezoomify-rs = pkgs.callPackage ./pkgs/dezoomify-rs { };
           dhclient = pkgs.callPackage ./pkgs/dhclient { };
           docker-machine = pkgs.callPackage ./pkgs/docker-machine { };
           docker-machine-driver-hetzner = pkgs.callPackage ./pkgs/docker-machine-driver-hetzner { };
@@ -145,6 +146,7 @@
             cert-updater = pkgs.cert-updater;
             cloud-init = pkgs.cloud-init;
             containerd = pkgs.containerd;
+            dezoomify-rs = pkgs.dezoomify-rs;
             dhclient = pkgs.dhclient;
             docker-machine = pkgs.docker-machine;
             docker-machine-driver-hetzner = pkgs.docker-machine-driver-hetzner;
