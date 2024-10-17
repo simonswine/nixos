@@ -1,6 +1,6 @@
-{ lib, python3Packages, fetchFromGitHub, poetry2nix }:
+{ fetchFromGitHub, poetry2nix, ... }:
 
-poetry2nix.mkPoetryApplication rec {
+poetry2nix.mkPoetryApplication {
   pname = "mtv_dl";
   version = "0.21.5";
 
@@ -12,5 +12,4 @@ poetry2nix.mkPoetryApplication rec {
   };
 
   poetrylock = ./poetry.lock;
-
 }

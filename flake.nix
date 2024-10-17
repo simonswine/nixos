@@ -6,11 +6,19 @@
       url = "github:nix-community/nixos-generators";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    poetry2nix = {
+      url = "github:nix-community/poetry2nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.flake-utils.follows = "flake-utils";
+    };
   };
 
-  outputs = { self, nixpkgs, flake-utils, nixos-generators }:
+  outputs = { self, ... }@inputs:
     let
+      lib = inputs.nixpkgs.lib;
+
       pkgsOverlays = [
+        inputs.poetry2nix.overlays.default
         (import ./overlays/kubernetes/default.nix)
         (import ./overlays/containerd/default.nix)
         (import ./overlays/cloud-init/default.nix)
@@ -56,7 +64,7 @@
       };
       nixosModulesPkgs = {
         # propagate git revision
-        system.configurationRevision = nixpkgs.lib.mkIf (self ? rev) self.rev;
+        system.configurationRevision = lib.mkIf (self ? rev) self.rev;
 
         nixpkgs = {
           overlays = pkgsOverlays;
@@ -64,31 +72,31 @@
         };
       };
 
-      myNixosModules = nixpkgs.lib.mapAttrs'
+      myNixosModules = lib.mapAttrs'
         (name: value:
-          nixpkgs.lib.nameValuePair
-            (nixpkgs.lib.removeSuffix ".nix" name)
+          lib.nameValuePair
+            (lib.removeSuffix ".nix" name)
             (import (./modules + "/${name}"))
         )
-        (nixpkgs.lib.filterAttrs
+        (lib.filterAttrs
           (_: entryType: entryType == "regular")
           (builtins.readDir ./modules)
         );
 
-      myHomeManagerModules = nixpkgs.lib.mapAttrs'
+      myHomeManagerModules = lib.mapAttrs'
         (name: value:
-          nixpkgs.lib.nameValuePair
-            (nixpkgs.lib.removeSuffix ".nix" name)
+          lib.nameValuePair
+            (lib.removeSuffix ".nix" name)
             (import (./home-manager/modules + "/${name}"))
         )
-        (nixpkgs.lib.filterAttrs
+        (lib.filterAttrs
           (_: entryType: entryType == "regular")
           (builtins.readDir ./home-manager/modules)
         );
 
       targets =
-        nixpkgs.lib.attrNames (
-          nixpkgs.lib.filterAttrs
+        lib.attrNames (
+          lib.filterAttrs
             (_: entryType: entryType == "directory")
             (builtins.readDir ./targets)
         );
@@ -96,10 +104,10 @@
       build-target = target: system: {
         name = target;
 
-        value = nixpkgs.lib.makeOverridable nixpkgs.lib.nixosSystem {
+        value = lib.makeOverridable lib.nixosSystem {
           system = system;
 
-          modules = nixpkgs.lib.attrValues (myNixosModules) ++ [
+          modules = lib.attrValues (myNixosModules) ++ [
             nixosModulesPkgs
             (import (./targets + "/${target}/default.nix"))
             (import ./local.nix)
@@ -113,10 +121,10 @@
       };
 
     in
-    flake-utils.lib.eachDefaultSystem
+    inputs.flake-utils.lib.eachDefaultSystem
       (system:
         let
-          pkgs = (import nixpkgs) {
+          pkgs = (import inputs.nixpkgs) {
             system = system;
             overlays = pkgsOverlays;
             config = pkgsConfig;
@@ -131,7 +139,7 @@
 
           packages = {
 
-            hcloud-kexec = nixos-generators.nixosGenerate {
+            hcloud-kexec = inputs.nixos-generators.nixosGenerate {
               system = system;
               modules = [
                 ./targets/hcloud-kexec.nix
@@ -187,7 +195,7 @@
       ) // {
 
       nixosConfigurations = builtins.listToAttrs (
-        nixpkgs.lib.flatten (
+        lib.flatten (
           map
             (
               target: [
