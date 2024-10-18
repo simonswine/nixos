@@ -11,6 +11,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.flake-utils.follows = "flake-utils";
     };
+    nixos-hardware.url = "github:NixOS/nixos-hardware/master";
   };
 
   outputs = { self, ... }@inputs:
@@ -47,6 +48,7 @@
           mtv-dl = pkgs.callPackage ./pkgs/mtv-dl { };
           g810-led = pkgs.callPackage ./pkgs/g810-led { };
           nut-exporter = pkgs.callPackage ./pkgs/nut-exporter { };
+          orangepi-firmware = pkgs.callPackage ./pkgs/orangepi-firmware { };
           phpspy = pkgs.callPackage ./pkgs/phpspy { };
           prometheus-node-exporter-restic = pkgs.callPackage ./pkgs/prometheus-node-exporter-restic { };
           prometheus-node-exporter-smartmon = pkgs.callPackage ./pkgs/prometheus-node-exporter-smartmon { };
@@ -104,10 +106,10 @@
       build-target = target: system: {
         name = target;
 
-        value = lib.makeOverridable lib.nixosSystem {
+        value = lib.nixosSystem {
           system = system;
-
-          modules = lib.attrValues (myNixosModules) ++ [
+          specialArgs = { inherit inputs; };
+          modules = lib.attrValues myNixosModules ++ [
             nixosModulesPkgs
             (import (./targets + "/${target}/default.nix"))
             (import ./local.nix)
@@ -129,7 +131,6 @@
             overlays = pkgsOverlays;
             config = pkgsConfig;
           };
-
         in
         {
 
@@ -138,6 +139,42 @@
           };
 
           packages = {
+            # Install images should only come with the minimal set of config/packages to boot and then the rest is done using nixos-rebuild
+            install-images =
+              let
+                baseInstallModules = [
+                  ./modules/ssh-pub-keys.nix
+                  ({ config, ... }: {
+                    nix.registry.nixpkgs.flake = inputs.nixpkgs;
+                    services.openssh.enable = true;
+                    users.extraUsers.root.openssh.authorizedKeys.keys = config.swine.ssh.pubkeys.simonswine;
+                    system.stateVersion = "24.05";
+                  })
+                ];
+              in
+              {
+                # tested for raspberry pi 4
+                generic = inputs.nixos-generators.nixosGenerate {
+                  inherit system;
+                  modules = baseInstallModules;
+                  specialArgs = {
+                    pkgs = pkgs;
+                  };
+                  format = "sd-aarch64";
+                };
+
+                orangepi5plus = inputs.nixos-generators.nixosGenerate {
+                  inherit system;
+                  modules = baseInstallModules ++ [
+                    ./install-image/orangepi5plus.nix
+                    ./hardware/orangepi5plus/default.nix
+                  ];
+                  specialArgs = {
+                    pkgs = pkgs;
+                  };
+                  format = "sd-aarch64";
+                };
+              };
 
             hcloud-kexec = inputs.nixos-generators.nixosGenerate {
               system = system;
@@ -148,8 +185,7 @@
               format = "kexec-bundle";
             };
 
-
-            austin = pkgs.callPackage ./pkgs/austin { };
+            austin = pkgs.austin;
             benchstat = pkgs.benchstat;
             cert-updater = pkgs.cert-updater;
             cloud-init = pkgs.cloud-init;
@@ -164,7 +200,7 @@
             goda = pkgs.goda;
             grafana-alloy = pkgs.grafana-alloy;
             growatt-proxy-exporter = pkgs.growatt-proxy-exporter;
-            heatmiser-exporter = pkgs.callPackage ./pkgs/heatmiser-exporter { };
+            heatmiser-exporter = pkgs.heatmiser-exporter;
             intel-gpu-exporter = pkgs.intel-gpu-exporter;
             jsonnet-language-server = pkgs.jsonnet-language-server;
             kubernetes-1-28 = pkgs.kubernetes-1-28;
@@ -172,9 +208,10 @@
             kubernetes-1-30 = pkgs.kubernetes-1-30;
             miio = pkgs.miio;
             mi-flora-exporter = pkgs.mi-flora-exporter;
-            modularise = pkgs.callPackage ./pkgs/modularise { };
+            modularise = pkgs.modularise;
             mtv-dl = pkgs.mtv-dl;
             nut-exporter = pkgs.nut-exporter;
+            orangepi-firmware = pkgs.orangepi-firmware;
             phpspy = pkgs.phpspy;
             prometheus-node-exporter-restic = pkgs.prometheus-node-exporter-restic;
             prometheus-node-exporter-smartmon = pkgs.prometheus-node-exporter-smartmon;
@@ -194,17 +231,24 @@
         }
       ) // {
 
-      nixosConfigurations = builtins.listToAttrs (
-        lib.flatten (
-          map
-            (
-              target: [
-                (build-target target "x86_64-linux")
-              ]
-            )
-            targets
-        )
-      );
+      nixosConfigurations =
+        let
+          systemForTarget = target:
+            if target == "tma-beamer" || target == "tma-client"
+            then "aarch64-linux"
+            else "x86_64-linux";
+        in
+        builtins.listToAttrs (
+          lib.flatten (
+            map
+              (
+                target: [
+                  (build-target target (systemForTarget target))
+                ]
+              )
+              targets
+          )
+        );
 
       nixosModules = myNixosModules;
       homeManagerModules = myHomeManagerModules;
