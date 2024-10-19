@@ -234,7 +234,7 @@
       nixosConfigurations =
         let
           systemForTarget = target:
-            if target == "tma-beamer" || target == "tma-client"
+            if target == "tma-beamer" || target == "tma-client" || target == "install-image-orangepi5plus"
             then "aarch64-linux"
             else "x86_64-linux";
         in
@@ -249,6 +249,10 @@
               targets
           )
         );
+
+      installImages = {
+        orangepi5plus = self.nixosConfigurations.install-image-orangepi5plus.config.system.build.sdImage;
+      };
 
       nixosModules = myNixosModules;
       homeManagerModules = myHomeManagerModules;

@@ -1,11 +1,17 @@
 { lib
 , config
+, modulesPath
 , ...
 }:
 let
   rootPartitionUUID = "14e19a7b-0ae0-484d-9d54-43bd6fdc20c7";
 in
 {
+  imports = [
+    "${toString modulesPath}/installer/sd-card/sd-image.nix"
+    ../../install-image/base.nix
+    ../../hardware/orangepi5plus/default.nix
+  ];
 
   boot = {
     kernelParams = [
@@ -13,9 +19,10 @@ in
       "rootfstype=ext4"
     ];
 
+    # Force to use extlinux for sd image booting
     loader = {
-      grub.enable = lib.mkForce false;
       generic-extlinux-compatible.enable = lib.mkForce true;
+      systemd-boot.enable = lib.mkForce false;
     };
 
     initrd.availableKernelModules = lib.mkForce [
@@ -39,20 +46,22 @@ in
 
   sdImage = {
     inherit rootPartitionUUID;
-    compressImage = true;
 
-    # install firmware into a separate partition: /boot/firmware
-    populateFirmwareCommands = ''
-      ${config.boot.loader.generic-extlinux-compatible.populateCmd} -c ${config.system.build.toplevel} -d ./firmware
-    '';
+    imageBaseName = "nixos-sd-image-orangepi5plus";
+
     # Gap in front of the /boot/firmware partition, in mebibytes (1024×1024 bytes).
     # Can be increased to make more space for boards requiring to dd u-boot SPL before actual partitions.
     firmwarePartitionOffset = 32;
     firmwarePartitionName = "BOOT";
-    firmwareSize = 200; # MiB
+    firmwareSize = 512; # MiB
 
-    populateRootCommands = ''
+    populateRootCommands = lib.mkForce ''
       mkdir -p ./files/boot
+      ${config.boot.loader.generic-extlinux-compatible.populateCmd} -c ${config.system.build.toplevel} -d ./files/boot
+    '';
+
+    populateFirmwareCommands = lib.mkForce ''
+      true
     '';
   };
 }
