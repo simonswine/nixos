@@ -105,7 +105,6 @@
 
       build-target = target: system: {
         name = target;
-
         value = lib.nixosSystem {
           system = system;
           specialArgs = { inherit inputs; };
@@ -233,10 +232,22 @@
 
       nixosConfigurations =
         let
+
+          targetsBySystem = {
+            aarch64-linux = [
+              "install-image-orangepi5plus"
+              "install-image-aarch64-linux"
+              "tma-client"
+              "tma-beamer"
+              "tma-orangepi5plus"
+            ];
+          };
+
           systemForTarget = target:
-            if target == "tma-beamer" || target == "tma-client" || target == "install-image-orangepi5plus"
-            then "aarch64-linux"
-            else "x86_64-linux";
+            builtins.foldl'
+              (a: b: if builtins.elem target b.value then b.name else a)
+              "x86_64-linux"
+              (lib.attrsToList targetsBySystem);
         in
         builtins.listToAttrs (
           lib.flatten (
@@ -251,6 +262,7 @@
         );
 
       installImages = {
+        aarch64-linux = self.nixosConfigurations.install-image-aarch64-linux.config.system.build.sdImage;
         orangepi5plus = self.nixosConfigurations.install-image-orangepi5plus.config.system.build.sdImage;
       };
 

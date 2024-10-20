@@ -9,7 +9,7 @@ in
 {
   imports = [
     "${toString modulesPath}/installer/sd-card/sd-image.nix"
-    ../../install-image/base.nix
+    ../../common/install-image-base.nix
     ../../hardware/orangepi5plus/default.nix
   ];
 
