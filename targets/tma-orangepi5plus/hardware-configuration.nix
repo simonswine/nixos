@@ -2,7 +2,8 @@
 # and may be overwritten by future invocations.  Please make changes
 # to /etc/nixos/configuration.nix instead.
 { config, lib, pkgs, modulesPath, ... }:
-
+let
+in
 {
   imports =
     [
@@ -14,9 +15,19 @@
   boot.kernelModules = [ ];
   boot.extraModulePackages = [ ];
 
+  fileSystems."/boot" =
+    {
+      device = "/dev/disk/by-uuid/21E9-58D6";
+      fsType = "vfat";
+      options = [
+        "fmask=0137"
+        "dmask=0027"
+      ];
+    };
+
   fileSystems."/" =
     {
-      device = "/dev/disk/by-uuid/14e19a7b-0ae0-484d-9d54-43bd6fdc20c7";
+      device = "/dev/disk/by-uuid/d1c564ae-5fd9-4e3f-816c-0b305885961d";
       fsType = "ext4";
     };
 
