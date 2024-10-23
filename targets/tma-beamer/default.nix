@@ -17,7 +17,7 @@
     };
 
 
-      networking.hostName = "tma-beamer";
+  networking.hostName = "tma-beamer";
 
   system.stateVersion = "24.05";
 
