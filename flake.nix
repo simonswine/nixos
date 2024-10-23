@@ -234,12 +234,17 @@
         let
 
           targetsBySystem = {
+            armv6l-linux = [
+              "install-image-rpi2"
+            ];
             aarch64-linux = [
-              "install-image-orangepi5plus"
               "install-image-aarch64-linux"
+              "install-image-orangepi5plus"
+              "install-image-rockpi4b"
               "tma-client"
               "tma-beamer"
               "tma-orangepi5plus"
+              "tma-rockpi4b"
             ];
           };
 
@@ -264,6 +269,8 @@
       installImages = {
         aarch64-linux = self.nixosConfigurations.install-image-aarch64-linux.config.system.build.sdImage;
         orangepi5plus = self.nixosConfigurations.install-image-orangepi5plus.config.system.build.sdImage;
+        rockpi4b = self.nixosConfigurations.install-image-rockpi4b.config.system.build.sdImage;
+        rpi2 = self.nixosConfigurations.install-image-rpi2.config.system.build.sdImage;
       };
 
       nixosModules = myNixosModules;
