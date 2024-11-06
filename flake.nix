@@ -138,43 +138,6 @@
           };
 
           packages = {
-            # Install images should only come with the minimal set of config/packages to boot and then the rest is done using nixos-rebuild
-            install-images =
-              let
-                baseInstallModules = [
-                  ./modules/ssh-pub-keys.nix
-                  ({ config, ... }: {
-                    nix.registry.nixpkgs.flake = inputs.nixpkgs;
-                    services.openssh.enable = true;
-                    users.extraUsers.root.openssh.authorizedKeys.keys = config.swine.ssh.pubkeys.simonswine;
-                    system.stateVersion = "24.05";
-                  })
-                ];
-              in
-              {
-                # tested for raspberry pi 4
-                generic = inputs.nixos-generators.nixosGenerate {
-                  inherit system;
-                  modules = baseInstallModules;
-                  specialArgs = {
-                    pkgs = pkgs;
-                  };
-                  format = "sd-aarch64";
-                };
-
-                orangepi5plus = inputs.nixos-generators.nixosGenerate {
-                  inherit system;
-                  modules = baseInstallModules ++ [
-                    ./install-image/orangepi5plus.nix
-                    ./hardware/orangepi5plus/default.nix
-                  ];
-                  specialArgs = {
-                    pkgs = pkgs;
-                  };
-                  format = "sd-aarch64";
-                };
-              };
-
             hcloud-kexec = inputs.nixos-generators.nixosGenerate {
               system = system;
               modules = [
@@ -265,6 +228,10 @@
               targets
           )
         );
+
+      hardware = {
+        orangepi5plus = ./hardware/orangepi5plus/default.nix;
+      };
 
       installImages = {
         aarch64-linux = self.nixosConfigurations.install-image-aarch64-linux.config.system.build.sdImage;
