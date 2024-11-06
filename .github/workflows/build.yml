@@ -28,4 +28,4 @@ jobs:
         with:
           name: packer-kubernetes-hcloud
           authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
-      - run: nix build '.#nixosConfigurations.hcloud-kubernetes.config.system.build.toplevel'
+      - run: nix build '.#installImages.orangepi5plus'
