@@ -20,6 +20,9 @@ jobs:
   build-arm64:
     runs-on: macos-14
     steps:
+      - run: brew install orbstack
+      - run: orb create nixos nixos
+      - run: orb start nixos
       - uses: cachix/install-nix-action@v30
         with:
           github_access_token: ${{ secrets.GITHUB_TOKEN }}
