@@ -8,7 +8,6 @@ jobs:
   build:
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v4
       - uses: cachix/install-nix-action@v30
         with:
           github_access_token: ${{ secrets.GITHUB_TOKEN }}
@@ -16,11 +15,14 @@ jobs:
         with:
           name: packer-kubernetes-hcloud
           authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
+      - uses: actions/checkout@v4
       - run: nix build '.#nixosConfigurations.hcloud-kubernetes.config.system.build.toplevel'
   build-arm64:
     runs-on: macos-14
     steps:
-      - uses: actions/checkout@v4
+      - run:
+         mkdir -p /etc/nix/
+         echo "extra-platforms = aarch64-linux" > /etc/nix/nix.conf
       - uses: cachix/install-nix-action@v30
         with:
           github_access_token: ${{ secrets.GITHUB_TOKEN }}
@@ -28,4 +30,5 @@ jobs:
         with:
           name: packer-kubernetes-hcloud
           authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
+      - uses: actions/checkout@v4
       - run: nix build '.#nixosConfigurations.install-image-orangepi5plus.config.system.build.toplevel'
