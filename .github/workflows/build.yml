@@ -20,6 +20,7 @@ jobs:
   build-arm64:
     runs-on: macos-14
     steps:
+      - run: docker run -t -i alpine
       - run: brew install orbstack
       - run: orb create nixos nixos
       - run: orb start nixos
