@@ -29,5 +29,6 @@ jobs:
         with:
           name: packer-kubernetes-hcloud
           authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
+      - run: cat /etc/nix/nix.conf
       - uses: actions/checkout@v4
       - run: nix build '.#nixosConfigurations.install-image-orangepi5plus.config.system.build.toplevel'
