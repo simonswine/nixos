@@ -20,11 +20,11 @@ jobs:
   build-arm64:
     runs-on: macos-14
     steps:
-      - run: sudo mkdir -p /etc/nix/
-      - run: sudo bash -c 'echo "extra-platforms = aarch64-linux" > /etc/nix/nix.conf'
       - uses: cachix/install-nix-action@v30
         with:
           github_access_token: ${{ secrets.GITHUB_TOKEN }}
+          extra_nix_config: |
+            extra-platforms = aarch64-linux
       - uses: cachix/cachix-action@v15
         with:
           name: packer-kubernetes-hcloud
