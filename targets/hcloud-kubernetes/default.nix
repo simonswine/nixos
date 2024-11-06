@@ -3,7 +3,7 @@
 {
   imports =
     [
-      ./generic/kubernetes.nix
+      ../generic/kubernetes.nix
     ];
 
   boot.supportedFilesystems = [ "zfs" ];
