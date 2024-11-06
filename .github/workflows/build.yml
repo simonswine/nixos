@@ -20,8 +20,8 @@ jobs:
   build-arm64:
     runs-on: macos-14
     steps:
-      - run: mkdir -p /etc/nix/
-      - run: echo "extra-platforms = aarch64-linux" > /etc/nix/nix.conf
+      - run: sudo mkdir -p /etc/nix/
+      - run: sudo bash -c 'echo "extra-platforms = aarch64-linux" > /etc/nix/nix.conf'
       - uses: cachix/install-nix-action@v30
         with:
           github_access_token: ${{ secrets.GITHUB_TOKEN }}
