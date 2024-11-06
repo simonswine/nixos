@@ -20,7 +20,7 @@ jobs:
   build-arm64:
     runs-on: macos-14
     steps:
-      - run: brew install docker
+      - run: brew install docker colima
       - run: colima start
       - run: docker info
       - run: brew install orbstack
