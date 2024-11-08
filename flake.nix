@@ -65,9 +65,6 @@
         };
       };
       nixosModulesPkgs = {
-        # propagate git revision
-        system.configurationRevision = lib.mkIf (self ? rev) self.rev;
-
         nixpkgs = {
           overlays = pkgsOverlays;
           config = pkgsConfig;
