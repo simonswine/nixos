@@ -30,14 +30,13 @@ jobs:
           authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
       - uses: actions/checkout@v4
       - run: nix run nixpkgs#nix-eval-jobs -- --gc-roots-dir gcroot --check-cache-status --flake '.#nixosConfigurations.install-image-orangepi5plus.config.system.build.toplevel'
-      - run: nix build '.#nixosConfigurations.install-image-orangepi5plus.config.system.build.toplevel'
-      #  - uses: simonswine/hetzner-github-runner@HEAD
-      #    with:
-      #      github-api-key: ${{ secrets.GH_API_KEY_RUNNER }}
-      #      hetzner-api-key: ${{ secrets.HETZNER_API_KEY }}
-      #      hetzner-instance-type: cax21
+      - uses: simonswine/hetzner-github-runner@HEAD
+        with:
+          github-api-key: ${{ secrets.GH_API_KEY_RUNNER }}
+          hetzner-api-key: ${{ secrets.HETZNER_API_KEY }}
+          hetzner-instance-type: cax21
   build-arm64:
-    if: false
+    #if: false
     runs-on: self-hosted
     needs: prepare-arm64-runner
     steps:
