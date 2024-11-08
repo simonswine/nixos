@@ -36,7 +36,7 @@ jobs:
       - run: nix-env -i jq nix-eval-jobs -f '<nixpkgs>'
       - run: nix-eval-jobs --gc-roots-dir gcroot --check-cache-status --flake '.#nixosConfigurations.install-image-orangepi5plus.config.system.build.toplevel' | tee result.json
       - id: cache-status
-        run: echo "cache-status=$(jq -r .cacheStatus result.json)" >> "$GITHUB_ENV"
+        run: echo "cache-status=$(jq -r .cacheStatus result.json)" >> $GITHUB_OUTPUT
       - uses: simonswine/hetzner-github-runner@HEAD
         if: "${{ steps.cache-status.outputs.cache-status == 'notBuilt' }}"
         with:
