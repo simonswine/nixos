@@ -30,6 +30,12 @@
       "dm_crypt" # for LUKS
       "input_leds"
 
+      # For mdadm raid
+      "md_mod"
+      "raid1"
+      "raid10"
+      "raid456"
+
       # Allow network access
       "r8169"
     ];
