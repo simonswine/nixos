@@ -12,9 +12,10 @@ in
   config = mkIf cfg.enable {
     home.packages = with pkgs; [
       nodejs
+      typescript
       nodePackages.yarn
     ];
-    simonswine.neovim.lspconfig.tsserver.cmd = [
+    simonswine.neovim.lspconfig.ts_ls.cmd = [
       "${pkgs.nodePackages.typescript-language-server}/bin/typescript-language-server"
       "--stdio"
 
