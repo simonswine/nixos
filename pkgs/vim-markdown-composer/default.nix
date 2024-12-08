@@ -8,7 +8,7 @@ let
     pname = pkgs.vimPlugins.vim-markdown-composer.name + "-bin";
     version = pkgs.vimPlugins.vim-markdown-composer.version;
     src = pkgs.vimPlugins.vim-markdown-composer.src;
-    cargoSha256 = "R5GRwQWPLY75CXTnzN1Y6X8kNKyTX0WOf0tgYSJYgAk=";
+    cargoHash = "sha256-R5GRwQWPLY75CXTnzN1Y6X8kNKyTX0WOf0tgYSJYgAk=";
   };
 in
 
