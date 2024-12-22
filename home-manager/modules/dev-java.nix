@@ -11,7 +11,7 @@ in
 
   config = mkIf cfg.enable {
     simonswine.neovim.lspconfig.jdtls.cmd = [
-      "${pkgs.jdt-language-server}/bin/jdt-language-server"
+      "${pkgs.jdt-language-server}/bin/jdtls"
     ];
   };
 }
