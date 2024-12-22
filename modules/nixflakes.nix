@@ -11,7 +11,6 @@ in
 
   config = mkIf cfg.enable {
     nix = {
-      package = pkgs.nixFlakes;
       extraOptions = ''
         experimental-features = nix-command flakes
       '';
