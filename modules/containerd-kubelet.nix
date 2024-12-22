@@ -35,6 +35,9 @@ in
               };
             };
           };
+          "io.containerd.grpc.v1.cri".cni = {
+            bin_dir = "/opt/cni/bin";
+          };
         };
       };
     };
