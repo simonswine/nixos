@@ -10,7 +10,7 @@
   services.prometheus-node-exporter-zfs = {
     enable = true;
     extraArgs = [
-      "--snapshots-ignore"
+      "--exclude-snapshot-name"
       "^rpool/containerd/"
     ];
   };
