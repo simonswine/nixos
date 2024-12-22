@@ -47,7 +47,7 @@ in
         wantedBy = [ "multi-user.target" ];
         after = [ "network-online.target" ];
         wants = [ "network-online.target" ];
-        path = with pkgs; [ gitMinimal openssh utillinux iproute thin-provisioning-tools ] ++ deps ++ top.path;
+        path = with pkgs; [ gitMinimal openssh utillinux iproute2 thin-provisioning-tools ] ++ deps ++ top.path;
 
         preStart = ''
                     ${concatMapStrings
