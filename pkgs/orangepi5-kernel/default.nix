@@ -4,13 +4,13 @@
 , ...
 }: (linuxManualConfig {
   src = fetchFromGitHub {
-    owner = "Joshua-Riek";
+    owner = "armbian";
     repo = "linux-rockchip";
-    rev = "4867586ad5ce60969452edd36c236915a01ea260";
-    hash = "sha256-ZafiFIe+Droahgjkluq5VMZh6W8wwAdgtTU3UU01OtM=";
+    rev = "cd13061a07d985e883fae4e0a597fd9bdc112817";
+    hash = "sha256-y8D3lnbu4mQ5237kdAI6jciQLmEGIZUH4qQKWZlgQ48=";
   };
-  version = "6.1.75";
-  modDirVersion = "6.1.75";
+  version = "6.1.84";
+  modDirVersion = "6.1.84";
   extraMeta.branch = "6.1";
   # this is from https://raw.githubusercontent.com/Joshua-Riek/linux-rockchip/ffa29fd4b815ff04b78e9f850ac42c6b7011ad17/debian.rockchip/config/config.common.ubuntu
   # then a docker container is used to make oldconfig
