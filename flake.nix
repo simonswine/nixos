@@ -170,6 +170,7 @@
             kubernetes-1-28 = pkgs.kubernetes-1-28;
             kubernetes-1-29 = pkgs.kubernetes-1-29;
             kubernetes-1-30 = pkgs.kubernetes-1-30;
+            kubernetes-1-31 = pkgs.kubernetes-1-31;
             miio = pkgs.miio;
             mi-flora-exporter = pkgs.mi-flora-exporter;
             modularise = pkgs.modularise;
