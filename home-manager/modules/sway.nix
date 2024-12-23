@@ -82,7 +82,7 @@ in
         xdg-desktop-portal-wlr
         xdg-desktop-portal
         pipewire
-        qt5ct
+        libsForQt5.qt5ct
         wdisplays # this allows to configure the display
         wayvnc # remote desktop
       ];
@@ -109,7 +109,7 @@ in
           export MOZ_ENABLE_WAYLAND=1
 
           # this fixes nautilus' ability to browse network folders
-          export GIO_EXTRA_MODULES="${pkgs.gnome3.gvfs}/lib/gio/modules:$GIO_EXTRA_MODULES"
+          export GIO_EXTRA_MODULES="${pkgs.gnome.gvfs}/lib/gio/modules:$GIO_EXTRA_MODULES"
 
           # expose GTK theme to most things 
           # TODO: Figure out why that makes firefox unreadable
