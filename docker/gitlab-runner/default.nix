@@ -65,7 +65,7 @@ dockerTools.buildImage {
 
   config = {
     User = "nobody";
-    Entrypoint = [ "dumb-init" "gitlab-runner" ];
+    Entrypoint = [ "dumb-init" "--" "gitlab-runner" ];
     WorkingDir = "/data";
     Volumes = {
       "/data" = { };
