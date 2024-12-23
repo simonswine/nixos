@@ -47,6 +47,10 @@ in
 
     systemd.services.containerd = {
       path = [ pkgs.zfs pkgs.iptables-nftables-compat ];
+      serviceConfig = {
+        # This limit was reduce from infinty to 1024:524288 as part of nixos 24.11. Raising that limit slightly.
+        LimitNOFILE = "32768:524288";
+      };
     };
   };
 }
