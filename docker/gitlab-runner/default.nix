@@ -41,12 +41,13 @@ let
 in
 dockerTools.buildImage {
   name = "simonswine/gitlab-ci-runner";
-  tag = "0.4.0";
+  tag = "0.5.0";
 
   copyToRoot = buildEnv {
     name = "image-root";
     paths = [
       pkgsStatic.busybox
+      pkgsStatic.dumb-init
       cacert
       gitlab-runner
       docker-machine
@@ -64,7 +65,7 @@ dockerTools.buildImage {
 
   config = {
     User = "nobody";
-    Entrypoint = [ "gitlab-runner" ];
+    Entrypoint = [ "dumb-init" "gitlab-runner" ];
     WorkingDir = "/data";
     Volumes = {
       "/data" = { };
