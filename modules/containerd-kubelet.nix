@@ -23,25 +23,25 @@ in
           address = "127.0.0.1:1338";
         };
         plugins = {
-          "io.containerd.grpc.v1.cri".containerd = {
-            default_runtime_name = "runc";
-            snapshotter = "zfs";
-            runtimes = {
-              runc = {
-                runtime_type = "io.containerd.runc.v2";
-                options = {
-                  SystemdCgroup = true;
+          "io.containerd.grpc.v1.cri" = {
+            containerd = {
+              default_runtime_name = "runc";
+              snapshotter = "zfs";
+              runtimes = {
+                runc = {
+                  runtime_type = "io.containerd.runc.v2";
+                  options = {
+                    SystemdCgroup = true;
+                  };
                 };
               };
             };
-          };
-          "io.containerd.grpc.v1.cri".cni = {
-            bin_dir = "/opt/cni/bin";
+            cni.bin_dir = "/opt/cni/bin";
+            sandbox_image = "registry.k8s.io/pause:3.9";
           };
         };
       };
     };
-
     ## TODO: environment.etc."cni/net.d/10-containerd-bridge.conf".source = copyFile "${pkgs.containerd-unwrapped.src}/contrib/cni/10-containerd-bridge.conf";
     ## TODO: environment.etc."cni/net.d/99-loopback.conf".source = copyFile "${pkgs.containerd-unwrapped.src}/contrib/cni/99-loopback.conf";
 
