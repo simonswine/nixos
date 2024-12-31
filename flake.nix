@@ -40,6 +40,8 @@
           docker-machine = pkgs.callPackage ./pkgs/docker-machine { };
           docker-machine-driver-hetzner = pkgs.callPackage ./pkgs/docker-machine-driver-hetzner { };
           faillint = pkgs.callPackage ./pkgs/faillint { };
+          fronius-exporter = pkgs.callPackage ./pkgs/fronius-exporter { };
+          g810-led = pkgs.callPackage ./pkgs/g810-led { };
           get-focused-x-screen = pkgs.callPackage ./pkgs/get-focused-x-screen { };
           gimli-addr2line = pkgs.callPackage ./pkgs/gimli-addr2line { };
           goda = pkgs.callPackage ./pkgs/goda { };
@@ -47,20 +49,19 @@
           heatmiser-exporter = pkgs.callPackage ./pkgs/heatmiser-exporter { };
           intel-gpu-exporter = pkgs.callPackage ./pkgs/intel-gpu-exporter { };
           jsonnet-language-server = pkgs.callPackage ./pkgs/jsonnet-language-server { };
-          miio = pkgs.callPackage ./pkgs/python-miio { };
           mi-flora-exporter = pkgs.callPackage ./pkgs/mi-flora-exporter { };
+          miio = pkgs.callPackage ./pkgs/python-miio { };
           modularise = pkgs.callPackage ./pkgs/modularise { };
           mtv-dl = pkgs.callPackage ./pkgs/mtv-dl { };
-          g810-led = pkgs.callPackage ./pkgs/g810-led { };
           nut-exporter = pkgs.callPackage ./pkgs/nut-exporter { };
           orangepi-firmware = pkgs.callPackage ./pkgs/orangepi-firmware { };
           phpspy = pkgs.callPackage ./pkgs/phpspy { };
+          profilecli = pkgs.callPackage ./pkgs/profilecli { };
           prometheus-node-exporter-restic = pkgs.callPackage ./pkgs/prometheus-node-exporter-restic { };
           prometheus-node-exporter-smartmon = pkgs.callPackage ./pkgs/prometheus-node-exporter-smartmon { };
           prometheus-node-exporter-zfs = pkgs.callPackage ./pkgs/prometheus-node-exporter-zfs { };
           prometheus-snmp-exporter-config = pkgs.callPackage ./pkgs/prometheus-snmp-exporter-config { };
           pyroscope = pkgs.callPackage ./pkgs/pyroscope { };
-          profilecli = pkgs.callPackage ./pkgs/profilecli { };
           sleepwatcher = pkgs.callPackage ./pkgs/sleepwatcher { };
           tplink-switch-exporter = pkgs.callPackage ./pkgs/tplink-switch-exporter { };
           tz-cli = pkgs.callPackage ./pkgs/tz-cli { };
@@ -149,6 +150,7 @@
               format = "kexec-bundle";
             };
 
+
             austin = pkgs.austin;
             benchstat = pkgs.benchstat;
             cert-updater = pkgs.cert-updater;
@@ -159,6 +161,7 @@
             docker-machine = pkgs.docker-machine;
             docker-machine-driver-hetzner = pkgs.docker-machine-driver-hetzner;
             faillint = pkgs.faillint;
+            fronius-exporter = pkgs.fronius-exporter;
             g810-led = pkgs.g810-led;
             get-focused-x-screen = pkgs.get-focused-x-screen;
             gimli-addr2line = pkgs.gimli-addr2line;
@@ -171,26 +174,25 @@
             kubernetes-1-29 = pkgs.kubernetes-1-29;
             kubernetes-1-30 = pkgs.kubernetes-1-30;
             kubernetes-1-31 = pkgs.kubernetes-1-31;
-            miio = pkgs.miio;
             mi-flora-exporter = pkgs.mi-flora-exporter;
+            miio = pkgs.miio;
             modularise = pkgs.modularise;
             mtv-dl = pkgs.mtv-dl;
             nut-exporter = pkgs.nut-exporter;
             orangepi-firmware = pkgs.orangepi-firmware;
             phpspy = pkgs.phpspy;
+            profilecli = pkgs.profilecli;
             prometheus-node-exporter-restic = pkgs.prometheus-node-exporter-restic;
             prometheus-node-exporter-smartmon = pkgs.prometheus-node-exporter-smartmon;
             prometheus-node-exporter-zfs = pkgs.prometheus-node-exporter-zfs;
             prometheus-snmp-exporter-config = pkgs.prometheus-snmp-exporter-config;
             pyroscope = pkgs.pyroscope;
-            profilecli = pkgs.profilecli;
-            sleepwatcher = pkgs.callPackage ./pkgs/sleepwatcher { };
-            tplink-switch-exporter = pkgs.callPackage ./pkgs/tplink-switch-exporter { };
+            sleepwatcher = pkgs.sleepwatcher;
+            tplink-switch-exporter = pkgs.tplink-switch-exporter;
             tz-cli = pkgs.tz-cli;
             vim-markdown-composer = pkgs.vim-markdown-composer;
             yasdi = pkgs.yasdi;
             yasdi-exporter = pkgs.yasdi-exporter;
-
           };
 
         }
