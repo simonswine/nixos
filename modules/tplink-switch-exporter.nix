@@ -28,6 +28,7 @@ with lib;
       wantedBy = [ "multi-user.target" ];
       serviceConfig = {
         Type = "simple";
+        DynamicUser = true;
         EnvironmentFile = "-/etc/sysconfig/tplink-switch-exporter";
         ExecStart = "${pkgs.tplink-switch-exporter}/bin/tplink-switch-exporter -listen-address ${cfg.listenAddress} -switch-hostname ${cfg.hostname} -switch-username ${cfg.username}";
       };
