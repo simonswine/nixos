@@ -63,6 +63,7 @@
           prometheus-snmp-exporter-config = pkgs.callPackage ./pkgs/prometheus-snmp-exporter-config { };
           pyroscope = pkgs.callPackage ./pkgs/pyroscope { };
           sleepwatcher = pkgs.callPackage ./pkgs/sleepwatcher { };
+          sonnenbatterie-exporter = pkgs.callPackage ./pkgs/sonnenbatterie-exporter { };
           tplink-switch-exporter = pkgs.callPackage ./pkgs/tplink-switch-exporter { };
           tz-cli = pkgs.callPackage ./pkgs/tz-cli { };
           vim-markdown-composer = pkgs.callPackage ./pkgs/vim-markdown-composer { };
@@ -188,6 +189,7 @@
             prometheus-snmp-exporter-config = pkgs.prometheus-snmp-exporter-config;
             pyroscope = pkgs.pyroscope;
             sleepwatcher = pkgs.sleepwatcher;
+            sonnenbatterie-exporter = pkgs.sonnenbatterie-exporter;
             tplink-switch-exporter = pkgs.tplink-switch-exporter;
             tz-cli = pkgs.tz-cli;
             vim-markdown-composer = pkgs.vim-markdown-composer;
