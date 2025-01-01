@@ -47,10 +47,12 @@
           goda = pkgs.callPackage ./pkgs/goda { };
           growatt-proxy-exporter = pkgs.callPackage ./pkgs/growatt-proxy-exporter { };
           heatmiser-exporter = pkgs.callPackage ./pkgs/heatmiser-exporter { };
+          inch-exporter = pkgs.callPackage ./pkgs/inch-exporter { };
           intel-gpu-exporter = pkgs.callPackage ./pkgs/intel-gpu-exporter { };
           jsonnet-language-server = pkgs.callPackage ./pkgs/jsonnet-language-server { };
           mi-flora-exporter = pkgs.callPackage ./pkgs/mi-flora-exporter { };
           miio = pkgs.callPackage ./pkgs/python-miio { };
+          modbus-exporter = pkgs.callPackage ./pkgs/modbus-exporter { };
           modularise = pkgs.callPackage ./pkgs/modularise { };
           mtv-dl = pkgs.callPackage ./pkgs/mtv-dl { };
           nut-exporter = pkgs.callPackage ./pkgs/nut-exporter { };
@@ -169,6 +171,7 @@
             goda = pkgs.goda;
             growatt-proxy-exporter = pkgs.growatt-proxy-exporter;
             heatmiser-exporter = pkgs.heatmiser-exporter;
+            inch-exporter = pkgs.inch-exporter;
             intel-gpu-exporter = pkgs.intel-gpu-exporter;
             jsonnet-language-server = pkgs.jsonnet-language-server;
             kubernetes-1-28 = pkgs.kubernetes-1-28;
@@ -177,6 +180,7 @@
             kubernetes-1-31 = pkgs.kubernetes-1-31;
             mi-flora-exporter = pkgs.mi-flora-exporter;
             miio = pkgs.miio;
+            modbus-exporter = pkgs.modbus-exporter;
             modularise = pkgs.modularise;
             mtv-dl = pkgs.mtv-dl;
             nut-exporter = pkgs.nut-exporter;
