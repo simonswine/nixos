@@ -10,7 +10,7 @@ in
 
     package = mkOption {
       type = types.package;
-      default = pkgs.go_1_20;
+      default = pkgs.go_1_23;
       defaultText = literalExpression "pkgs.go_1_20";
       description = ''
         Which package to use for Go.
@@ -42,22 +42,37 @@ in
         modularise
         benchstat
         gopatch
+        golines
+        gotests
+        iferr
+        gotestsum
+        impl
+        mockgen
+        gotools # for goimports
       ];
       simonswine.neovim = {
-        extraConfig =
-          ''
-
-          " Configure golangci-lint to use the repositories linters, rathern than anything special
-          let g:go_metalinter_command = 'golangci-lint'
-          let g:go_metalinter_autosave_enabled = []
-          let g:go_metalinter_enabled = []
-        '';
-        plugins = with pkgs.vimPlugins; [
-          vim-go
-        ];
         lspconfig.gopls.cmd = [
           "${pkgs.gopls}/bin/gopls"
         ];
+        lspconfig.golangci_lint_ls.cmd = [
+          "${pkgs.golangci-lint-langserver}/bin/golangci-lint-langserver"
+        ];
+        plugins = with pkgs.vimPlugins; [
+          nvim-dap-go
+        ];
+        extraLuaConfig = ''
+          require('dap-go').setup()
+        '';
+        conformConfig = {
+          formatters_by_ft = {
+            go = [ "golines" "gofmt" "goimports" ];
+          };
+          formatters = {
+            golines = {
+              prepend_args = [ "-m" "128" ];
+            };
+          };
+        };
       };
     }
     (mkIf pkgs.stdenv.isLinux {

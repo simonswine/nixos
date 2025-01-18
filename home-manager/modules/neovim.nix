@@ -3,17 +3,6 @@
 with lib;
 let
   cfg = config.simonswine.neovim;
-
-  copilot-git = pkgs.vimUtils.buildVimPlugin rec {
-    name = "copilot.vim";
-    version = "1.26.0";
-    src = pkgs.fetchFromGitHub {
-      owner = "github";
-      repo = "copilot.vim";
-      rev = "v${version}";
-      hash = "sha256-tcLrto1Y66MtPnfIcU2PBOxqE0xilVl4JyKU6ddS7bA=";
-    };
-  };
 in
 {
   options.simonswine.neovim = {
@@ -24,11 +13,26 @@ in
       type = types.attrsOf types.anything;
     };
 
+    conformConfig = mkOption {
+      default = { };
+      type = types.attrsOf types.anything;
+    };
+
+    lintConfig = mkOption {
+      default = { };
+      type = types.attrsOf types.anything;
+    };
+
     plugins = mkOption {
       default = [ ];
     };
 
     extraConfig = mkOption {
+      type = types.lines;
+      default = "";
+    };
+
+    extraLuaConfig = mkOption {
       type = types.lines;
       default = "";
     };
@@ -43,38 +47,55 @@ in
 
       plugins = (with pkgs.vimPlugins; [
         vim-colors-solarized
-        vim-airline
         nerdtree
 
-        copilot-git
+        # TODO cademichael/gotest.nvim
 
+        telescope-nvim
+        nui-nvim
+        dressing-nvim
+        plenary-nvim
 
-        pkgs.vim-markdown-composer
+        # Linting
+        nvim-lint
+
+        # Formatting
+        conform-nvim
+
+        # lua line
+        lualine-nvim
+
+        # ai completion
+        avante-nvim
+
+        # ai copilot
+        copilot-lua
+        copilot-cmp
+
+        # debug adapter
+        nvim-dap
+
+        # auto completion
+        nvim-cmp
+        cmp-buffer
+        cmp-path
+        cmp-cmdline
+        cmp-nvim-lsp
+        cmp-git
+
+        render-markdown-nvim
+        mini-nvim
 
         ack-vim
 
-        coq_nvim
         nvim-lspconfig
-
-        fzf-vim
-        vista-vim
 
         # git support for vim
         vim-fugitive
         vim-rhubarb
 
-        (pkgs.vimPlugins.nvim-treesitter.withPlugins (plugins: with pkgs.tree-sitter-grammars; [
-          tree-sitter-beancount
-          tree-sitter-c
-          tree-sitter-gomod
-          tree-sitter-html
-          tree-sitter-json
-          tree-sitter-make
-          tree-sitter-markdown
-          tree-sitter-nix
-          tree-sitter-yaml
-        ]
-        ))
+        # treesitter
+        nvim-treesitter.withAllGrammars
         nvim-treesitter-context
 
       ]) ++ cfg.plugins;
@@ -86,7 +107,7 @@ in
           lspconfigLua = builtins.concatStringsSep "\n" (
             attrValues (mapAttrs
               (name: config:
-                "lspconfig.${name}.setup(coq.lsp_ensure_capabilities(${generators.toLua {} config}))"
+                "lspconfig.${name}.setup(ensure_capabilities(${generators.toLua {} config}))"
               )
               cfg.lspconfig));
         in
@@ -122,7 +143,7 @@ in
 
           let mapleader=","
 
-          " Show whitespaces type
+          "" Show whitespaces type
           set list
           set listchars=tab:>.,trail:.,extends:#,nbsp:.
 
@@ -133,34 +154,93 @@ in
           set background=dark
           colorscheme solarized
 
-          "" vim-airline settings
-          set laststatus=2
-          let g:airline_powerline_fonts = 1
-          let g:airline_detect_paste=1
-
-          " Vista
-          let g:vista_ctags_executable = '${pkgs.universal-ctags}/bin/ctags'
-          let g:vista_fzf_preview = ['right:50%']
-          let g:vista_icon_indent = ["╰─▸ ", "├─▸ "]
-
-          " Copilot
-          let g:copilot_filetypes = {
-             \ '*': v:false,
-             \ 'go': v:true,
-             \ 'jsonnet': v:true,
-             \ 'json': v:true,
-             \ 'yaml': v:true,
-             \ 'python': v:true,
-             \ 'nix': v:true,
-             \ }
-
-          " Setup correct path to ag
-          let g:ackprg = '${pkgs.silver-searcher}/bin/ag --vimgrep'
-
           lua << EOF
-          local treesitter = require "nvim-treesitter.configs"
+          -- Set up nvim-cmp.
+          local cmp = require'cmp'
+          cmp.setup({
+            snippet = {
+              expand = function(args)
+                vim.snippet.expand(args.body) -- For native neovim snippets (Neovim v0.10+)
+              end,
+            },
+            mapping = cmp.mapping.preset.insert({
+              ['<C-b>'] = cmp.mapping.scroll_docs(-4),
+              ['<C-f>'] = cmp.mapping.scroll_docs(4),
+              ['<C-Space>'] = cmp.mapping.complete(),
+              ['<C-e>'] = cmp.mapping.abort(),
+              ['<CR>'] = cmp.mapping.confirm({ select = true }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
+            }),
+            sources = cmp.config.sources({
+              { name = 'nvim_lsp', group_index = 2 },
+              { name = 'copilot', group_index = 2 },
+              { name = 'buffer', group_index = 3 },
+            }),
+          })
+
+          -- Git commit completion.
+          cmp.setup.filetype('gitcommit', {
+              sources = cmp.config.sources({
+                { name = 'git' },
+              }, {
+                { name = 'buffer' },
+              })
+           })
+          require("cmp_git").setup()
+
+          -- Setup lualine
+          require('lualine').setup()
+
+          -- Setup copilot
+          require("copilot").setup({
+            suggestion = { enabled = false },
+            panel = { enabled = false },
+          })
+          require("copilot_cmp").setup()
+
+          -- Setup avante ai assistant
+          require('avante_lib').load()
+          require('avante').setup({
+            provider = 'claude',
+          })
+
+          -- Use buffer source for `/` and `?` (if you enabled `native_menu`, this won't work anymore).
+          cmp.setup.cmdline({ '/', '?' }, {
+            mapping = cmp.mapping.preset.cmdline(),
+            sources = {
+              { name = 'buffer' }
+            }
+          })
+
+          -- Use cmdline & path source for ':' (if you enabled `native_menu`, this won't work anymore).
+          cmp.setup.cmdline(':', {
+            mapping = cmp.mapping.preset.cmdline(),
+            sources = cmp.config.sources({
+              { name = 'path' }
+            }, {
+              { name = 'cmdline' }
+            }),
+            matching = { disallow_symbol_nonprefix_matching = false }
+          })
+
+          -- Setup formatting
+          require("conform").setup(${generators.toLua {} cfg.conformConfig})
+          vim.api.nvim_create_autocmd("BufWritePre", {
+            pattern = "*",
+            callback = function(args)
+              require("conform").format({ bufnr = args.buf })
+            end,
+          })
+
+          -- extraLuaConfig
+          ${cfg.extraLuaConfig}
+          -- end of extraLuaConfig
+
           local lspconfig = require('lspconfig')
-          local coq = require('coq')
+          local capabilities = require('cmp_nvim_lsp').default_capabilities()
+          local ensure_capabilities = function(params)
+            params.capabilities = capabilities
+            return params
+          end
 
           -- Setup language servers.
           ${lspconfigLua}
@@ -188,8 +268,6 @@ in
               vim.keymap.set('n', 'K', vim.lsp.buf.hover, opts)
               vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, opts)
               vim.keymap.set('n', '<C-k>', vim.lsp.buf.signature_help, opts)
-              vim.keymap.set('n', '<space>wa', vim.lsp.buf.add_workspace_folder, opts)
-              vim.keymap.set('n', '<space>wr', vim.lsp.buf.remove_workspace_folder, opts)
               vim.keymap.set('n', '<space>wl', function()
                 print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
               end, opts)
@@ -203,14 +281,12 @@ in
             end,
           })
 
-          treesitter.setup {
+          require'nvim-treesitter.configs'.setup {
             highlight = {
               enable = true,
-              disable = {},
             },
             indent = {
               enable = true,
-              disable = {},
             },
           }
 

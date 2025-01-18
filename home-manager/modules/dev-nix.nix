@@ -18,6 +18,11 @@ in
       lspconfig.nixd.cmd = [
         "${pkgs.nixd}/bin/nixd"
       ];
+      conformConfig = {
+        formatters_by_ft = {
+          nix = [ "${pkgs.nixpkgs-fmt}/bin/nixpkgs-fmt" ];
+        };
+      };
     };
   };
 }
