@@ -39,6 +39,18 @@ in
   };
 
   config = mkIf cfg.enable {
+    home.packages = with pkgs; [
+      fd
+    ];
+
+    programs.tmux.extraConfig = ''
+      # Support true color
+      set-option -a terminal-features 'screen-256color:RGB'
+
+      # Reduce escape time for better compatibilty with nvim
+      set-option -sg escape-time 10
+    '';
+
     programs.neovim = {
       enable = true;
       viAlias = true;
@@ -192,6 +204,9 @@ in
 
           -- Setup copilot
           require("copilot").setup({
+            filetypes = {
+              secrets = false,
+            },
             suggestion = { enabled = false },
             panel = { enabled = false },
           })
@@ -202,6 +217,15 @@ in
           require('avante').setup({
             provider = 'claude',
           })
+
+          -- Setup file/grep/windows
+          local telescope = require('telescope.builtin')
+          vim.keymap.set('n', '<leader>ff', telescope.find_files, { desc = 'Telescope find files' })
+          vim.keymap.set('n', '<leader>fg', telescope.live_grep, { desc = 'Telescope live grep' })
+          vim.keymap.set('n', '<leader>fb', telescope.buffers, { desc = 'Telescope buffers' })
+          vim.keymap.set('n', '<leader>fh', telescope.help_tags, { desc = 'Telescope help tags' })
+          vim.keymap.set('n', '<leader>fq', telescope.quickfix, { desc = 'Telescope quickfix' })
+          vim.keymap.set('n', '<leader>fr', telescope.registers, { desc = 'Telescope registers' })
 
           -- Use buffer source for `/` and `?` (if you enabled `native_menu`, this won't work anymore).
           cmp.setup.cmdline({ '/', '?' }, {

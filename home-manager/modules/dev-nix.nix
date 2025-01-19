@@ -19,8 +19,13 @@ in
         "${pkgs.nixd}/bin/nixd"
       ];
       conformConfig = {
+        formatters = {
+          nixpkgs_fmt = {
+            command = "${pkgs.nixpkgs-fmt}/bin/nixpkgs-fmt";
+          };
+        };
         formatters_by_ft = {
-          nix = [ "${pkgs.nixpkgs-fmt}/bin/nixpkgs-fmt" ];
+          nix = [ "nixpkgs_fmt" ];
         };
       };
     };
