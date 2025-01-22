@@ -224,7 +224,7 @@ in
           vim.keymap.set('n', '<leader>fg', telescope.live_grep, { desc = 'Telescope live grep' })
           vim.keymap.set('n', '<leader>fb', telescope.buffers, { desc = 'Telescope buffers' })
           vim.keymap.set('n', '<leader>fh', telescope.help_tags, { desc = 'Telescope help tags' })
-          vim.keymap.set('n', '<leader>fq', telescope.quickfix, { desc = 'Telescope quickfix' })
+          vim.keymap.set('n', '<leader>fd', telescope.diagnostics, { desc = 'Telescope diagnostics' })
           vim.keymap.set('n', '<leader>fr', telescope.registers, { desc = 'Telescope registers' })
 
           -- Use buffer source for `/` and `?` (if you enabled `native_menu`, this won't work anymore).
