@@ -6,7 +6,7 @@ let
 
   packages = with pkgs.gnomeExtensions; [
     appindicator
-    clipboard-indicator-2
+    clipboard-indicator
     removable-drive-menu
     bluetooth-quick-connect
     sound-output-device-chooser
