@@ -42,7 +42,6 @@ in
         modularise
         benchstat
         gopatch
-        golines
         gotests
         iferr
         gotestsum
@@ -65,12 +64,7 @@ in
         '';
         conformConfig = {
           formatters_by_ft = {
-            go = [ "golines" "gofmt" "goimports" ];
-          };
-          formatters = {
-            golines = {
-              prepend_args = [ "-m" "128" ];
-            };
+            go = [ "gofmt" "goimports" ];
           };
         };
       };
