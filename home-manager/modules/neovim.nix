@@ -206,7 +206,15 @@ in
           -- Setup copilot
           require("copilot").setup({
             filetypes = {
-              secrets = false,
+              c = true,
+              go = true,
+              javascript = true,
+              jsonnet = true,
+              nix = true,
+              python = true,
+              rust = true,
+              typescript = true,
+              ["*"] = false, -- default disable
             },
             suggestion = { enabled = false },
             panel = { enabled = false },
