@@ -86,6 +86,7 @@ in
 
         # debug adapter
         nvim-dap
+        nvim-dap-ui
 
         # auto completion
         nvim-cmp
