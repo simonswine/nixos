@@ -6,11 +6,11 @@
   src = fetchFromGitHub {
     owner = "armbian";
     repo = "linux-rockchip";
-    rev = "cd13061a07d985e883fae4e0a597fd9bdc112817";
-    hash = "sha256-y8D3lnbu4mQ5237kdAI6jciQLmEGIZUH4qQKWZlgQ48=";
+    rev = "72269e532495f1495b1bda366bd0334fa97075e6";
+    hash = "sha256-TPOUGUjvaKP5SglVomI8y7AKN1QbL735MnQQQxsisVA=";
   };
-  version = "6.1.84";
-  modDirVersion = "6.1.84";
+  version = "6.1.99";
+  modDirVersion = "6.1.99";
   extraMeta.branch = "6.1";
   # this is from https://raw.githubusercontent.com/Joshua-Riek/linux-rockchip/ffa29fd4b815ff04b78e9f850ac42c6b7011ad17/debian.rockchip/config/config.common.ubuntu
   # then a docker container is used to make oldconfig
