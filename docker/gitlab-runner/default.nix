@@ -8,6 +8,7 @@
 , runtimeShell
 , writeTextDir
 , buildEnv
+, gnumake
 }:
 
 let
@@ -41,7 +42,7 @@ let
 in
 dockerTools.buildImage {
   name = "simonswine/gitlab-ci-runner";
-  tag = "0.5.0";
+  tag = "0.6.0";
 
   copyToRoot = buildEnv {
     name = "image-root";
@@ -53,6 +54,7 @@ dockerTools.buildImage {
       docker-machine
       docker-machine-driver-hetzner
       openssh
+      gnumake
     ] ++ nonRootShadowSetup { uid = uid; user = "nobody"; group = "nogroup"; };
     pathsToLink = [ "/bin" "/etc" ];
   };
