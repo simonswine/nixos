@@ -42,7 +42,7 @@ let
 in
 dockerTools.buildImage {
   name = "simonswine/gitlab-ci-runner";
-  tag = "0.6.0";
+  tag = "0.7.0";
 
   copyToRoot = buildEnv {
     name = "image-root";

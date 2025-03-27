@@ -44,6 +44,7 @@
           g810-led = pkgs.callPackage ./pkgs/g810-led { };
           get-focused-x-screen = pkgs.callPackage ./pkgs/get-focused-x-screen { };
           gimli-addr2line = pkgs.callPackage ./pkgs/gimli-addr2line { };
+          gitlab-runner = pkgs.callPackage ./pkgs/gitlab-runner { };
           goda = pkgs.callPackage ./pkgs/goda { };
           growatt-proxy-exporter = pkgs.callPackage ./pkgs/growatt-proxy-exporter { };
           heatmiser-exporter = pkgs.callPackage ./pkgs/heatmiser-exporter { };
@@ -141,6 +142,7 @@
 
           docker = {
             gitlab-runner = pkgs.callPackage ./docker/gitlab-runner { };
+            gitlab-runner-nix = pkgs.callPackage ./docker/gitlab-runner-nix { };
           };
 
           packages = {
@@ -168,6 +170,7 @@
             g810-led = pkgs.g810-led;
             get-focused-x-screen = pkgs.get-focused-x-screen;
             gimli-addr2line = pkgs.gimli-addr2line;
+            gitlab-runner = pkgs.gitlab-runner;
             goda = pkgs.goda;
             growatt-proxy-exporter = pkgs.growatt-proxy-exporter;
             heatmiser-exporter = pkgs.heatmiser-exporter;
