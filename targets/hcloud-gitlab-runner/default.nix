@@ -12,9 +12,9 @@ let
     mkdir -p -m 0755 /nix/var/nix/profiles/per-user/root
     mkdir -p -m 0700 "$HOME/.nix-defexpr"
     . ${pkgs.nix}/etc/profile.d/nix.sh
-    ${pkgs.nix}/bin/nix-channel --add https://nixos.org/channels/nixos-22.05 nixpkgs
+    ${pkgs.nix}/bin/nix-channel --add https://nixos.org/channels/nixos-24.05 nixpkgs
     ${pkgs.nix}/bin/nix-channel --update nixpkgs
-    ${pkgs.nix}/bin/nix-env -i ${builtins.concatStringsSep " " (with pkgs; [ nixFlakes cacert git openssh ])}
+    ${pkgs.nix}/bin/nix-env -i ${builtins.concatStringsSep " " (with pkgs; [ nix cacert git openssh ])}
   '';
 in
 
@@ -28,11 +28,11 @@ in
   programs.nixflakes.enable = true;
 
   # Setup cache
-  nix = {
-    binaryCaches = [
+  nix.settings = {
+    substituters = [
       "https://nixos.cachix.swine.de"
     ];
-    binaryCachePublicKeys = [
+    "trusted-public-keys" = [
       "nixos.cachix.swine.de-1:wXwJAbrysI3qC2yJpbATTHfQ5QmqvbOabmQ6m9V9auk="
     ];
   };
