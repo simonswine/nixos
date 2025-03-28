@@ -147,7 +147,7 @@
             hcloud-kexec = inputs.nixos-generators.nixosGenerate {
               system = system;
               modules = [
-                ./targets/hcloud-kexec.nix
+                ./targets/hcloud-kexec/default.nix
                 ./targets/hcloud-kexec/hardware-configuration.nix
               ];
               format = "kexec-bundle";
