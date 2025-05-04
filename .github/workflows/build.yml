@@ -8,7 +8,7 @@ jobs:
   build-amd64:
     runs-on: ubuntu-24.04
     steps:
-      - uses: cachix/install-nix-action@v30
+      - uses: cachix/install-nix-action@526118121621777ccd86f79b04685a9319637641 # v31
         with:
           nix_path: nixpkgs=channel:nixos-24.11
           github_access_token: ${{ secrets.GITHUB_TOKEN }}
@@ -21,7 +21,7 @@ jobs:
   build-arm64:
     runs-on: ubuntu-24.04-arm
     steps:
-      - uses: cachix/install-nix-action@v30
+      - uses: cachix/install-nix-action@526118121621777ccd86f79b04685a9319637641 # v31
         with:
           nix_path: nixpkgs=channel:nixos-24.11
           github_access_token: ${{ secrets.GITHUB_TOKEN }}
