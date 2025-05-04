@@ -14,7 +14,16 @@ in
     };
 
     conformConfig = mkOption {
-      default = { };
+      default = {
+        formatters = {
+          fixjson = {
+            command = "${pkgs.fixjson}/bin/fixjson";
+          };
+        };
+        formatters_by_ft = {
+          json5 = [ "fixjson" ];
+        };
+      };
       type = types.attrsOf types.anything;
     };
 
@@ -41,6 +50,7 @@ in
   config = mkIf cfg.enable {
     home.packages = with pkgs; [
       fd
+      fixjson
     ];
 
     programs.tmux.extraConfig = ''
