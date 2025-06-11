@@ -1,18 +1,23 @@
 self: super: {
   containerd = super.containerd.overrideAttrs (old: rec {
-    version = "1.7.26";
-    commit = "753481ec61c7c8955a23d6ff7bc8e4daed455734";
+    version = "2.1.1";
     src = super.fetchFromGitHub {
       owner = "containerd";
       repo = "containerd";
       rev = "v${version}";
-      hash = "sha256-1+WtmRCrLbf5AwOAp+3PKPkGKI9yZqJcJOyS4uR0bmg=";
+      hash = "sha256-ZqQX+bogzAsMvqYNKyWvHF2jdPOIhNQDizKEDbcbmOg=";
     };
-    buildPhase = ''
-      runHook preBuild
-      patchShebangs .
-      make binaries "VERSION=v${version}" "REVISION=${src.rev}"
-      runHook postBuild
-    '';
+    makeFlags =
+      builtins.filter
+        (x:
+          (!super.lib.strings.hasPrefix "VERSION=" x) &&
+          (!super.lib.strings.hasPrefix "REVISION=" x)
+        )
+        old.makeFlags
+      ++
+      [
+        "REVISION=${src.rev}"
+        "VERSION=v${version}"
+      ];
   });
 }
