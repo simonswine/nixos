@@ -54,5 +54,11 @@ in
         ];
       }
     )
+    {
+      simonswine.neovim.lspconfig.harper_ls.cmd = [
+        "${pkgs.harper}/bin/harper-ls"
+        "--stdio"
+      ];
+    }
   ];
 }
