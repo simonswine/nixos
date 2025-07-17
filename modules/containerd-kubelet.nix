@@ -37,11 +37,20 @@ in
               };
             };
             cni.bin_dir = "/opt/cni/bin";
-            sandbox_image = "registry.k8s.io/pause:3.9";
+            sandbox_image = "registry.k8s.io/pause:3.10";
+          };
+          "io.containerd.transfer.v1.local" = {
+            unpack_config = [{
+              platform = "linux/amd64";
+              snapshotter = "zfs";
+            }];
           };
         };
+
       };
     };
+
+
     ## TODO: environment.etc."cni/net.d/10-containerd-bridge.conf".source = copyFile "${pkgs.containerd-unwrapped.src}/contrib/cni/10-containerd-bridge.conf";
     ## TODO: environment.etc."cni/net.d/99-loopback.conf".source = copyFile "${pkgs.containerd-unwrapped.src}/contrib/cni/99-loopback.conf";
 
