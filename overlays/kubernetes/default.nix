@@ -48,13 +48,13 @@ let
 in
 {
   kubernetes-1-31 = kubernetesVersion {
-    kver = "1.31.10";
-    khash = "renFznJJLYvfIJn59yx9BeZ5HRtSIdtDXXIK2CEs4MU=";
+    kver = "1.31.11";
+    khash = "w4pVk2J7LuU2jbyklmOZSUrB1AwIzusQgxp89OdtK1I=";
   };
 
   kubernetes-1-32 = kubernetesVersion {
-    kver = "1.32.6";
-    khash = "MCKYcum4rib7qzKyZ7YMMYYhSPqNF5a/D33d9REa8Eo=";
+    kver = "1.32.7";
+    khash = "64002KyKgITobf4WCVgA1TQwJmnIG9rVUuuq8wPYKn4=";
   };
 
   kubernetes-1-33 = kubernetesVersion {
