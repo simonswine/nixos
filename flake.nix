@@ -39,6 +39,7 @@
           austin = pkgs.callPackage ./pkgs/austin { };
           benchstat = pkgs.callPackage ./pkgs/benchstat { };
           cert-updater = pkgs.callPackage ./pkgs/cert-updater { };
+          devfiler = pkgs.callPackage ./pkgs/devfiler { };
           dezoomify-rs = pkgs.callPackage ./pkgs/dezoomify-rs { };
           dhclient = pkgs.callPackage ./pkgs/dhclient { };
           docker-machine = pkgs.callPackage ./pkgs/docker-machine { };
@@ -171,6 +172,7 @@
             cert-updater = pkgs.cert-updater;
             cloud-init = pkgs.cloud-init;
             containerd = pkgs.containerd;
+            devfiler = pkgs.devfiler;
             dezoomify-rs = pkgs.dezoomify-rs;
             dhclient = pkgs.dhclient;
             docker-machine = pkgs.docker-machine;
