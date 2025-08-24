@@ -17,6 +17,10 @@
       inputs.flake-utils.follows = "flake-utils";
       inputs.systems.follows = "systems";
     };
+    nixvim = {
+      url = "github:nix-community/nixvim/nixos-25.05";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = { self, ... }@inputs:
@@ -93,16 +97,21 @@
           (builtins.readDir ./modules)
         );
 
-      myHomeManagerModules = lib.mapAttrs'
-        (name: value:
-          lib.nameValuePair
-            (lib.removeSuffix ".nix" name)
-            (import (./home-manager/modules + "/${name}"))
-        )
-        (lib.filterAttrs
-          (_: entryType: entryType == "regular")
-          (builtins.readDir ./home-manager/modules)
-        );
+      myHomeManagerModules =
+        {
+          nixvim = inputs.nixvim.homeModules.nixvim;
+        }
+        //
+        lib.mapAttrs'
+          (name: value:
+            lib.nameValuePair
+              (lib.removeSuffix ".nix" name)
+              (import (./home-manager/modules + "/${name}"))
+          )
+          (lib.filterAttrs
+            (_: entryType: entryType == "regular")
+            (builtins.readDir ./home-manager/modules)
+          );
 
       targets =
         lib.attrNames (

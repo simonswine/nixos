@@ -18,6 +18,16 @@ in
       lspconfig.nixd.cmd = [
         "${pkgs.nixd}/bin/nixd"
       ];
+      lintConfig = {
+        lintersByFt = {
+          nix = [ "statix" ];
+        };
+        linters = {
+          statix = {
+            cmd = "${pkgs.statix}/bin/statix";
+          };
+        };
+      };
       conformConfig = {
         formatters = {
           nixpkgs_fmt = {

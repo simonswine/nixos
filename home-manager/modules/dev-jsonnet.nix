@@ -17,9 +17,14 @@ in
       nodePackages.js-yaml
     ];
     simonswine.neovim = {
-      lspconfig.jsonnet_ls.cmd = [
-        "${pkgs.jsonnet-language-server}/bin/jsonnet-language-server"
-      ];
+      lspconfig.jsonnet_ls = {
+        cmd = [
+          "${pkgs.jsonnet-language-server}/bin/jsonnet-language-server"
+        ];
+        filetypes = [
+          "jsonnet"
+        ];
+      };
       plugins = with pkgs.vimPlugins; [ vim-jsonnet ];
       extraConfig = ''
         " JSONNET

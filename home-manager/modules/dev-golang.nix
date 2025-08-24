@@ -69,35 +69,5 @@ in
         };
       };
     }
-    (mkIf pkgs.stdenv.isLinux {
-      # On linux run gopls as systemd unit
-      simonswine.neovim.extraConfig =
-        ''
-          " Run gopls under a systemd supervised daemon
-          let g:go_gopls_options = ['-remote=unix;/run/user/' . expand('$UID') . '/gopls-daemon-socket', '-logfile=auto', '-debug=:0', '-rpc.trace']
-        '';
-      systemd.user.services.gopls = {
-        Unit = {
-          Description = "Run the go language server as user daemon, so we can limit its memory and CPU usage";
-          After = [ "network.target" ];
-        };
-
-        Service = {
-          Type = "simple";
-          Environment = [ "PATH=/run/wrappers/bin:/home/${config.home.username}/.nix-profile/bin:/etc/profiles/per-user/${config.home.username}/bin:/nix/var/nix/profiles/default/bin:/run/current-system/sw/bin" ];
-          ExecStartPre = "/run/current-system/sw/bin/rm -f %t/gopls-daemon-socket";
-          ExecStart = "${pkgs.gopls}/bin/gopls -listen=\"unix;%t/gopls-daemon-socket\" -logfile=auto -debug=:0";
-          Restart = "always";
-          MemoryLimit = "4G";
-          IOSchedulingClass = "3";
-          OOMScoreAdjust = "500";
-          CPUSchedulingPolicy = "idle";
-        };
-
-        Install = {
-          WantedBy = [ "basic.target" ];
-        };
-      };
-    })
   ]);
 }

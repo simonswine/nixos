@@ -51,6 +51,7 @@ in
     home.packages = with pkgs; [
       fd
       fixjson
+      ripgrep
     ];
 
     programs.tmux.extraConfig = ''
@@ -61,8 +62,380 @@ in
       set-option -sg escape-time 10
     '';
 
-    programs.neovim = {
+    programs.nixvim = {
+      viAlias = true;
+      vimAlias = true;
+      vimdiffAlias = true;
       enable = true;
+
+      globals = {
+        mapleader = ",";
+      };
+
+      clipboard = {
+        register = "unnamedplus";
+      };
+
+      opts = {
+        number = true; # Show line numbers
+        relativenumber = true; # Show numbers relative to cursor
+
+        grepprg = "rg --vimgrep --smart-case --follow"; # Replace grep with ripgrep
+
+        expandtab = false;
+        tabstop = 4; # Set indentation of tabs to be equal to 4 spaces.
+        shiftwidth = 4;
+        softtabstop = 4;
+      };
+
+      colorschemes.dracula-nvim.enable = true;
+
+      lsp.servers =
+        mapAttrs'
+          (name: config:
+            nameValuePair name {
+              enable = true;
+              settings = config;
+            }
+          )
+          cfg.lspconfig;
+
+      plugins = {
+        lualine.enable = true;
+        which-key.enable = true;
+
+        # Show document outline
+        aerial.enable = true;
+
+        # TODO: Maybe needs more git plugins here (GBrowse, NeoGit)
+        diffview.enable = true;
+
+        web-devicons.enable = true;
+
+        # Support debugging
+        dap.enable = true;
+        dap-ui.enable = true;
+
+        # Code completion
+        minuet = {
+          enable = true;
+          settings = {
+            request_timeout = 2;
+            throttle = 1500;
+            debounce = 600;
+            provider = "openai_fim_compatible";
+            provider_options = {
+              openai_fim_compatible = {
+                api_key = "OPENROUTER_API_KEY";
+                end_point = "https://openrouter.ai/api/v1/completions";
+                model = "qwen/qwen-2.5-coder-32b-instruct";
+                name = "OpenRouter";
+                optional = {
+                  max_tokens = 56;
+                  top_p = 0.9;
+                };
+                stream = true;
+                transform = config.lib.nixvim.mkRaw ''{
+				    function(args)
+					  args.headers['X-Title'] = 'neovim/minuet'
+					  args.headers['HTTP-Referer'] = 'https://github.com/milanglacier/minuet-ai.nvim'
+                      return args
+                    end,
+					 }'';
+                template = {
+                  prompt = config.lib.nixvim.mkRaw ''function (context_before_cursor, context_after_cursor, _)
+                      return '<|fim_prefix|>'
+                         .. context_before_cursor
+                         .. '<|fim_suffix|>'
+                         .. context_after_cursor
+                         .. '<|fim_middle|>'
+                      end'';
+                  suffix = false;
+                };
+              };
+            };
+          };
+        };
+
+        conform-nvim = {
+          enable = true;
+          settings = {
+            format_on_save = {
+              timeout_ms = 500;
+              lsp_format = "fallback";
+            };
+          } // cfg.conformConfig;
+
+        };
+
+        lint = cfg.lintConfig // {
+          enable = true;
+        };
+
+        lspconfig.enable = true;
+        nvim-tree.enable = true;
+
+        neotest.enable = true;
+
+        treesitter.enable = true;
+        treesitter-context.enable = true;
+
+        blink-cmp-dictionary.enable = true;
+        blink-cmp-git.enable = true;
+        blink-cmp-spell.enable = true;
+        blink-emoji.enable = true;
+        blink-ripgrep.enable = true;
+        blink-cmp = {
+          enable = true;
+          setupLspCapabilities = true;
+
+          settings = {
+            keymap = {
+              "<C-space>" = [
+                "show"
+                "show_documentation"
+                "hide_documentation"
+              ];
+              "<C-e>" = [
+                "hide"
+                "fallback"
+              ];
+              "<CR>" = [
+                "accept"
+                "fallback"
+              ];
+              "<Tab>" = [
+                "select_next"
+                "snippet_forward"
+                "fallback"
+              ];
+              "<S-Tab>" = [
+                "select_prev"
+                "snippet_backward"
+                "fallback"
+              ];
+              "<Up>" = [
+                "select_prev"
+                "fallback"
+              ];
+              "<Down>" = [
+                "select_next"
+                "fallback"
+              ];
+              "<C-p>" = [
+                "select_prev"
+                "fallback"
+              ];
+              "<C-n>" = [
+                "select_next"
+                "fallback"
+              ];
+              "<C-up>" = [
+                "scroll_documentation_up"
+                "fallback"
+              ];
+              "<C-down>" = [
+                "scroll_documentation_down"
+                "fallback"
+              ];
+            };
+            signature = {
+              enabled = true;
+              window = {
+                border = "rounded";
+              };
+            };
+
+            sources = {
+              default = [
+                "buffer"
+                "lsp"
+                "path"
+                "snippets"
+                # Community
+                "minuet"
+                "dictionary"
+                "emoji"
+                "git"
+                "spell"
+                "ripgrep"
+              ];
+              providers = {
+                ripgrep = {
+                  name = "Ripgrep";
+                  module = "blink-ripgrep";
+                  score_offset = 1;
+                };
+                dictionary = {
+                  name = "Dict";
+                  module = "blink-cmp-dictionary";
+                  min_keyword_length = 3;
+                };
+                emoji = {
+                  name = "Emoji";
+                  module = "blink-emoji";
+                  score_offset = 1;
+                };
+                minuet = {
+                  name = "minuet";
+                  module = "minuet.blink";
+                  async = true;
+                  timeout_ms = 2000;
+                  score_offset = 50;
+                };
+                lsp.score_offset = 4;
+                spell = {
+                  name = "Spell";
+                  module = "blink-cmp-spell";
+                  score_offset = 1;
+                };
+                git = {
+                  name = "Git";
+                  module = "blink-cmp-git";
+                  enabled = true;
+                  score_offset = 100;
+                  should_show_items.__raw = ''
+                    function()
+                      return vim.o.filetype == 'gitcommit' or vim.o.filetype == 'markdown'
+                    end
+                  '';
+                  opts = {
+                    git_centers = {
+                      github = {
+                        issue = {
+                          on_error.__raw = "function(_,_) return true end";
+                        };
+                      };
+                    };
+                  };
+                };
+              };
+            };
+
+            appearance = {
+              nerd_font_variant = "mono";
+              kind_icons = {
+                Text = "󰉿";
+                Method = "";
+                Function = "󰊕";
+                Constructor = "󰒓";
+
+                Field = "󰜢";
+                Variable = "󰆦";
+                Property = "󰖷";
+
+                Class = "󱡠";
+                Interface = "󱡠";
+                Struct = "󱡠";
+                Module = "󰅩";
+
+                Unit = "󰪚";
+                Value = "󰦨";
+                Enum = "󰦨";
+                EnumMember = "󰦨";
+
+                Keyword = "󰻾";
+                Constant = "󰏿";
+
+                Snippet = "󱄽";
+                Color = "󰏘";
+                File = "󰈔";
+                Reference = "󰬲";
+                Folder = "󰉋";
+                Event = "󱐋";
+                Operator = "󰪚";
+                TypeParameter = "󰬛";
+                Error = "󰏭";
+                Warning = "󰏯";
+                Information = "󰏮";
+                Hint = "󰏭";
+
+                Emoji = "🤶";
+              };
+            };
+            completion = {
+              menu = {
+                border = "none";
+                draw = {
+                  gap = 1;
+                  treesitter = [ "lsp" ];
+                  columns = [
+                    {
+                      __unkeyed-1 = "label";
+                    }
+                    {
+                      __unkeyed-1 = "kind_icon";
+                      __unkeyed-2 = "kind";
+                      gap = 1;
+                    }
+                    { __unkeyed-1 = "source_name"; }
+                  ];
+                };
+              };
+              trigger = {
+                show_in_snippet = false;
+              };
+              documentation = {
+                auto_show = true;
+                window = {
+                  border = "single";
+                };
+              };
+              accept = {
+                auto_brackets = {
+                  enabled = false;
+                };
+              };
+            };
+          };
+        };
+
+        telescope = {
+          enable = true;
+          keymaps = {
+            "<leader>ff" = {
+              action = "find_files";
+              options = {
+                desc = "Telescope find files";
+              };
+            };
+            "<leader>fg" = {
+              action = "live_grep";
+              options = {
+                desc = "Telescope live grep";
+              };
+            };
+            "<leader>fb" = {
+              action = "buffers";
+              options = {
+                desc = "Telescope buffers";
+              };
+            };
+            "<leader>fh" = {
+              action = "help_tags";
+              options = {
+                desc = "Telescope help tags";
+              };
+            };
+            "<leader>fd" = {
+              action = "diagnostics";
+              options = {
+                desc = "Telescope diagnostics";
+              };
+            };
+            "<leader>fr" = {
+              action = "registers";
+              options = {
+                desc = "Telescope registers";
+              };
+            };
+          };
+        };
+      };
+    };
+
+    programs.neovim = {
+      enable = false;
       viAlias = true;
       vimAlias = true;
       vimdiffAlias = true;
