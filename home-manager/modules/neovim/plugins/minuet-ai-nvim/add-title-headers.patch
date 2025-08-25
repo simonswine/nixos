@@ -1,0 +1,34 @@
+From 0a2661487dc3c84e561bc1355fa9f6a174981ea3 Mon Sep 17 00:00:00 2001
+From: Christian Simon <simon@swine.de>
+Date: Sun, 24 Aug 2025 16:25:06 +0100
+Subject: [PATCH] Add title header
+
+---
+ lua/minuet/backends/openai_base.lua | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/lua/minuet/backends/openai_base.lua b/lua/minuet/backends/openai_base.lua
+index e2379a0..58d9f9e 100644
+--- a/lua/minuet/backends/openai_base.lua
++++ b/lua/minuet/backends/openai_base.lua
+@@ -43,6 +43,8 @@ function M.complete_openai_base(options, context, callback)
+     local headers = {
+         ['Content-Type'] = 'application/json',
+         ['Authorization'] = 'Bearer ' .. utils.get_api_key(options.api_key),
++        ['HTTP-Referer'] = 'https://github.com/milanglacier/minuet-ai.nvim',
++        ['X-Title'] = 'minuet-ai.nvim',
+     }
+     local args = utils.make_curl_args(options.end_point, headers, data_file)
+ 
+@@ -133,6 +135,8 @@ function M.complete_openai_fim_base(options, get_text_fn, context, callback)
+         ['Content-Type'] = 'application/json',
+         ['Accept'] = 'application/json',
+         ['Authorization'] = 'Bearer ' .. utils.get_api_key(options.api_key),
++        ['HTTP-Referer'] = 'https://github.com/milanglacier/minuet-ai.nvim',
++        ['X-Title'] = 'minuet-ai.nvim',
+     }
+ 
+     local transformed_data = {
+-- 
+2.49.0
+

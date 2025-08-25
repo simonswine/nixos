@@ -119,39 +119,31 @@ in
         # Code completion
         minuet = {
           enable = true;
+          package = pkgs.vimPlugins.minuet-ai-nvim.overrideAttrs (old: {
+            patches = (old.patches or [ ]) ++ [
+              ./neovim/plugins/minuet-ai-nvim/add-title-headers.patch
+            ];
+          });
           settings = {
-            request_timeout = 2;
-            throttle = 1500;
-            debounce = 600;
-            provider = "openai_fim_compatible";
+            request_timeout = 3;
+            throttle = 1000;
+            debounce = 300;
+            provider = "openai_compatible";
             provider_options = {
-              openai_fim_compatible = {
+              openai_compatible = {
                 api_key = "OPENROUTER_API_KEY";
-                end_point = "https://openrouter.ai/api/v1/completions";
-                model = "qwen/qwen-2.5-coder-32b-instruct";
+                end_point = "https://openrouter.ai/api/v1/chat/completions";
+                model = "mistralai/devstral-small-2505";
                 name = "OpenRouter";
                 optional = {
-                  max_tokens = 56;
+                  max_tokens = 256;
                   top_p = 0.9;
+                  provider = {
+                    # Prioritize throughput for faster completion
+                    sort = "throughput";
+                  };
                 };
                 stream = true;
-                transform = config.lib.nixvim.mkRaw ''{
-				    function(args)
-					  args.headers['X-Title'] = 'neovim/minuet'
-					  args.headers['HTTP-Referer'] = 'https://github.com/milanglacier/minuet-ai.nvim'
-                      return args
-                    end,
-					 }'';
-                template = {
-                  prompt = config.lib.nixvim.mkRaw ''function (context_before_cursor, context_after_cursor, _)
-                      return '<|fim_prefix|>'
-                         .. context_before_cursor
-                         .. '<|fim_suffix|>'
-                         .. context_after_cursor
-                         .. '<|fim_middle|>'
-                      end'';
-                  suffix = false;
-                };
               };
             };
           };
@@ -238,6 +230,11 @@ in
                 "scroll_documentation_down"
                 "fallback"
               ];
+              "<A-y>" = config.lib.nixvim.mkRaw ''{
+                function (cmp)
+                    cmp.show { providers = {'minuet'} }
+                end,
+			  }'';
             };
             signature = {
               enabled = true;
@@ -253,7 +250,6 @@ in
                 "path"
                 "snippets"
                 # Community
-                "minuet"
                 "dictionary"
                 "emoji"
                 "git"
@@ -280,7 +276,7 @@ in
                   name = "minuet";
                   module = "minuet.blink";
                   async = true;
-                  timeout_ms = 2000;
+                  timeout_ms = 3000;
                   score_offset = 50;
                 };
                 lsp.score_offset = 4;
