@@ -21,6 +21,7 @@ in
         simonswine.dev.ruby.enable = true;
         simonswine.dev.jsonnet.enable = true;
         simonswine.dev.beancount.enable = true;
+        simonswine.dev.lua.enable = true;
 
         home.packages = with pkgs;[
           git
