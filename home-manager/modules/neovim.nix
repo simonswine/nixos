@@ -88,27 +88,112 @@ in
         softtabstop = 4;
       };
 
-      colorschemes.dracula-nvim.enable = true;
+      extraPlugins = with pkgs.vimPlugins; [
+        outline-nvim
+        vim-fugitive
+        vim-rhubarb
+      ];
+      extraConfigLua = ''
+        require("outline").setup {}
+      '';
 
-      lsp.servers =
-        mapAttrs'
-          (name: config:
-            nameValuePair name {
-              enable = true;
-              settings = config;
-            }
-          )
-          cfg.lspconfig;
+      colorschemes.catppuccin = {
+        enable = true;
+        settings.integrations = {
+          telescope.enabled = true;
+          native_lsp.enabled = true;
+          neotree = true;
+        };
+      };
+
+      lsp = {
+        luaConfig.post = ''
+          vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, { border = "rounded" })
+
+          vim.diagnostic.config({
+            virtual_text = true,
+            signs = true,
+            underline = true,
+            update_in_insert = true,
+            severity_sort = false,
+          })
+        '';
+        servers =
+          mapAttrs'
+            (name: config:
+              nameValuePair name {
+                enable = true;
+                settings = config;
+              }
+            )
+            cfg.lspconfig;
+      };
+
+      keymaps = [
+        {
+          mode = [ "n" ];
+          action = "<cmd>Outline<CR>";
+          key = "<leader>o";
+          options = {
+            desc = "Toggle file outline.";
+          };
+        }
+        # LSP Keymaps
+        {
+          mode = [ "n" ];
+          action = "<cmd>lua vim.lsp.buf.declaration()<CR>";
+          key = "gD";
+          options = {
+            desc = "Go to declaration.";
+            silent = true;
+          };
+        }
+        {
+          mode = [ "n" ];
+          action = "<cmd>lua vim.lsp.buf.definition()<CR>";
+          key = "gd";
+          options = {
+            desc = "Go to definition.";
+            silent = true;
+          };
+        }
+        {
+          mode = [ "n" ];
+          action = "<cmd>lua vim.lsp.buf.type_definition()<CR>";
+          key = "gy";
+          options = {
+            desc = "Go to type definition.";
+            silent = true;
+          };
+        }
+        {
+          mode = [ "n" ];
+          action = "<cmd>lua vim.lsp.buf.hover()<CR>";
+          key = "K";
+          options = {
+            desc = "Show more information";
+            silent = true;
+          };
+        }
+        {
+          mode = [ "n" ];
+          action = "<cmd>vim.lsp.buf.implementation()<CR>";
+          key = "gi";
+          options = {
+            desc = "Go to implementation.";
+            silent = true;
+          };
+        }
+      ];
 
       plugins = {
         lualine.enable = true;
         which-key.enable = true;
 
-        # Show document outline
-        aerial.enable = true;
-
-        # TODO: Maybe needs more git plugins here (GBrowse, NeoGit)
+        # Enable git helpers
         diffview.enable = true;
+        gitlinker.enable = true;
+        gitsigns.enable = true;
 
         web-devicons.enable = true;
 
@@ -165,18 +250,19 @@ in
         };
 
         lspconfig.enable = true;
-        nvim-tree.enable = true;
+        neo-tree.enable = true;
 
         neotest.enable = true;
 
-        treesitter.enable = true;
+        treesitter = {
+          enable = true;
+          settings.highlight.enable = true;
+        };
         treesitter-context.enable = true;
 
         blink-cmp-dictionary.enable = true;
-        blink-cmp-git.enable = true;
         blink-cmp-spell.enable = true;
         blink-emoji.enable = true;
-        blink-ripgrep.enable = true;
         blink-cmp = {
           enable = true;
           setupLspCapabilities = true;
@@ -252,16 +338,9 @@ in
                 # Community
                 "dictionary"
                 "emoji"
-                "git"
                 "spell"
-                "ripgrep"
               ];
               providers = {
-                ripgrep = {
-                  name = "Ripgrep";
-                  module = "blink-ripgrep";
-                  score_offset = 1;
-                };
                 dictionary = {
                   name = "Dict";
                   module = "blink-cmp-dictionary";
@@ -284,26 +363,6 @@ in
                   name = "Spell";
                   module = "blink-cmp-spell";
                   score_offset = 1;
-                };
-                git = {
-                  name = "Git";
-                  module = "blink-cmp-git";
-                  enabled = true;
-                  score_offset = 100;
-                  should_show_items.__raw = ''
-                    function()
-                      return vim.o.filetype == 'gitcommit' or vim.o.filetype == 'markdown'
-                    end
-                  '';
-                  opts = {
-                    git_centers = {
-                      github = {
-                        issue = {
-                          on_error.__raw = "function(_,_) return true end";
-                        };
-                      };
-                    };
-                  };
                 };
               };
             };

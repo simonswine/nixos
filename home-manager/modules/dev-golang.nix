@@ -10,7 +10,7 @@ in
 
     package = mkOption {
       type = types.package;
-      default = pkgs.go_1_23;
+      default = pkgs.go_1_24;
       defaultText = literalExpression "pkgs.go_1_20";
       description = ''
         Which package to use for Go.
@@ -49,6 +49,13 @@ in
         mockgen
         gotools # for goimports
       ];
+
+      programs.nixvim.plugins =
+        {
+          neotest.adapters.go.enable = true;
+          dap-go.enable = true;
+        };
+
       simonswine.neovim = {
         lspconfig.gopls.cmd = [
           "${pkgs.gopls}/bin/gopls"

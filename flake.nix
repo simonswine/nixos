@@ -39,6 +39,7 @@
           austin = pkgs.callPackage ./pkgs/austin { };
           benchstat = pkgs.callPackage ./pkgs/benchstat { };
           cert-updater = pkgs.callPackage ./pkgs/cert-updater { };
+          claude-code = pkgs.callPackage ./pkgs/claude-code { };
           devfiler = pkgs.callPackage ./pkgs/devfiler { };
           dezoomify-rs = pkgs.callPackage ./pkgs/dezoomify-rs { };
           dhclient = pkgs.callPackage ./pkgs/dhclient { };
@@ -170,6 +171,7 @@
             austin = pkgs.austin;
             benchstat = pkgs.benchstat;
             cert-updater = pkgs.cert-updater;
+            claude-code = pkgs.claude-code;
             cloud-init = pkgs.cloud-init;
             containerd = pkgs.containerd;
             devfiler = pkgs.devfiler;
