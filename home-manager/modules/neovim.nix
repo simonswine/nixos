@@ -99,13 +99,16 @@ in
 
       colorschemes.catppuccin = {
         enable = true;
-        settings.integrations = {
-          diffview = true;
-          native_lsp.enabled = true;
-          neotest = true;
-          neotree = true;
-          telescope.enabled = true;
-          which-key = true;
+        settings = {
+          transparent_background = true;
+          integrations = {
+            diffview = true;
+            native_lsp.enabled = true;
+            neotest = true;
+            neotree = true;
+            telescope.enabled = true;
+            which_key = true;
+          };
         };
       };
 
