@@ -50,6 +50,9 @@ in
           # logcli
           grafana-loki
 
+          # ai stuff
+          claude-code
+
           # protobuf
           protoscope
         ];
