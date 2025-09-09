@@ -86,6 +86,15 @@ in
         tabstop = 4; # Set indentation of tabs to be equal to 4 spaces.
         shiftwidth = 4;
         softtabstop = 4;
+
+        # highlight certain whitespace characters
+        list = true;
+        listchars = {
+          tab = ">.";
+          trail = ".";
+          extends = "#";
+          nbsp = ".";
+        };
       };
 
       extraPlugins = with pkgs.vimPlugins; [
