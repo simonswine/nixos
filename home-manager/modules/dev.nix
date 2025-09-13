@@ -55,6 +55,8 @@ in
 
           # protobuf
           protoscope
+
+          devfiler
         ];
       }
     )
