@@ -11,12 +11,6 @@
     };
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
     nixpkgs.url = "github:nixos/nixpkgs/nixos-25.05-small";
-    poetry2nix = {
-      url = "github:nix-community/poetry2nix";
-      inputs.nixpkgs.follows = "nixpkgs";
-      inputs.flake-utils.follows = "flake-utils";
-      inputs.systems.follows = "systems";
-    };
     nixvim = {
       url = "github:nix-community/nixvim/nixos-25.05";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -28,7 +22,6 @@
       lib = inputs.nixpkgs.lib;
 
       pkgsOverlays = [
-        inputs.poetry2nix.overlays.default
         (import ./overlays/kubernetes/default.nix)
         (import ./overlays/containerd/default.nix)
         (import ./overlays/cloud-init/default.nix)
