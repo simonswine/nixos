@@ -3,4 +3,14 @@
 # to /etc/nixos/configuration.nix instead.
 { config, lib, pkgs, modulesPath, ... }:
 
-{ }
+{
+  # These are set in order to pass the flake check
+  boot.loader.grub.devices = [ "/dev/null" ];
+  fileSystems."/" =
+    {
+      device = "tmpfs";
+      fsType = "tmpfs";
+    };
+
+
+}
