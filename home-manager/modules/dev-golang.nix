@@ -57,9 +57,47 @@ in
         };
 
       simonswine.neovim = {
-        lspconfig.gopls.cmd = [
-          "${pkgs.gopls}/bin/gopls"
-        ];
+        lspconfig.gopls = {
+          cmd = [
+            "${pkgs.gopls}/bin/gopls"
+          ];
+          gopls = {
+            # general settings
+            # https://github.com/golang/tools/blob/master/gopls/doc/settings.md
+            gofumpt = true;
+            analyses = {
+              # analyzers settings
+              # https://github.com/golang/tools/blob/master/gopls/doc/analyzers.md
+              fieldalignment = true;
+              nilness = true;
+              shadow = true;
+              unusedparams = true;
+              unusedwrite = true;
+              useany = true;
+              unusedvariable = true;
+            };
+            # use linters from staticcheck.io
+            staticcheck = true;
+            # diagnostics reported by the gc_details command
+            annotations = {
+              bounds = true;
+              escape = true;
+              inline = true;
+              nil = true;
+            };
+            hints = {
+              # inlayhints settings
+              # https://github.com/golang/tools/blob/master/gopls/doc/inlayHints.md
+              assignVariableTypes = true;
+              compositeLiteralFields = true;
+              compositeLiteralTypes = true;
+              constantValues = true;
+              functionTypeParameters = true;
+              parameterNames = true;
+              rangeVariableTypes = true;
+            };
+          };
+        };
         lspconfig.golangci_lint_ls.cmd = [
           "${pkgs.golangci-lint-langserver}/bin/golangci-lint-langserver"
         ];
