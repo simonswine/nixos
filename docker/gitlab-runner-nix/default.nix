@@ -13,11 +13,12 @@
 , openssh
 , xz
 , writeTextFile
+, attic-client
 }:
 dockerTools.buildImage
 {
   name = "simonswine/gitlab-runner-nix";
-  tag = "nixos-24.11";
+  tag = "nixos-25.05";
   created = "now";
 
   contents = [
@@ -36,6 +37,8 @@ dockerTools.buildImage
     xz
     gnumake
     gnugrep
+
+    attic-client
 
     # for haskell binaries
     iana-etc
