@@ -6,17 +6,18 @@
 , zlib
 , cmake
 , protobuf
+, llvmPackages
 }:
 
-rustPlatform.buildRustPackage rec {
-  pname = "devfilter";
-  version = "git-2025-09-22";
+rustPlatform.buildRustPackage {
+  pname = "devfiler";
+  version = "git-2025-10-01";
 
   src = fetchFromGitHub {
     owner = "elastic";
     repo = "devfiler";
-    rev = "ae6ec150adf10c0f2e8cc5e32556f62df0092917";
-    hash = "sha256-1sLu9WNK/dzbvuKFYjAeYwnD8nSiGrVRlQWUgOngFpo=";
+    rev = "4b20b5ee634e4b5c58016658957260a73b16800b";
+    hash = "sha256-7GvXkAIvtpYbhfpEc6A7i/6gdB8uHMKTlWi9man+aE8=";
     fetchSubmodules = true;
   };
 
@@ -26,6 +27,7 @@ rustPlatform.buildRustPackage rec {
     pkg-config
     cmake
     protobuf
+    rustPlatform.bindgenHook
   ];
 
   buildInputs = [
