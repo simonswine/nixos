@@ -82,10 +82,12 @@ in
 
         grepprg = "rg --vimgrep --smart-case --follow"; # Replace grep with ripgrep
 
-        expandtab = false;
+        expandtab = true;
         tabstop = 4; # Set indentation of tabs to be equal to 4 spaces.
         shiftwidth = 4;
         softtabstop = 4;
+
+        undofile = true; # Persistent undos
 
         # highlight certain whitespace characters
         list = true;
