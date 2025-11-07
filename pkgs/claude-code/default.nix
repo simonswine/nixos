@@ -47,7 +47,7 @@ buildNpmPackage (finalAttrs: {
     description = "Agentic coding tool that lives in your terminal, understands your codebase, and helps you code faster";
     homepage = "https://github.com/anthropics/claude-code";
     downloadPage = "https://www.npmjs.com/package/@anthropic-ai/claude-code";
-    license = lib.licenses.unfree;
+    # TODO: license = lib.licenses.unfree;
     maintainers = with lib.maintainers; [
       malo
       markus1189
