@@ -4,7 +4,7 @@ let
   cfgNodeExporter = config.services.prometheus.exporters.node;
 
   python = pkgs.python3.withPackages (p: [
-    p.prometheus_client
+    p.prometheus-client
   ]);
 in
 with lib;
