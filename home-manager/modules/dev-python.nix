@@ -11,7 +11,7 @@ in
 
   config = mkIf cfg.enable {
     simonswine.neovim.lspconfig.pylsp.cmd = [
-      "${pkgs.python311Packages.python-lsp-server}/bin/pylsp"
+      "${pkgs.python3Packages.python-lsp-server}/bin/pylsp"
     ];
   };
 }
