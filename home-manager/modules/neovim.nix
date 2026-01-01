@@ -201,6 +201,97 @@ in
             silent = true;
           };
         }
+        {
+          mode = [ "n" ];
+          key = "<F2>";
+          action = "<cmd>lua require('dap').continue()<CR>";
+          options = {
+            desc = "DAP- continue";
+            noremap = true;
+          };
+        }
+        {
+          mode = [ "n" ];
+          key = "<F3>";
+          action = "<cmd>lua require('dap').step_back()<CR>";
+          options = {
+            desc = "DAP- step back";
+            noremap = true;
+          };
+        }
+        {
+          mode = [ "n" ];
+          key = "<F4>";
+          action = "<cmd>lua require('dap').step_over()<CR>";
+          options = {
+            desc = "DAP- step over";
+            noremap = true;
+          };
+        }
+        {
+          mode = [ "n" ];
+          key = "<F5>";
+          action = "<cmd>lua require('dap').step_into()<CR>";
+          options = {
+            desc = "DAP- step into";
+            noremap = true;
+          };
+        }
+        {
+          mode = [ "n" ];
+          key = "<F6>";
+          action = "<cmd>lua require('dap').step_out()<CR>";
+          options = {
+            desc = "DAP- step out";
+            noremap = true;
+          };
+        }
+        {
+          mode = [ "n" ];
+          key = "<F8>";
+          action = "<cmd>lua require('dap').restart()<CR>";
+          options = {
+            desc = "DAP- restart";
+            noremap = true;
+          };
+        }
+        {
+          mode = [ "n" ];
+          action = "<cmd>lua require('dapui').toggle()<CR>";
+          key = "<leader>dd";
+          options = {
+            desc = "DAP- toggle UI";
+            noremap = true;
+          };
+        }
+        {
+          mode = [ "n" ];
+          action = "<cmd>lua require('dap-go').debug_test()<CR>";
+          key = "<leader>dt";
+          options = {
+            desc = "DAP- toggle UI";
+            noremap = true;
+            silent = true;
+          };
+        }
+        {
+          mode = [ "n" ];
+          key = "<Leader>db";
+          action = "<cmd>lua require('dap').toggle_breakpoint()<CR>";
+          options = {
+            desc = "DAP- toggle breakpoint";
+            noremap = true;
+          };
+        }
+        {
+          mode = [ "n" ];
+          key = "<Leader>dB";
+          action = "<cmd>lua require('dap').set_breakpoint()<CR>";
+          options = {
+            desc = "DAP- set breakpoint";
+            noremap = true;
+          };
+        }
       ];
 
       plugins = {
