@@ -14,12 +14,12 @@ in
           let
             parrot-nvim = pkgs.vimUtils.buildVimPlugin rec {
               pname = "parrot.nvim";
-              version = "2.3.0";
+              version = "2.5.1";
               src = pkgs.fetchFromGitHub {
                 owner = "frankroeder";
                 repo = "parrot.nvim";
                 rev = "v${version}";
-                hash = "sha256-cneJ4ReiEKInIbzlcjr8N2+de6FQTRk+xGfBRMhF1EY=";
+                hash = "sha256-qzxZISF0vI4ciiBVLsU3Xw2DSPNCuXZIhF8+dtW9FOg=";
               };
               dependencies = [ pkgs.vimPlugins.plenary-nvim ];
               checkInputs = [
