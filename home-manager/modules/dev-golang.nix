@@ -50,11 +50,42 @@ in
         gotools # for goimports
       ];
 
-      programs.nixvim.plugins =
-        {
-          neotest.adapters.go.enable = true;
-          dap-go.enable = true;
+      programs.nixvim.plugins = {
+        neotest.adapters.golang = {
+          enable = true;
+          package = pkgs.vimUtils.buildVimPlugin rec {
+            pname = "neotest-golang";
+            version = "1.15.1";
+            src = pkgs.fetchFromGitHub {
+              owner = "fredrikaverpil";
+              repo = "neotest-golang";
+              rev = "v${version}";
+              hash = "sha256-fAnd4PFlrDjSmdtH/FwVxlUjKqAkXADh6u2QbgcBBs8=";
+            };
+            dependencies = with pkgs.vimPlugins; [
+              neotest
+              nvim-nio
+              nvim-dap-go
+              nvim-treesitter
+              plenary-nvim
+            ];
+          };
         };
+        dap-go = {
+          enable = true;
+          settings = {
+            dap_configurations = [{
+              type = "go";
+              name = "Attach remote";
+              mode = "remote";
+              request = "attach";
+            }];
+            delve = {
+              path = "dlv";
+            };
+          };
+        };
+      };
 
       simonswine.neovim = {
         lspconfig.gopls = {
