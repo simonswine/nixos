@@ -96,7 +96,7 @@ let
   };
 
 
-  toYAML = name: attrs: pkgs.runCommandNoCC name
+  toYAML = name: attrs: pkgs.runCommand name
     {
       preferLocalBuild = true;
       json = builtins.toFile "${name}.json" (builtins.toJSON attrs);
