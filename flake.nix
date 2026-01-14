@@ -28,11 +28,15 @@
       ];
 
       pkgsConfig = {
+        allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) [
+          "crush"
+        ];
         packageOverrides = pkgs: {
           austin = pkgs.callPackage ./pkgs/austin { };
           benchstat = pkgs.callPackage ./pkgs/benchstat { };
           cert-updater = pkgs.callPackage ./pkgs/cert-updater { };
           claude-code = pkgs.callPackage ./pkgs/claude-code { };
+          crush = pkgs.callPackage ./pkgs/crush { };
           devfiler = pkgs.callPackage ./pkgs/devfiler { };
           dezoomify-rs = pkgs.callPackage ./pkgs/dezoomify-rs { };
           dhclient = pkgs.callPackage ./pkgs/dhclient { };
@@ -166,17 +170,16 @@
             benchstat = pkgs.benchstat;
             cert-updater = pkgs.cert-updater;
             claude-code = pkgs.claude-code;
+            crush = pkgs.crush;
             cloud-init = pkgs.cloud-init;
             containerd = pkgs.containerd;
             devfiler = pkgs.devfiler;
             dezoomify-rs = pkgs.dezoomify-rs;
-            dhclient = pkgs.dhclient;
             docker-machine = pkgs.docker-machine;
             docker-machine-driver-hetzner = pkgs.docker-machine-driver-hetzner;
             faillint = pkgs.faillint;
             fronius-exporter = pkgs.fronius-exporter;
             g810-led = pkgs.g810-led;
-            get-focused-x-screen = pkgs.get-focused-x-screen;
             gimli-addr2line = pkgs.gimli-addr2line;
             gitlab-runner = pkgs.gitlab-runner;
             goda = pkgs.goda;
@@ -212,6 +215,10 @@
             vim-markdown-composer = pkgs.vim-markdown-composer;
             yasdi = pkgs.yasdi;
             yasdi-exporter = pkgs.yasdi-exporter;
+          }
+          // lib.optionalAttrs pkgs.stdenv.hostPlatform.isLinux {
+            dhclient = pkgs.dhclient;
+            get-focused-x-screen = pkgs.get-focused-x-screen;
           };
 
         }
