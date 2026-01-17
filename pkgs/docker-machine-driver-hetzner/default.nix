@@ -20,6 +20,6 @@ buildGoModule rec {
     homepage = "https://github.com/JonasProgrammer/docker-machine-driver-hetzner";
     license = licenses.mit;
     maintainers = with maintainers; [ simonswine ];
-    platforms = platforms.linux;
+    platforms = platforms.unix;
   };
 }

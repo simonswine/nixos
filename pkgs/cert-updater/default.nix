@@ -20,6 +20,6 @@ buildGoModule rec {
     homepage = "https://github.com/simonswine/cert-updater";
     license = licenses.asl20;
     maintainers = with maintainers; [ simonswine ];
-    platforms = platforms.linux;
+    platforms = platforms.unix;
   };
 }
