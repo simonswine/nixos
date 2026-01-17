@@ -52,6 +52,7 @@ in
 
           # ai stuff
           claude-code
+          crush
 
           # protobuf
           protoscope
