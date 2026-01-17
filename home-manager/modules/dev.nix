@@ -41,6 +41,7 @@ in
 
         home.packages = with pkgs; [
           drone-cli
+          glow
 
           # add cloud-provider tools
           (google-cloud-sdk.withExtraComponents [ google-cloud-sdk.components.gke-gcloud-auth-plugin ])
