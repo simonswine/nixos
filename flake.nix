@@ -30,6 +30,7 @@
       pkgsConfig = {
         allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) [
           "crush"
+          "claude-code"
         ];
         packageOverrides = pkgs: {
           austin = pkgs.callPackage ./pkgs/austin { };
