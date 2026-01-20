@@ -21,7 +21,8 @@
   environment.systemPackages = with pkgs; [
     wget
     vim
-    nixpkgs-fmt
+    nixfmt-tree
+    nixfmt
     htop
     atop
     lsof

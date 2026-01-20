@@ -30,12 +30,12 @@ in
       };
       conformConfig = {
         formatters = {
-          nixpkgs_fmt = {
-            command = "${pkgs.nixpkgs-fmt}/bin/nixpkgs-fmt";
+          nixfmt = {
+            command = "${pkgs.nixfmt}/bin/nixfmt";
           };
         };
         formatters_by_ft = {
-          nix = [ "nixpkgs_fmt" ];
+          nix = [ "nixfmt" ];
         };
       };
     };
