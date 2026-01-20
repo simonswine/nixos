@@ -1,4 +1,9 @@
-{ config, pkgs, lib, ... }:
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}:
 let
   authorizedKeys = [
     "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPQ5dGULRFzfKTZPYk9OG95EL/hvE/F8zqHTUHtXTYIt 2017-ed25519-simon@swine.de"
@@ -12,16 +17,27 @@ let
 in
 
 {
-  boot.initrd.availableKernelModules = [ "virtio_net" "virtio_pci" "virtio_mmio" "virtio_blk" "virtio_scsi" "9p" "9pnet_virtio" ];
-  boot.initrd.kernelModules = [ "virtio_balloon" "virtio_console" "virtio_rng" ];
+  boot.initrd.availableKernelModules = [
+    "virtio_net"
+    "virtio_pci"
+    "virtio_mmio"
+    "virtio_blk"
+    "virtio_scsi"
+    "9p"
+    "9pnet_virtio"
+  ];
+  boot.initrd.kernelModules = [
+    "virtio_balloon"
+    "virtio_console"
+    "virtio_rng"
+  ];
 
-  boot.initrd.postDeviceCommands =
-    ''
-      # Set the system time from the hardware clock to work around a
-      # bug in qemu-kvm > 1.5.2 (where the VM clock is initialised
-      # to the *boot time* of the host).
-      hwclock -s
-    '';
+  boot.initrd.postDeviceCommands = ''
+    # Set the system time from the hardware clock to work around a
+    # bug in qemu-kvm > 1.5.2 (where the VM clock is initialised
+    # to the *boot time* of the host).
+    hwclock -s
+  '';
 
   # use networkd
   networking.useNetworkd = true;
@@ -33,35 +49,37 @@ in
   networking.wireguard.enable = true;
   networking.firewall.enable = false;
 
-  environment.systemPackages = with pkgs;
-    [
-      vim
-      git
-      wireguard-tools
-      kubectl
-    ];
+  environment.systemPackages = with pkgs; [
+    vim
+    git
+    wireguard-tools
+    kubectl
+  ];
 
   environment.variables = kubeEnvironment;
   systemd.globalEnvironment = kubeEnvironment;
 
-  services.prometheus.exporters =
-    {
-      wireguard.enable = true;
-    };
+  services.prometheus.exporters = {
+    wireguard.enable = true;
+  };
 
   # Enable the OpenSSH daemon.
   services.openssh.enable = true;
-  users.users.root =
-    {
-      openssh.authorizedKeys.keys = authorizedKeys;
-    };
+  users.users.root = {
+    openssh.authorizedKeys.keys = authorizedKeys;
+  };
 
   # mount wireguard config
-  fileSystems."/run/secrets/wireguard" =
-    {
-      device = "/dev/disk/by-id/virtio-wireguard-config";
-      options = [ "uid=0" "gid=0" "dmode=0700" "mode=0600" "norock" ];
-    };
+  fileSystems."/run/secrets/wireguard" = {
+    device = "/dev/disk/by-id/virtio-wireguard-config";
+    options = [
+      "uid=0"
+      "gid=0"
+      "dmode=0700"
+      "mode=0600"
+      "norock"
+    ];
+  };
   systemd.services.wireguard-config = {
     # ensure copy happens before networkd gets started
     wantedBy = [ "systemd-networkd.service" ];
@@ -72,42 +90,44 @@ in
     description = "Copy wireguard config to correct folder.";
     serviceConfig = {
       Type = "oneshot";
-      ExecStart = pkgs.writeScript "wireguard-config.sh"
-        ''
-          #!${pkgs.bash}/bin/bash
+      ExecStart = pkgs.writeScript "wireguard-config.sh" ''
+        #!${pkgs.bash}/bin/bash
 
-          set -euo pipefail
-          set -x
+        set -euo pipefail
+        set -x
 
-          DEST_DIR=/etc/systemd/network
-          SOURCE_DIR=/run/secrets/wireguard
+        DEST_DIR=/etc/systemd/network
+        SOURCE_DIR=/run/secrets/wireguard
 
-          mkdir -p "''${DEST_DIR}"
+        mkdir -p "''${DEST_DIR}"
 
-          umask 027
-          for file in "''${SOURCE_DIR}/"*; do
-            test -f "''${file}" || continue
-            dest="''${DEST_DIR}/$(basename "''${file}")"
-            cat "$file" > "$dest"
-            chown root:systemd-network "$dest"
-          done
-        '';
+        umask 027
+        for file in "''${SOURCE_DIR}/"*; do
+          test -f "''${file}" || continue
+          dest="''${DEST_DIR}/$(basename "''${file}")"
+          cat "$file" > "$dest"
+          chown root:systemd-network "$dest"
+        done
+      '';
     };
   };
 
   # mount service account secret
-  fileSystems."/run/secrets/kubernetes.io/serviceaccount" =
-    {
-      device = "/dev/disk/by-id/virtio-service-account";
-      options = [ "uid=0" "gid=0" "dmode=0700" "mode=0600" "norock" ];
-    };
-
+  fileSystems."/run/secrets/kubernetes.io/serviceaccount" = {
+    device = "/dev/disk/by-id/virtio-service-account";
+    options = [
+      "uid=0"
+      "gid=0"
+      "dmode=0700"
+      "mode=0600"
+      "norock"
+    ];
+  };
 
   # use kubernetes API to fetch ssh host keys instead of generating new ones
   systemd.services.sshd = {
-    serviceConfig.ExecStartPre = lib.mkForce (pkgs.writeScript
-      "fetch-ssh-host-keys.sh"
-      ''
+    serviceConfig.ExecStartPre = lib.mkForce (
+      pkgs.writeScript "fetch-ssh-host-keys.sh" ''
         #!${pkgs.bash}/bin/bash
 
         set -euo pipefail
@@ -126,7 +146,8 @@ in
           fi
           echo "''${data_json}" | ${pkgs.jq}/bin/jq -r '.data["'$f'"]' | base64 -d > "$fpath"
         done
-      '');
+      ''
+    );
     after = [ "run-secrets-kubernetes.io-serviceaccount.mount" ];
   };
 

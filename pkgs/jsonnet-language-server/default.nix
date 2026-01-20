@@ -1,4 +1,8 @@
-{ lib, buildGoModule, fetchFromGitHub }:
+{
+  lib,
+  buildGoModule,
+  fetchFromGitHub,
+}:
 
 buildGoModule rec {
   pname = "jsonnet-language-server";
@@ -16,6 +20,9 @@ buildGoModule rec {
     description = "A Language Server Protocol server for Jsonnet";
     homepage = "https://github.com/grafana/jsonnet-language-server";
     license = licenses.agpl3Only;
-    maintainers = with maintainers; [ jdbaldry simonswine ];
+    maintainers = with maintainers; [
+      jdbaldry
+      simonswine
+    ];
   };
 }

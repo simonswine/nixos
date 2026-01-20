@@ -1,8 +1,12 @@
-{ inputs, pkgs, ... }: {
+{ inputs, pkgs, ... }:
+{
 
   # Export sys as a local registry
   nix.registry.sys = {
-    from = { type = "indirect"; id = "sys"; };
+    from = {
+      type = "indirect";
+      id = "sys";
+    };
     flake = inputs.nixpkgs;
   };
 
@@ -15,5 +19,8 @@
   nix.nixPath = [ "nixpkgs=${inputs.nixpkgs}" ];
 
   # Enable flakes
-  nix.settings.experimental-features = [ "nix-command" "flakes" ];
+  nix.settings.experimental-features = [
+    "nix-command"
+    "flakes"
+  ];
 }

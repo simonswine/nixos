@@ -1,4 +1,9 @@
-{ config, pkgs, lib, ... }:
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}:
 
 let
   preBuildScript = pkgs.writeScript "setup-container" ''
@@ -14,7 +19,18 @@ let
     . ${pkgs.nix}/etc/profile.d/nix.sh
     ${pkgs.nix}/bin/nix-channel --add https://nixos.org/channels/nixos-25.05 nixpkgs
     ${pkgs.nix}/bin/nix-channel --update nixpkgs
-    ${pkgs.nix}/bin/nix-env -i ${builtins.concatStringsSep " " (with pkgs; [ nix cacert git openssh attic-client ])}
+    ${pkgs.nix}/bin/nix-env -i ${
+      builtins.concatStringsSep " " (
+        with pkgs;
+        [
+          nix
+          cacert
+          git
+          openssh
+          attic-client
+        ]
+      )
+    }
   '';
 in
 
@@ -61,33 +77,32 @@ in
     PATH = "/nix/var/nix/profiles/default/bin:/nix/var/nix/profiles/default/sbin:/bin:/sbin:/usr/bin:/usr/sbin";
   };
 
-  environment.systemPackages = with pkgs;
-    [
-      vim
-      git
-      cachix
-      # Provide a fake yum, so docker-machine is happy
-      (pkgs.writeShellScriptBin "yum" "exit 0")
+  environment.systemPackages = with pkgs; [
+    vim
+    git
+    cachix
+    # Provide a fake yum, so docker-machine is happy
+    (pkgs.writeShellScriptBin "yum" "exit 0")
 
-      # Allow docker-machine to "write" to the override of docker.service.d
-      (pkgs.writeShellScriptBin "tee" ''
-        if [ "$1" = "/etc/systemd/system/docker.service.d/10-machine.conf" ]; then
-          # Take the ExecStart line
-          EXTRA_ARGS=`cat /dev/stdin | grep -P -o '^ExecStart=/usr/bin/dockerd \K(.*)'`
+    # Allow docker-machine to "write" to the override of docker.service.d
+    (pkgs.writeShellScriptBin "tee" ''
+      if [ "$1" = "/etc/systemd/system/docker.service.d/10-machine.conf" ]; then
+        # Take the ExecStart line
+        EXTRA_ARGS=`cat /dev/stdin | grep -P -o '^ExecStart=/usr/bin/dockerd \K(.*)'`
 
-          # Remove unwanted flags
-          EXTRA_ARGS=''${EXTRA_ARGS/-H unix:\/\/\/var\/run\/docker.sock /}
-          EXTRA_ARGS=''${EXTRA_ARGS/--storage-driver overlay2 /}
+        # Remove unwanted flags
+        EXTRA_ARGS=''${EXTRA_ARGS/-H unix:\/\/\/var\/run\/docker.sock /}
+        EXTRA_ARGS=''${EXTRA_ARGS/--storage-driver overlay2 /}
 
-          # Write to file
-          mkdir -p /run/sysconfig
-          echo "EXTRA_ARGS=\"''${EXTRA_ARGS}\"" | ${pkgs.coreutils}/bin/tee "/run/sysconfig/docker"
-          exit 0
-        fi
-        exec ${pkgs.coreutils}/bin/tee "$@"
-      '')
+        # Write to file
+        mkdir -p /run/sysconfig
+        echo "EXTRA_ARGS=\"''${EXTRA_ARGS}\"" | ${pkgs.coreutils}/bin/tee "/run/sysconfig/docker"
+        exit 0
+      fi
+      exec ${pkgs.coreutils}/bin/tee "$@"
+    '')
 
-    ];
+  ];
 
   # Enable the OpenSSH daemon.
   services.openssh.enable = true;
@@ -102,7 +117,9 @@ in
     let
       cfg = config.virtualisation.docker;
       settingsFormat = pkgs.formats.json { };
-      daemonSettingsFile = settingsFormat.generate "daemon.json" (builtins.removeAttrs cfg.daemon.settings [ "hosts" ]);
+      daemonSettingsFile = settingsFormat.generate "daemon.json" (
+        builtins.removeAttrs cfg.daemon.settings [ "hosts" ]
+      );
     in
     {
       serviceConfig = {
@@ -114,11 +131,10 @@ in
       };
     };
 
-  system.activationScripts.gitlab-runner-nix.text =
-    ''
-      mkdir -p /nix/init
-      cat ${preBuildScript} > /nix/init/activate
-    '';
+  system.activationScripts.gitlab-runner-nix.text = ''
+    mkdir -p /nix/init
+    cat ${preBuildScript} > /nix/init/activate
+  '';
 
   system.stateVersion = "21.05";
 }

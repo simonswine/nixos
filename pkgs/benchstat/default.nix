@@ -1,4 +1,8 @@
-{ lib, buildGoModule, fetchgit }:
+{
+  lib,
+  buildGoModule,
+  fetchgit,
+}:
 
 buildGoModule {
   name = "benchstat";

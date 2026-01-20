@@ -1,4 +1,8 @@
-{ lib, buildGoModule, fetchFromGitLab }:
+{
+  lib,
+  buildGoModule,
+  fetchFromGitLab,
+}:
 
 let
   version = "17.10.1";
@@ -28,7 +32,6 @@ buildGoModule rec {
   postInstall = ''
     install packaging/root/usr/share/gitlab-runner/clear-docker-cache $out/bin
   '';
-
 
   doCheck = false;
 

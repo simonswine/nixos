@@ -1,4 +1,9 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 with lib;
 let
@@ -94,56 +99,63 @@ in
 
     targets = mkOption {
       default = { };
-      type = with types; attrsOf (submodule { options = targetConfig; });
+      type =
+        with types;
+        attrsOf (submodule {
+          options = targetConfig;
+        });
       description = "Definition of restic backup targets.";
     };
-
 
   };
 
   config = {
     systemd.user = {
       services =
-        mapAttrs'
-          (name: config: nameValuePair (backupName name) (
-            {
-              Unit = {
-                Description = "Restic backup ${name}";
-              };
-              Service = ((commonService name) // {
+        mapAttrs' (
+          name: config:
+          nameValuePair (backupName name) ({
+            Unit = {
+              Description = "Restic backup ${name}";
+            };
+            Service = (
+              (commonService name)
+              // {
                 ExecStart = [
                   "${pkgs.restic}/bin/restic backup --verbose --one-file-system --tag systemd.timer --exclude-file=${pkgs.writeText "restic-excludes" (builtins.concatStringsSep "\n" config.excludes)} ${builtins.concatStringsSep " " config.paths}"
                 ];
-              });
-            }
-          ))
-          cfg.targets
-        //
-        mapAttrs'
-          (name: config: nameValuePair (forgetName name) (
-            {
-              Unit = {
-                Description = "Clean up restic backups ${name}";
-              };
-              Service = ((commonService name) // {
+              }
+            );
+          })
+        ) cfg.targets
+        // mapAttrs' (
+          name: config:
+          nameValuePair (forgetName name) ({
+            Unit = {
+              Description = "Clean up restic backups ${name}";
+            };
+            Service = (
+              (commonService name)
+              // {
                 ExecStart = [
                   (
-                    "${pkgs.restic}/bin/restic forget --verbose --tag systemd.timer --group-by 'paths,tag' --prune " +
-                    "--keep-daily ${toString config.retention.daily} " +
-                    "--keep-weekly ${toString config.retention.weekly} " +
-                    "--keep-monthly ${toString config.retention.monthly} " +
-                    "--keep-yearly ${toString config.retention.yearly} " +
-                    "--keep-last ${toString config.retention.last}"
+                    "${pkgs.restic}/bin/restic forget --verbose --tag systemd.timer --group-by 'paths,tag' --prune "
+                    + "--keep-daily ${toString config.retention.daily} "
+                    + "--keep-weekly ${toString config.retention.weekly} "
+                    + "--keep-monthly ${toString config.retention.monthly} "
+                    + "--keep-yearly ${toString config.retention.yearly} "
+                    + "--keep-last ${toString config.retention.last}"
                   )
                 ];
-              });
-            }
-          ))
-          cfg.targets;
+              }
+            );
+          })
+        ) cfg.targets;
 
       timers =
-        mapAttrs'
-          (name: config: nameValuePair (backupName name) ({
+        mapAttrs' (
+          name: config:
+          nameValuePair (backupName name) ({
             Unit = {
               Description = "Run restic backup for ${name}";
             };
@@ -155,11 +167,11 @@ in
             Install = {
               WantedBy = [ "timers.target" ];
             };
-          }))
-          cfg.targets
-        //
-        mapAttrs'
-          (name: config: nameValuePair (forgetName name) ({
+          })
+        ) cfg.targets
+        // mapAttrs' (
+          name: config:
+          nameValuePair (forgetName name) ({
             Unit = {
               Description = "Clean up restic backups ${name}";
             };
@@ -171,8 +183,8 @@ in
             Install = {
               WantedBy = [ "timers.target" ];
             };
-          }))
-          cfg.targets;
+          })
+        ) cfg.targets;
     };
   };
 }

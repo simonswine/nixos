@@ -1,4 +1,9 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 with lib;
 let
@@ -28,7 +33,7 @@ in
       KUBECTL_EXTERNAL_DIFF = "${pkgs.dyff}/bin/dyff between --omit-header --set-exit-code --color on --truecolor on";
     };
 
-    home.packages = with pkgs;[
+    home.packages = with pkgs; [
       fzf
       kubectl
       tmux
@@ -55,10 +60,9 @@ in
         size = 1000000;
       };
       enableCompletion = true;
-      sessionVariables =
-        {
-          FZF_BASE = "${pkgs.fzf}/share/fzf";
-        };
+      sessionVariables = {
+        FZF_BASE = "${pkgs.fzf}/share/fzf";
+      };
     };
   };
 }

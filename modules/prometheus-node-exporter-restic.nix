@@ -1,4 +1,9 @@
-{ config, pkgs, lib, ... }:
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}:
 let
   cfg = config.services.prometheus-node-exporter-restic;
   cfgTextfiles = config.services.prometheus-node-exporter-textfiles;

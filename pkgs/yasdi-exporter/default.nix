@@ -1,4 +1,10 @@
-{ lib, buildGoModule, fetchFromGitHub, makeWrapper, yasdi }:
+{
+  lib,
+  buildGoModule,
+  fetchFromGitHub,
+  makeWrapper,
+  yasdi,
+}:
 
 buildGoModule {
   name = "yasdi-exporter";

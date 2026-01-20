@@ -1,8 +1,9 @@
-{ lib
-, pkgs
-, config
-, modulesPath
-, ...
+{
+  lib,
+  pkgs,
+  config,
+  modulesPath,
+  ...
 }:
 let
   rootPartitionUUID = "14e19a7b-0ae0-484d-9d54-43bd6fdc20c7";
@@ -58,28 +59,39 @@ in
 
   system.build.sdImage = lib.mkForce (
     let
-      rootfsImage = pkgs.callPackage "${toString modulesPath}/../lib/make-ext4-fs.nix" ({
-        inherit (config.sdImage) storePaths;
-        compressImage = true;
-        populateImageCommands = config.sdImage.populateRootCommands;
-        volumeLabel = "NIXOS_SD";
-      } // lib.optionalAttrs (config.sdImage.rootPartitionUUID != null) {
-        uuid = config.sdImage.rootPartitionUUID;
-      });
+      rootfsImage = pkgs.callPackage "${toString modulesPath}/../lib/make-ext4-fs.nix" (
+        {
+          inherit (config.sdImage) storePaths;
+          compressImage = true;
+          populateImageCommands = config.sdImage.populateRootCommands;
+          volumeLabel = "NIXOS_SD";
+        }
+        // lib.optionalAttrs (config.sdImage.rootPartitionUUID != null) {
+          uuid = config.sdImage.rootPartitionUUID;
+        }
+      );
     in
-    pkgs.callPackage
-      ({ stdenv
-       , dosfstools
-       , e2fsprogs
-       , mtools
-       , libfaketime
-       , utillinux
-       , zstd
-       }: stdenv.mkDerivation {
+    pkgs.callPackage (
+      {
+        stdenv,
+        dosfstools,
+        e2fsprogs,
+        mtools,
+        libfaketime,
+        utillinux,
+        zstd,
+      }:
+      stdenv.mkDerivation {
         name = config.sdImage.imageName;
 
-
-        nativeBuildInputs = [ dosfstools e2fsprogs mtools libfaketime utillinux zstd ];
+        nativeBuildInputs = [
+          dosfstools
+          e2fsprogs
+          mtools
+          libfaketime
+          utillinux
+          zstd
+        ];
 
         inherit (config.sdImage) compressImage;
 
@@ -88,7 +100,6 @@ in
         bootUUID = "95D89D52-CA00-42D6-883F-50F5720EF37E";
         espUUID = "2E5CB30A-A2F2-49A6-B21A-1138BCFF6EB5";
         rootUUID = "0340EA1D-C827-8048-B631-0C60D4478796";
-
 
         buildCommand = ''
           mkdir -p $out/nix-support $out/sd-image
@@ -103,9 +114,9 @@ in
 
           root_fs=${rootfsImage}
           ${lib.optionalString config.sdImage.compressImage ''
-          root_fs=./root-fs.img
-          echo "Decompressing rootfs image"
-          zstd -d --no-progress "${rootfsImage}" -o $root_fs
+            root_fs=./root-fs.img
+            echo "Decompressing rootfs image"
+            zstd -d --no-progress "${rootfsImage}" -o $root_fs
           ''}
 
           # Create the image file sized to fit /boot/firmware and /, plus slack for the gap.
@@ -203,8 +214,7 @@ in
               zstd -T$NIX_BUILD_CORES --rm $img
           fi
         '';
-      })
-      { }
+      }
+    ) { }
   );
 }
-

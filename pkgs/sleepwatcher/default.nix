@@ -1,4 +1,8 @@
-{ stdenv, fetchurl, darwin }:
+{
+  stdenv,
+  fetchurl,
+  darwin,
+}:
 
 stdenv.mkDerivation rec {
   pname = "sleepwatcher";
@@ -19,4 +23,3 @@ stdenv.mkDerivation rec {
     cp -R bin $out
   '';
 }
-

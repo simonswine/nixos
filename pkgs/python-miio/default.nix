@@ -1,7 +1,8 @@
-{ lib
-, fetchpatch
-, fetchFromGitHub
-, python3Packages
+{
+  lib,
+  fetchpatch,
+  fetchFromGitHub,
+  python3Packages,
 }:
 
 with python3Packages;
@@ -40,7 +41,8 @@ buildPythonPackage rec {
     tqdm
     zeroconf
     pydantic
-  ] ++ lib.optionals (pythonOlder "3.8") [
+  ]
+  ++ lib.optionals (pythonOlder "3.8") [
     importlib-metadata
   ];
 

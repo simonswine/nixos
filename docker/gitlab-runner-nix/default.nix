@@ -1,22 +1,22 @@
 # This has been mostly adapted from: https://github.com/nix-community/docker-nixpkgs/blob/8fdb8770b3a574ce644f3f0e6a0cedb527944793/images/nix/default.nix
-{ cacert
-, bashInteractive
-, coreutils
-, dockerTools
-, gnugrep
-, gnumake
-, nix
-, iana-etc
-, gitMinimal
-, gnutar
-, gzip
-, openssh
-, xz
-, writeTextFile
-, attic-client
-}:
-dockerTools.buildImage
 {
+  cacert,
+  bashInteractive,
+  coreutils,
+  dockerTools,
+  gnugrep,
+  gnumake,
+  nix,
+  iana-etc,
+  gitMinimal,
+  gnutar,
+  gzip,
+  openssh,
+  xz,
+  writeTextFile,
+  attic-client,
+}:
+dockerTools.buildImage {
   name = "simonswine/gitlab-runner-nix";
   tag = "nixos-25.05";
   created = "now";
@@ -68,7 +68,11 @@ dockerTools.buildImage
   '';
 
   config = {
-    Entrypoint = [ "/bin/bash" "-l" "-c" ];
+    Entrypoint = [
+      "/bin/bash"
+      "-l"
+      "-c"
+    ];
     Cmd = "/bin/bash";
     Env = [
       "ENV=/etc/profile.d/nix.sh"
@@ -82,5 +86,3 @@ dockerTools.buildImage
     ];
   };
 }
-
-

@@ -1,13 +1,15 @@
-{ config, pkgs, lib, ... }:
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}:
 with lib;
 let
   cfg = config.services.zrepl;
 
-  filterAttrsRec = pred: v:
-    if isAttrs v then
-      filterAttrs pred (mapAttrs (path: filterAttrsRec pred) v)
-    else
-      v;
+  filterAttrsRec =
+    pred: v: if isAttrs v then filterAttrs pred (mapAttrs (path: filterAttrsRec pred) v) else v;
 
   serveConfig = {
     type = mkOption {
@@ -45,7 +47,13 @@ let
 
   jobConfig = {
     type = mkOption {
-      type = types.enum [ "snap" "source" "sink" "pull" "push" ];
+      type = types.enum [
+        "snap"
+        "source"
+        "sink"
+        "pull"
+        "push"
+      ];
     };
 
     filesystems = mkOption {
@@ -78,12 +86,12 @@ let
     };
 
     serve = mkOption {
-      type = with types; nullOr (submodule [{ options = serveConfig; }]);
+      type = with types; nullOr (submodule [ { options = serveConfig; } ]);
       default = null;
     };
 
     connect = mkOption {
-      type = with types; nullOr (submodule [{ options = connectConfig; }]);
+      type = with types; nullOr (submodule [ { options = connectConfig; } ]);
       default = null;
     };
   };
@@ -95,9 +103,9 @@ let
     };
   };
 
-
-  toYAML = name: attrs: pkgs.runCommand name
-    {
+  toYAML =
+    name: attrs:
+    pkgs.runCommand name {
       preferLocalBuild = true;
       json = builtins.toFile "${name}.json" (builtins.toJSON attrs);
       nativeBuildInputs = [ pkgs.remarshal ];
@@ -126,16 +134,15 @@ in
         description = "Expose Prometheus metrics";
       };
 
-
       jobs = mkOption {
         default = { };
-        type = with types; attrsOf (submodule [{ options = jobConfig; }]);
+        type = with types; attrsOf (submodule [ { options = jobConfig; } ]);
         description = "Definition of zrepl tasks.";
       };
 
       pullTimers = mkOption {
         default = { };
-        type = with types; attrsOf (submodule [{ options = pullTimerConfig; }]);
+        type = with types; attrsOf (submodule [ { options = pullTimerConfig; } ]);
         description = "Configuration of pull timers.";
       };
     };
@@ -153,17 +160,20 @@ in
                 type = "prometheus";
                 listen = cfg.prometheusListenAddress;
               }
-            ]) else ([ ]);
+            ])
+          else
+            ([ ]);
       };
 
-      jobs = mapAttrsToList
-        (n: v:
-          (filterAttrsRec
-            (n: v: v != null)
-            ({
-              name = n;
-            } // v)))
-        cfg.jobs;
+      jobs = mapAttrsToList (
+        n: v:
+        (filterAttrsRec (n: v: v != null) (
+          {
+            name = n;
+          }
+          // v
+        ))
+      ) cfg.jobs;
 
     });
 
@@ -172,7 +182,10 @@ in
         wantedBy = [ "multi-user.target" ];
         after = [ "network.target" ];
         description = "Start zrepl daemon for automatic zfs replication.";
-        path = [ pkgs.zfs pkgs.openssh ];
+        path = [
+          pkgs.zfs
+          pkgs.openssh
+        ];
         serviceConfig = {
           Type = "simple";
           ExecStartPre = [
@@ -184,8 +197,10 @@ in
         };
         restartTriggers = [ config.environment.etc."zrepl/zrepl.yml".source ];
       };
-    } // mapAttrs'
-      (name: config: nameValuePair ("zrepl-pull-" + name) ({
+    }
+    // mapAttrs' (
+      name: config:
+      nameValuePair ("zrepl-pull-" + name) ({
         serviceConfig = {
           Type = "oneshot";
           ExecStart = [
@@ -193,20 +208,20 @@ in
           ];
           SyslogIdentifier = "zrepl-pull";
         };
-      }))
-      cfg.pullTimers;
+      })
+    ) cfg.pullTimers;
 
-    systemd.timers =
-      mapAttrs'
-        (name: config: nameValuePair ("zrepl-pull-" + name) ({
-          description = "Run once a night";
-          timerConfig = {
-            OnCalendar = config.onCalendar;
-            RandomizedDelaySec = 4 * 3600;
-          };
-          wantedBy = [ "timers.target" ];
-        }))
-        cfg.pullTimers;
+    systemd.timers = mapAttrs' (
+      name: config:
+      nameValuePair ("zrepl-pull-" + name) ({
+        description = "Run once a night";
+        timerConfig = {
+          OnCalendar = config.onCalendar;
+          RandomizedDelaySec = 4 * 3600;
+        };
+        wantedBy = [ "timers.target" ];
+      })
+    ) cfg.pullTimers;
 
     environment.systemPackages = [ pkgs.zrepl ];
   };

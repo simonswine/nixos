@@ -1,7 +1,8 @@
-{ lib
-, config
-, modulesPath
-, ...
+{
+  lib,
+  config,
+  modulesPath,
+  ...
 }:
 let
   rootPartitionUUID = "14e19a7b-0ae0-484d-9d54-43bd6fdc20c7";

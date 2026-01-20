@@ -1,4 +1,9 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 with lib;
 let
@@ -31,15 +36,22 @@ in
         let
           name = "get-focused-x-screen";
         in
-        "$(${pkgs.symlinkJoin {
-      name = name;
-      paths = [ pkgs.get-focused-x-screen ];
-      buildInputs = [ pkgs.makeWrapper ];
-      postBuild = ''
-        wrapProgram $out/bin/${name} \
-          --set PATH ${lib.makeBinPath [ pkgs.sway pkgs.xorg.xrandr ]}
-      '';
-    }}/bin/${name})";
+        "$(${
+          pkgs.symlinkJoin {
+            name = name;
+            paths = [ pkgs.get-focused-x-screen ];
+            buildInputs = [ pkgs.makeWrapper ];
+            postBuild = ''
+              wrapProgram $out/bin/${name} \
+                --set PATH ${
+                  lib.makeBinPath [
+                    pkgs.sway
+                    pkgs.xorg.xrandr
+                  ]
+                }
+            '';
+          }
+        }/bin/${name})";
 
       lock = pkgs.writeScript "swaylock" ''
         #!${pkgs.bash}/bin/bash
@@ -90,7 +102,9 @@ in
       wayland.windowManager.sway = {
         enable = true;
         systemd.enable = false;
-        wrapperFeatures = { gtk = true; };
+        wrapperFeatures = {
+          gtk = true;
+        };
 
         extraSessionCommands = ''
           export SDL_VIDEODRIVER=wayland
@@ -143,7 +157,10 @@ in
             };
 
             fonts = {
-              names = [ "FontAwesome 10" "Terminus 10" ];
+              names = [
+                "FontAwesome 10"
+                "Terminus 10"
+              ];
             };
 
             # disable bars, as we have waybar
@@ -151,7 +168,14 @@ in
 
             startup =
               let
-                envVars = (builtins.concatStringsSep " " [ "DISPLAY" "WAYLAND_DISPLAY" "SWAYSOCK" "XDG_CURRENT_DESKTOP" ]);
+                envVars = (
+                  builtins.concatStringsSep " " [
+                    "DISPLAY"
+                    "WAYLAND_DISPLAY"
+                    "SWAYSOCK"
+                    "XDG_CURRENT_DESKTOP"
+                  ]
+                );
               in
               [
                 {
@@ -171,7 +195,8 @@ in
 
             keybindings = lib.mkOptionDefault {
               # use wofi as main menu
-              "${modifier}+d" = "exec ${pkgs.wofi}/bin/wofi --insensitive --allow-images --show drun --define drun-print_command=true | sed 's/%.//' | xargs swaymsg exec --";
+              "${modifier}+d" =
+                "exec ${pkgs.wofi}/bin/wofi --insensitive --allow-images --show drun --define drun-print_command=true | sed 's/%.//' | xargs swaymsg exec --";
 
               # implement window switcher based on wofi
               "${modifier}+Tab" = "exec ${config.xdg.configHome}/sway/window-jump.sh";
@@ -184,7 +209,8 @@ in
 
               # screenshots
               "${modifier}+Print" = "exec ${pkgs.grim}/bin/grim ${screenshot_destination}";
-              "${modifier}+Shift+Print" = "exec ${pkgs.slurp}/bin/slurp | ${pkgs.grim}/bin/grim -g - ${screenshot_destination}";
+              "${modifier}+Shift+Print" =
+                "exec ${pkgs.slurp}/bin/slurp | ${pkgs.grim}/bin/grim -g - ${screenshot_destination}";
 
               # clipboard history
               "${modifier}+c" = "exec ${pkgs.clipman}/bin/clipman pick --tool wofi";
@@ -425,4 +451,3 @@ in
       };
     };
 }
-

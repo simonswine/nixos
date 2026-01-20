@@ -1,4 +1,8 @@
-{ lib, buildGoModule, fetchFromGitHub }:
+{
+  lib,
+  buildGoModule,
+  fetchFromGitHub,
+}:
 
 buildGoModule rec {
   pname = "modbus-exporter";
@@ -26,4 +30,3 @@ buildGoModule rec {
     platforms = platforms.unix;
   };
 }
-

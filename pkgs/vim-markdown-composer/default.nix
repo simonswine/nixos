@@ -1,6 +1,7 @@
-{ lib
-, rustPlatform
-, pkgs
+{
+  lib,
+  rustPlatform,
+  pkgs,
 }:
 
 let
@@ -33,5 +34,3 @@ pkgs.vimUtils.buildVimPlugin {
     ln -s ${bin}/bin/ $target/target/release
   '';
 }
-
-

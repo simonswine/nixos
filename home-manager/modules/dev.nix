@@ -1,4 +1,9 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 with lib;
 let
@@ -11,57 +16,53 @@ in
   };
 
   config = mkMerge [
-    (mkIf cfg.personal
-      {
-        simonswine.dev.golang.enable = true;
-        simonswine.dev.nix.enable = true;
-        simonswine.dev.python.enable = true;
-        simonswine.dev.rust.enable = true;
-        simonswine.dev.c.enable = true;
-        simonswine.dev.ruby.enable = true;
-        simonswine.dev.jsonnet.enable = true;
-        simonswine.dev.beancount.enable = true;
-        simonswine.dev.lua.enable = true;
+    (mkIf cfg.personal {
+      simonswine.dev.golang.enable = true;
+      simonswine.dev.nix.enable = true;
+      simonswine.dev.python.enable = true;
+      simonswine.dev.rust.enable = true;
+      simonswine.dev.c.enable = true;
+      simonswine.dev.ruby.enable = true;
+      simonswine.dev.jsonnet.enable = true;
+      simonswine.dev.beancount.enable = true;
+      simonswine.dev.lua.enable = true;
 
-        home.packages = with pkgs;[
-          git
-          git-crypt
-        ];
+      home.packages = with pkgs; [
+        git
+        git-crypt
+      ];
 
-      }
-    )
-    (mkIf cfg.grafanaLabs
-      {
-        simonswine.dev.golang.enable = true;
-        simonswine.dev.jsonnet.enable = true;
-        simonswine.dev.typescript.enable = true;
-        simonswine.dev.rego.enable = true;
-        simonswine.dev.dotnet.enable = true;
-        simonswine.dev.java.enable = true;
+    })
+    (mkIf cfg.grafanaLabs {
+      simonswine.dev.golang.enable = true;
+      simonswine.dev.jsonnet.enable = true;
+      simonswine.dev.typescript.enable = true;
+      simonswine.dev.rego.enable = true;
+      simonswine.dev.dotnet.enable = true;
+      simonswine.dev.java.enable = true;
 
-        home.packages = with pkgs; [
-          drone-cli
-          glow
+      home.packages = with pkgs; [
+        drone-cli
+        glow
 
-          # add cloud-provider tools
-          (google-cloud-sdk.withExtraComponents [ google-cloud-sdk.components.gke-gcloud-auth-plugin ])
-          awscli2
-          azure-cli
+        # add cloud-provider tools
+        (google-cloud-sdk.withExtraComponents [ google-cloud-sdk.components.gke-gcloud-auth-plugin ])
+        awscli2
+        azure-cli
 
-          # logcli
-          grafana-loki
+        # logcli
+        grafana-loki
 
-          # ai stuff
-          claude-code
-          crush
+        # ai stuff
+        claude-code
+        crush
 
-          # protobuf
-          protoscope
+        # protobuf
+        protoscope
 
-          devfiler
-        ];
-      }
-    )
+        devfiler
+      ];
+    })
     {
       simonswine.neovim.lspconfig.harper_ls.cmd = [
         "${pkgs.harper}/bin/harper-ls"

@@ -1,4 +1,11 @@
-{ pkgs, makeWrapper, stdenv, fetchFromGitHub, python3Packages, lib }:
+{
+  pkgs,
+  makeWrapper,
+  stdenv,
+  fetchFromGitHub,
+  python3Packages,
+  lib,
+}:
 
 stdenv.mkDerivation rec {
   name = "prometheus-node-exporter-smartmon-${version}";
@@ -23,7 +30,7 @@ stdenv.mkDerivation rec {
   '';
 
   meta = {
-    homepage = https://github.com//blob/master/smartmon.py;
+    homepage = "https://github.com//blob/master/smartmon.py";
     description = "A textfile exporter script for smart hard disk metrics.";
     license = lib.licenses.asl20;
     maintainers = [ lib.maintainers.simonswine ];

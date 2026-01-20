@@ -1,10 +1,9 @@
 { config, pkgs, ... }:
 
 {
-  imports =
-    [
-      ../generic/kubernetes.nix
-    ];
+  imports = [
+    ../generic/kubernetes.nix
+  ];
 
   boot.supportedFilesystems = [ "zfs" ];
   networking.hostId = "deadcafe";

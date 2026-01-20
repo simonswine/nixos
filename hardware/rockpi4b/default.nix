@@ -1,6 +1,7 @@
-{ lib
-, pkgs
-, ...
+{
+  lib,
+  pkgs,
+  ...
 }:
 {
   boot.loader = {
@@ -18,9 +19,11 @@
     "earlycon" # enable early console, so we can see the boot messages via serial port / HDMI
   ];
 
-  nixpkgs.config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) [
-    "arm-trusted-firmware-rk3399"
-  ];
+  nixpkgs.config.allowUnfreePredicate =
+    pkg:
+    builtins.elem (lib.getName pkg) [
+      "arm-trusted-firmware-rk3399"
+    ];
 
   hardware = {
     deviceTree = {

@@ -1,6 +1,7 @@
-{ lib
-, python3Packages
-, fetchFromGitHub
+{
+  lib,
+  python3Packages,
+  fetchFromGitHub,
 }:
 
 let
@@ -37,7 +38,6 @@ python3Packages.buildPythonApplication {
     rev = "60e331cdd402513330f26713a6e6a5e451482838";
     sha256 = "sha256-nKYtquWvOf01mkJt16dJQKkYR9+fLNC+bfsuNIK/qQ8=";
   };
-
 
   build-system = with python3Packages; [
     setuptools
@@ -77,7 +77,6 @@ python3Packages.buildPythonApplication {
     "ijson"
     "typer"
   ];
-
 
   meta = {
     description = "A command line tool to download videos from public broadcasting services in Germany.";

@@ -1,5 +1,10 @@
-{ pkgs, lib, buildGoModule, fetchFromGitHub, makeWrapper }:
-
+{
+  pkgs,
+  lib,
+  buildGoModule,
+  fetchFromGitHub,
+  makeWrapper,
+}:
 
 buildGoModule rec {
   pname = "get-focused-x-screen";

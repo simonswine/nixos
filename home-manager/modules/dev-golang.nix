@@ -1,4 +1,9 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 with lib;
 let
@@ -74,12 +79,14 @@ in
         dap-go = {
           enable = true;
           settings = {
-            dap_configurations = [{
-              type = "go";
-              name = "Attach remote";
-              mode = "remote";
-              request = "attach";
-            }];
+            dap_configurations = [
+              {
+                type = "go";
+                name = "Attach remote";
+                mode = "remote";
+                request = "attach";
+              }
+            ];
             delve = {
               path = "dlv";
             };
@@ -140,7 +147,10 @@ in
         '';
         conformConfig = {
           formatters_by_ft = {
-            go = [ "gofmt" "goimports" ];
+            go = [
+              "gofmt"
+              "goimports"
+            ];
           };
         };
       };

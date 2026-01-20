@@ -1,4 +1,8 @@
-{ lib, buildGoModule, fetchFromGitHub }:
+{
+  lib,
+  buildGoModule,
+  fetchFromGitHub,
+}:
 
 buildGoModule rec {
   pname = "tplink-switch-exporter";
@@ -22,4 +26,3 @@ buildGoModule rec {
     platforms = platforms.unix;
   };
 }
-

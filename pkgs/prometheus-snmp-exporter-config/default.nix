@@ -3,7 +3,10 @@
 stdenv.mkDerivation {
   name = "prometheus-snmp-exporter-config";
 
-  phases = [ "installPhase" "fixupPhase" ];
+  phases = [
+    "installPhase"
+    "fixupPhase"
+  ];
   nativeBuildInputs = [ prometheus-snmp-exporter ];
 
   installPhase = ''

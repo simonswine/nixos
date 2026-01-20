@@ -1,4 +1,9 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 with lib;
 let
@@ -8,7 +13,11 @@ in
   options.cloud = with lib.types; {
     provider = mkOption {
       default = null;
-      type = types.enum [ null "hcloud" "scaleway" ];
+      type = types.enum [
+        null
+        "hcloud"
+        "scaleway"
+      ];
     };
   };
 
@@ -16,14 +25,13 @@ in
     (mkIf (cfg.provider == "hcloud") {
       boot.loader.grub.devices = [ "/dev/sda" ];
 
-      system.activationScripts.bin-bash = stringAfter [ "stdio" ]
-        ''
-          # Create the required /bin/bash symlink; otherwise hcloud's
-          # cloud-init will break
-          mkdir -m 0755 -p /bin
-          ln -sfn "${pkgs.bash}/bin/bash" /bin/.bash.tmp
-          mv /bin/.bash.tmp /bin/bash # atomically replace /bin/bash
-        '';
+      system.activationScripts.bin-bash = stringAfter [ "stdio" ] ''
+        # Create the required /bin/bash symlink; otherwise hcloud's
+        # cloud-init will break
+        mkdir -m 0755 -p /bin
+        ln -sfn "${pkgs.bash}/bin/bash" /bin/.bash.tmp
+        mv /bin/.bash.tmp /bin/bash # atomically replace /bin/bash
+      '';
     })
     (mkIf (cfg.provider == "scaleway") {
       boot.loader.grub.efiSupport = true;
@@ -43,8 +51,20 @@ in
       # Use the GRUB 2 boot loader.
       boot.loader.grub.enable = true;
 
-      boot.initrd.availableKernelModules = [ "virtio_net" "virtio_pci" "virtio_mmio" "virtio_blk" "virtio_scsi" "9p" "9pnet_virtio" ];
-      boot.initrd.kernelModules = [ "virtio_balloon" "virtio_console" "virtio_rng" ];
+      boot.initrd.availableKernelModules = [
+        "virtio_net"
+        "virtio_pci"
+        "virtio_mmio"
+        "virtio_blk"
+        "virtio_scsi"
+        "9p"
+        "9pnet_virtio"
+      ];
+      boot.initrd.kernelModules = [
+        "virtio_balloon"
+        "virtio_console"
+        "virtio_rng"
+      ];
 
       # The global useDHCP flag is deprecated, therefore explicitly set to false here.
       # Per-interface useDHCP will be mandatory in the future, so this generated config
@@ -159,17 +179,22 @@ in
             - final-message
             - power-state-change
           datasource_list:
-        '' +
-        # configure cloud provider datasource if supported
-        (if cfg.provider == "hcloud" then
-          ''
-            - Hetzner
-          '' else if cfg.provider == "scaleway" then
-          ''
-            - Scaleway
-          ''
-        else "") +
         ''
+        +
+          # configure cloud provider datasource if supported
+          (
+            if cfg.provider == "hcloud" then
+              ''
+                - Hetzner
+              ''
+            else if cfg.provider == "scaleway" then
+              ''
+                - Scaleway
+              ''
+            else
+              ""
+          )
+        + ''
           - None
         '';
       };

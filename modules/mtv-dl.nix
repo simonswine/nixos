@@ -1,4 +1,9 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 with lib;
 
@@ -79,7 +84,6 @@ in
           PrivateDevices = true;
         };
       };
-
 
     users.users.mtv-dl = {
       group = "mtv-dl";

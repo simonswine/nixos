@@ -1,4 +1,8 @@
-{ lib, buildGoModule, fetchFromGitHub }:
+{
+  lib,
+  buildGoModule,
+  fetchFromGitHub,
+}:
 
 buildGoModule rec {
   pname = "pyroscope";
@@ -28,7 +32,10 @@ buildGoModule rec {
       "-X ${prefix}.Revision=${revision}"
     ];
 
-  subPackages = [ "cmd/pyroscope" "cmd/profilecli" ];
+  subPackages = [
+    "cmd/pyroscope"
+    "cmd/profilecli"
+  ];
 
   meta = with lib; {
     description = "Continuous Profiling Platform. Debug performance issues down to a single line of code";

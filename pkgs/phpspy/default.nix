@@ -1,7 +1,8 @@
-{ stdenv
-, fetchFromGitHub
-, lib
-, git
+{
+  stdenv,
+  fetchFromGitHub,
+  lib,
+  git,
 }:
 
 stdenv.mkDerivation rec {
@@ -32,7 +33,6 @@ stdenv.mkDerivation rec {
       phpspy is a low-overhead sampling profiler for PHP. It works with non-ZTS
       PHP 7.0+ with CLI, Apache, and FPM SAPIs on 64-bit Linux 3.2+.
     '';
-
 
     homepage = "http://github.com/adsr/phpspy";
     license = licenses.mit;

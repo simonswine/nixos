@@ -1,4 +1,9 @@
-{ pkgs, makeWrapper, stdenv, lib }:
+{
+  pkgs,
+  makeWrapper,
+  stdenv,
+  lib,
+}:
 
 stdenv.mkDerivation {
   name = "prometheus-node-exporter-restic";
@@ -20,7 +25,12 @@ stdenv.mkDerivation {
     cp restic.sh $out/bin/node-exporter-restic
     chmod +x $out/bin/node-exporter-restic
     wrapProgram $out/bin/node-exporter-restic \
-      --set PATH ${lib.makeBinPath [ pkgs.findutils pkgs.coreutils ]}
+      --set PATH ${
+        lib.makeBinPath [
+          pkgs.findutils
+          pkgs.coreutils
+        ]
+      }
   '';
 
   meta = {

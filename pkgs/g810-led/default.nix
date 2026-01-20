@@ -1,4 +1,8 @@
-{ stdenv, fetchFromGitHub, hidapi }:
+{
+  stdenv,
+  fetchFromGitHub,
+  hidapi,
+}:
 
 # adapted from https://github.com/wiltaylor/dotfiles/blob/c5aa0ac46448938796ba85c53e5240f8d832219d/pkgs/default.nix#L25
 
@@ -48,4 +52,3 @@ stdenv.mkDerivation rec {
     cp sample_profiles/* $out/etc/g810-led/samples
   '';
 }
-

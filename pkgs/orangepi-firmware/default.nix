@@ -1,4 +1,5 @@
-{ fetchFromGitHub, stdenvNoCC, ... }: stdenvNoCC.mkDerivation {
+{ fetchFromGitHub, stdenvNoCC, ... }:
+stdenvNoCC.mkDerivation {
   pname = "orangepi-firmware";
   version = "2024.01.24";
   dontBuild = true;

@@ -1,4 +1,9 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 with lib;
 let
@@ -135,15 +140,13 @@ in
             severity_sort = false,
           })
         '';
-        servers =
-          mapAttrs'
-            (name: config:
-              nameValuePair name {
-                enable = true;
-                settings = config;
-              }
-            )
-            cfg.lspconfig;
+        servers = mapAttrs' (
+          name: config:
+          nameValuePair name {
+            enable = true;
+            settings = config;
+          }
+        ) cfg.lspconfig;
       };
 
       keymaps = [
@@ -351,7 +354,8 @@ in
               timeout_ms = 500;
               lsp_format = "fallback";
             };
-          } // cfg.conformConfig;
+          }
+          // cfg.conformConfig;
 
         };
 
@@ -426,11 +430,12 @@ in
                 "scroll_documentation_down"
                 "fallback"
               ];
-              "<A-y>" = config.lib.nixvim.mkRaw ''{
-                function (cmp)
-                    cmp.show { providers = {'minuet'} }
-                end,
-			  }'';
+              "<A-y>" = config.lib.nixvim.mkRaw ''
+                {
+                                function (cmp)
+                                    cmp.show { providers = {'minuet'} }
+                                end,
+                			  }'';
             };
             signature = {
               enabled = true;

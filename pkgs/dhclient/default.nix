@@ -1,17 +1,18 @@
-{ stdenv
-, fetchurl
-, fetchpatch
-, perl
-, file
-, nettools
-, iputils
-, iproute2
-, makeWrapper
-, coreutils
-, gnused
-, openldap ? null
-, buildPackages
-, lib
+{
+  stdenv,
+  fetchurl,
+  fetchpatch,
+  perl,
+  file,
+  nettools,
+  iputils,
+  iproute2,
+  makeWrapper,
+  coreutils,
+  gnused,
+  openldap ? null,
+  buildPackages,
+  lib,
 }:
 
 stdenv.mkDerivation rec {
@@ -23,15 +24,17 @@ stdenv.mkDerivation rec {
     sha256 = "sha256-CsQWu1WZfKhjIXT9EHN/1hzbjbonUhYKM1d1vCHcc8c=";
   };
 
-  patches =
-    [
-      # Make sure that the hostname gets set on reboot.  Without this
-      # patch, the hostname doesn't get set properly if the old
-      # hostname (i.e. before reboot) is equal to the new hostname.
-      ./set-hostname.patch
-    ];
+  patches = [
+    # Make sure that the hostname gets set on reboot.  Without this
+    # patch, the hostname doesn't get set properly if the old
+    # hostname (i.e. before reboot) is equal to the new hostname.
+    ./set-hostname.patch
+  ];
 
-  nativeBuildInputs = [ perl makeWrapper ];
+  nativeBuildInputs = [
+    perl
+    makeWrapper
+  ];
 
   buildInputs = [ openldap ];
 
@@ -47,8 +50,12 @@ stdenv.mkDerivation rec {
     "--enable-early-chroot"
     "--sysconfdir=/etc"
     "--localstatedir=/var"
-  ] ++ lib.optional stdenv.isLinux "--with-randomdev=/dev/random"
-  ++ lib.optionals (openldap != null) [ "--with-ldap" "--with-ldapcrypto" ]
+  ]
+  ++ lib.optional stdenv.isLinux "--with-randomdev=/dev/random"
+  ++ lib.optionals (openldap != null) [
+    "--with-ldap"
+    "--with-ldapcrypto"
+  ]
   ++ lib.optional (stdenv.hostPlatform != stdenv.buildPlatform) "BUILD_CC=$(CC_FOR_BUILD)";
 
   NIX_CFLAGS_COMPILE = builtins.toString [
@@ -61,32 +68,30 @@ stdenv.mkDerivation rec {
 
   installFlags = [ "DESTDIR=\${out}" ];
 
-  postInstall =
-    ''
-      mv $out/$out/* $out
-      DIR=$out/$out
-      while rmdir $DIR 2>/dev/null; do
-        DIR="$(dirname "$DIR")"
-      done
+  postInstall = ''
+    mv $out/$out/* $out
+    DIR=$out/$out
+    while rmdir $DIR 2>/dev/null; do
+      DIR="$(dirname "$DIR")"
+    done
 
-      cp client/scripts/linux $out/sbin/dhclient-script
-      substituteInPlace $out/sbin/dhclient-script \
-        --replace /sbin/ip ${iproute2}/sbin/ip
-      wrapProgram "$out/sbin/dhclient-script" --prefix PATH : \
-      "${nettools}/bin:${nettools}/sbin:${iputils}/bin:${coreutils}/bin:${gnused}/bin"
+    cp client/scripts/linux $out/sbin/dhclient-script
+    substituteInPlace $out/sbin/dhclient-script \
+      --replace /sbin/ip ${iproute2}/sbin/ip
+    wrapProgram "$out/sbin/dhclient-script" --prefix PATH : \
+    "${nettools}/bin:${nettools}/sbin:${iputils}/bin:${coreutils}/bin:${gnused}/bin"
 
-      # remove dhcprelay, which is end of life
-      rm $out/sbin/dhcrelay $out/sbin/dhcpd $out/etc/dhcpd.conf.example
-    '';
+    # remove dhcprelay, which is end of life
+    rm $out/sbin/dhcrelay $out/sbin/dhcpd $out/etc/dhcpd.conf.example
+  '';
 
-  preConfigure =
-    ''
-      substituteInPlace configure --replace "/usr/bin/file" "${file}/bin/file"
-      sed -i "includes/dhcpd.h" \
-          -e "s|^ *#define \+_PATH_DHCLIENT_SCRIPT.*$|#define _PATH_DHCLIENT_SCRIPT \"$out/sbin/dhclient-script\"|g"
+  preConfigure = ''
+    substituteInPlace configure --replace "/usr/bin/file" "${file}/bin/file"
+    sed -i "includes/dhcpd.h" \
+        -e "s|^ *#define \+_PATH_DHCLIENT_SCRIPT.*$|#define _PATH_DHCLIENT_SCRIPT \"$out/sbin/dhclient-script\"|g"
 
-      export AR='${stdenv.cc.bintools.bintools}/bin/${stdenv.cc.targetPrefix}ar'
-    '';
+    export AR='${stdenv.cc.bintools.bintools}/bin/${stdenv.cc.targetPrefix}ar'
+  '';
 
   enableParallelBuilding = true;
 

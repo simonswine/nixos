@@ -1,8 +1,10 @@
-{ linuxManualConfig
-, fetchFromGitHub
-, ubootTools
-, ...
-}: (linuxManualConfig {
+{
+  linuxManualConfig,
+  fetchFromGitHub,
+  ubootTools,
+  ...
+}:
+(linuxManualConfig {
   src = fetchFromGitHub {
     owner = "armbian";
     repo = "linux-rockchip";
@@ -22,8 +24,10 @@
   configfile = ./config;
   allowImportFromDerivation = true;
 }).overrideAttrs
-  (finalAttrs: previousAttrs: {
-    nativeBuildInputs = previousAttrs.nativeBuildInputs ++ [
-      ubootTools
-    ];
-  })
+  (
+    finalAttrs: previousAttrs: {
+      nativeBuildInputs = previousAttrs.nativeBuildInputs ++ [
+        ubootTools
+      ];
+    }
+  )

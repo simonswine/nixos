@@ -1,11 +1,22 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 with lib;
 let
   top = config.services.kubernetes;
   cfg = top.kubelet-kubeadm;
 
-  deps = with pkgs; [ ethtool socat iptables iptables-nftables-compat conntrack-tools ];
+  deps = with pkgs; [
+    ethtool
+    socat
+    iptables
+    iptables-nftables-compat
+    conntrack-tools
+  ];
 in
 {
   ###### interface
@@ -32,7 +43,10 @@ in
       # restrict access to kernel logs
       boot.kernel.sysctl."kernel.dmesg_restrict" = 1;
 
-      environment.systemPackages = deps ++ [ top.package pkgs.cri-tools ];
+      environment.systemPackages = deps ++ [
+        top.package
+        pkgs.cri-tools
+      ];
 
       systemd.tmpfiles.rules = [
         "d /etc/kubernetes/manifests 0755 root root -"
@@ -47,22 +61,30 @@ in
         wantedBy = [ "multi-user.target" ];
         after = [ "network-online.target" ];
         wants = [ "network-online.target" ];
-        path = with pkgs; [ gitMinimal openssh utillinux iproute2 thin-provisioning-tools ] ++ deps ++ top.path;
+        path =
+          with pkgs;
+          [
+            gitMinimal
+            openssh
+            utillinux
+            iproute2
+            thin-provisioning-tools
+          ]
+          ++ deps
+          ++ top.path;
 
         preStart = ''
-                    ${concatMapStrings
-          (package: ''
-                      echo "Linking cni package: ${package}"
-                      for x in ${package}/bin/*; do
-                        dest="/opt/cni/bin/$(basename "''${x}")"
-                        if [[ -x "''${dest}" && ! -L ''${dest} ]]; then
-                          echo "''${dest} continue"
-                          continue
-                        fi
-                        ln -sf "''${x}" "''${dest}"
-                      done
-                    '')
-          cfg.cni.packages}
+          ${concatMapStrings (package: ''
+            echo "Linking cni package: ${package}"
+            for x in ${package}/bin/*; do
+              dest="/opt/cni/bin/$(basename "''${x}")"
+              if [[ -x "''${dest}" && ! -L ''${dest} ]]; then
+                echo "''${dest} continue"
+                continue
+              fi
+              ln -sf "''${x}" "''${dest}"
+            done
+          '') cfg.cni.packages}
         '';
 
         unitConfig = {

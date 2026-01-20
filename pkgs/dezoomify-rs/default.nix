@@ -1,9 +1,9 @@
-{ lib
-, stdenv
-, rustPlatform
-, fetchFromGitHub
-, darwin
-,
+{
+  lib,
+  stdenv,
+  rustPlatform,
+  fetchFromGitHub,
+  darwin,
 }:
 
 rustPlatform.buildRustPackage rec {
@@ -33,4 +33,3 @@ rustPlatform.buildRustPackage rec {
     mainProgram = "dezoomify-rs";
   };
 }
-

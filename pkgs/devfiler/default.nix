@@ -1,12 +1,13 @@
-{ lib
-, rustPlatform
-, fetchFromGitHub
-, pkg-config
-, openssl
-, zlib
-, cmake
-, protobuf
-, llvmPackages
+{
+  lib,
+  rustPlatform,
+  fetchFromGitHub,
+  pkg-config,
+  openssl,
+  zlib,
+  cmake,
+  protobuf,
+  llvmPackages,
 }:
 
 rustPlatform.buildRustPackage {

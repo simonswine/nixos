@@ -1,4 +1,9 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 with lib;
 let
@@ -318,8 +323,7 @@ in
     mkIf cfg.enable {
       systemd.user.services.waybar = {
         Unit = {
-          Description =
-            "Highly customizable Wayland bar for Sway and Wlroots based compositors.";
+          Description = "Highly customizable Wayland bar for Sway and Wlroots based compositors.";
           Documentation = "https://github.com/Alexays/Waybar/wiki";
           PartOf = [ "graphical-session.target" ];
           Requisite = [ "dbus.service" ];

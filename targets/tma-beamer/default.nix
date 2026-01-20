@@ -1,5 +1,6 @@
-{ inputs
-, ...
+{
+  inputs,
+  ...
 
 }:
 
@@ -10,12 +11,10 @@
     ../../common/tma-base.nix
   ];
 
-  boot.initrd.systemd =
-    {
-      enable = true;
-      enableTpm2 = false;
-    };
-
+  boot.initrd.systemd = {
+    enable = true;
+    enableTpm2 = false;
+  };
 
   networking.hostName = "tma-beamer";
 

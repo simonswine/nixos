@@ -17,7 +17,8 @@
     };
   };
 
-  outputs = { self, ... }@inputs:
+  outputs =
+    { self, ... }@inputs:
     let
       lib = inputs.nixpkgs.lib;
 
@@ -28,10 +29,12 @@
       ];
 
       pkgsConfig = {
-        allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) [
-          "crush"
-          "claude-code"
-        ];
+        allowUnfreePredicate =
+          pkg:
+          builtins.elem (lib.getName pkg) [
+            "crush"
+            "claude-code"
+          ];
         packageOverrides = pkgs: {
           austin = pkgs.callPackage ./pkgs/austin { };
           benchstat = pkgs.callPackage ./pkgs/benchstat { };
@@ -87,143 +90,131 @@
         };
       };
 
-      myNixosModules = lib.mapAttrs'
-        (name: value:
-          lib.nameValuePair
-            (lib.removeSuffix ".nix" name)
-            (import (./modules + "/${name}"))
-        )
-        (lib.filterAttrs
-          (_: entryType: entryType == "regular")
-          (builtins.readDir ./modules)
-        );
+      myNixosModules = lib.mapAttrs' (
+        name: value: lib.nameValuePair (lib.removeSuffix ".nix" name) (import (./modules + "/${name}"))
+      ) (lib.filterAttrs (_: entryType: entryType == "regular") (builtins.readDir ./modules));
 
-      myHomeManagerModules =
-        {
-          nixvim = inputs.nixvim.homeModules.nixvim;
-        }
-        //
+      myHomeManagerModules = {
+        nixvim = inputs.nixvim.homeModules.nixvim;
+      }
+      //
         lib.mapAttrs'
-          (name: value:
-            lib.nameValuePair
-              (lib.removeSuffix ".nix" name)
-              (import (./home-manager/modules + "/${name}"))
+          (
+            name: value:
+            lib.nameValuePair (lib.removeSuffix ".nix" name) (import (./home-manager/modules + "/${name}"))
           )
-          (lib.filterAttrs
-            (_: entryType: entryType == "regular")
-            (builtins.readDir ./home-manager/modules)
-          );
+          (lib.filterAttrs (_: entryType: entryType == "regular") (builtins.readDir ./home-manager/modules));
 
-      targets =
-        lib.attrNames (
-          lib.filterAttrs
-            (_: entryType: entryType == "directory")
-            (builtins.readDir ./targets)
-        );
+      targets = lib.attrNames (
+        lib.filterAttrs (_: entryType: entryType == "directory") (builtins.readDir ./targets)
+      );
 
       build-target = target: system: {
         name = target;
         value = lib.nixosSystem {
           system = system;
           specialArgs = { inherit inputs; };
-          modules = lib.attrValues myNixosModules ++ [
-            nixosModulesPkgs
-            (import (./targets + "/${target}/default.nix"))
-            (import ./local.nix)
-          ] ++ (
-            let
-              path = ./targets + "/${target}/hardware-configuration.nix";
-            in
-            if builtins.pathExists path then [ (import path) ] else [ ]
-          );
+          modules =
+            lib.attrValues myNixosModules
+            ++ [
+              nixosModulesPkgs
+              (import (./targets + "/${target}/default.nix"))
+              (import ./local.nix)
+            ]
+            ++ (
+              let
+                path = ./targets + "/${target}/hardware-configuration.nix";
+              in
+              if builtins.pathExists path then [ (import path) ] else [ ]
+            );
         };
       };
 
     in
-    inputs.flake-utils.lib.eachDefaultSystem
-      (system:
-        let
-          pkgs = (import inputs.nixpkgs) {
+    inputs.flake-utils.lib.eachDefaultSystem (
+      system:
+      let
+        pkgs = (import inputs.nixpkgs) {
+          system = system;
+          overlays = pkgsOverlays;
+          config = pkgsConfig;
+        };
+      in
+      {
+
+        docker = {
+          gitlab-runner = pkgs.callPackage ./docker/gitlab-runner { };
+          gitlab-runner-nix = pkgs.callPackage ./docker/gitlab-runner-nix { };
+        };
+
+        packages = {
+          hcloud-kexec = inputs.nixos-generators.nixosGenerate {
             system = system;
-            overlays = pkgsOverlays;
-            config = pkgsConfig;
-          };
-        in
-        {
-
-          docker = {
-            gitlab-runner = pkgs.callPackage ./docker/gitlab-runner { };
-            gitlab-runner-nix = pkgs.callPackage ./docker/gitlab-runner-nix { };
+            modules = [
+              ./targets/hcloud-kexec/default.nix
+              ./targets/hcloud-kexec/hardware-configuration.nix
+            ];
+            format = "kexec-bundle";
           };
 
-          packages = {
-            hcloud-kexec = inputs.nixos-generators.nixosGenerate {
-              system = system;
-              modules = [
-                ./targets/hcloud-kexec/default.nix
-                ./targets/hcloud-kexec/hardware-configuration.nix
-              ];
-              format = "kexec-bundle";
-            };
-
-
-            austin = pkgs.austin;
-            benchstat = pkgs.benchstat;
-            cert-updater = pkgs.cert-updater;
-            claude-code = pkgs.claude-code;
-            crush = pkgs.crush;
-            cloud-init = pkgs.cloud-init;
-            containerd = pkgs.containerd;
-            devfiler = pkgs.devfiler;
-            dezoomify-rs = pkgs.dezoomify-rs;
-            docker-machine = pkgs.docker-machine;
-            docker-machine-driver-hetzner = pkgs.docker-machine-driver-hetzner;
-            faillint = pkgs.faillint;
-            fronius-exporter = pkgs.fronius-exporter;
-            g810-led = pkgs.g810-led;
-            gimli-addr2line = pkgs.gimli-addr2line;
-            gitlab-runner = pkgs.gitlab-runner;
-            goda = pkgs.goda;
-            growatt-proxy-exporter = pkgs.growatt-proxy-exporter;
-            heatmiser-exporter = pkgs.heatmiser-exporter;
-            inch-exporter = pkgs.inch-exporter;
-            intel-gpu-exporter = pkgs.intel-gpu-exporter;
-            jsonnet-language-server = pkgs.jsonnet-language-server;
-            kubernetes-1-31 = pkgs.kubernetes-1-31;
-            kubernetes-1-32 = pkgs.kubernetes-1-32;
-            kubernetes-1-33 = pkgs.kubernetes-1-33;
-            kubernetes-1-34 = pkgs.kubernetes-1-34;
-            mi-flora-exporter = pkgs.mi-flora-exporter;
-            miio = pkgs.miio;
-            modbus-exporter = pkgs.modbus-exporter;
-            modularise = pkgs.modularise;
-            mtv-dl = pkgs.mtv-dl;
-            nut-exporter = pkgs.nut-exporter;
-            orangepi-firmware = pkgs.orangepi-firmware;
-            phpspy = pkgs.phpspy;
-            profilecli = pkgs.profilecli;
-            prometheus-node-exporter-restic = pkgs.prometheus-node-exporter-restic;
-            prometheus-node-exporter-smartmon = pkgs.prometheus-node-exporter-smartmon;
-            prometheus-node-exporter-zfs = pkgs.prometheus-node-exporter-zfs;
-            prometheus-snmp-exporter-config = pkgs.prometheus-snmp-exporter-config;
-            pyroscope = pkgs.pyroscope;
-            rift = pkgs.rift;
-            sleepwatcher = pkgs.sleepwatcher;
-            sonnenbatterie-exporter = pkgs.sonnenbatterie-exporter;
-            tod0 = pkgs.tod0;
-            tplink-switch-exporter = pkgs.tplink-switch-exporter;
-            tz-cli = pkgs.tz-cli;
-            vim-markdown-composer = pkgs.vim-markdown-composer;
-            yasdi = pkgs.yasdi;
-            yasdi-exporter = pkgs.yasdi-exporter;
-          }
-          // lib.optionalAttrs pkgs.stdenv.hostPlatform.isLinux {
-            dhclient = pkgs.dhclient;
-            get-focused-x-screen = pkgs.get-focused-x-screen;
-          };
-
+          austin = pkgs.austin;
+          benchstat = pkgs.benchstat;
+          cert-updater = pkgs.cert-updater;
+          claude-code = pkgs.claude-code;
+          crush = pkgs.crush;
+          cloud-init = pkgs.cloud-init;
+          containerd = pkgs.containerd;
+          devfiler = pkgs.devfiler;
+          dezoomify-rs = pkgs.dezoomify-rs;
+          docker-machine = pkgs.docker-machine;
+          docker-machine-driver-hetzner = pkgs.docker-machine-driver-hetzner;
+          faillint = pkgs.faillint;
+          fronius-exporter = pkgs.fronius-exporter;
+          g810-led = pkgs.g810-led;
+          gimli-addr2line = pkgs.gimli-addr2line;
+          gitlab-runner = pkgs.gitlab-runner;
+          goda = pkgs.goda;
+          growatt-proxy-exporter = pkgs.growatt-proxy-exporter;
+          heatmiser-exporter = pkgs.heatmiser-exporter;
+          inch-exporter = pkgs.inch-exporter;
+          intel-gpu-exporter = pkgs.intel-gpu-exporter;
+          jsonnet-language-server = pkgs.jsonnet-language-server;
+          kubernetes-1-31 = pkgs.kubernetes-1-31;
+          kubernetes-1-32 = pkgs.kubernetes-1-32;
+          kubernetes-1-33 = pkgs.kubernetes-1-33;
+          kubernetes-1-34 = pkgs.kubernetes-1-34;
+          mi-flora-exporter = pkgs.mi-flora-exporter;
+          miio = pkgs.miio;
+          modbus-exporter = pkgs.modbus-exporter;
+          modularise = pkgs.modularise;
+          mtv-dl = pkgs.mtv-dl;
+          nut-exporter = pkgs.nut-exporter;
+          orangepi-firmware = pkgs.orangepi-firmware;
+          phpspy = pkgs.phpspy;
+          profilecli = pkgs.profilecli;
+          prometheus-node-exporter-restic = pkgs.prometheus-node-exporter-restic;
+          prometheus-node-exporter-smartmon = pkgs.prometheus-node-exporter-smartmon;
+          prometheus-node-exporter-zfs = pkgs.prometheus-node-exporter-zfs;
+          prometheus-snmp-exporter-config = pkgs.prometheus-snmp-exporter-config;
+          pyroscope = pkgs.pyroscope;
+          rift = pkgs.rift;
+          sleepwatcher = pkgs.sleepwatcher;
+          sonnenbatterie-exporter = pkgs.sonnenbatterie-exporter;
+          tod0 = pkgs.tod0;
+          tplink-switch-exporter = pkgs.tplink-switch-exporter;
+          tz-cli = pkgs.tz-cli;
+          vim-markdown-composer = pkgs.vim-markdown-composer;
+          yasdi = pkgs.yasdi;
+          yasdi-exporter = pkgs.yasdi-exporter;
         }
-      ) // {
+        // lib.optionalAttrs pkgs.stdenv.hostPlatform.isLinux {
+          dhclient = pkgs.dhclient;
+          get-focused-x-screen = pkgs.get-focused-x-screen;
+        };
+
+      }
+    )
+    // {
 
       nixosConfigurations =
         let
@@ -243,21 +234,17 @@
             ];
           };
 
-          systemForTarget = target:
-            builtins.foldl'
-              (a: b: if builtins.elem target b.value then b.name else a)
-              "x86_64-linux"
-              (lib.attrsToList targetsBySystem);
+          systemForTarget =
+            target:
+            builtins.foldl' (a: b: if builtins.elem target b.value then b.name else a) "x86_64-linux" (
+              lib.attrsToList targetsBySystem
+            );
         in
         builtins.listToAttrs (
           lib.flatten (
-            map
-              (
-                target: [
-                  (build-target target (systemForTarget target))
-                ]
-              )
-              targets
+            map (target: [
+              (build-target target (systemForTarget target))
+            ]) targets
           )
         );
 

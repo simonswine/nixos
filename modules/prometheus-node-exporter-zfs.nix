@@ -1,4 +1,9 @@
-{ config, pkgs, lib, ... }:
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}:
 let
   cfg = config.services.prometheus-node-exporter-zfs;
   cfgTextfiles = config.services.prometheus-node-exporter-textfiles;
@@ -10,8 +15,10 @@ let
     "${cfgTextfiles.path}/zfs.prom"
   ]
   ++ cfg.extraArgs
-  ++ lib.lists.concatMap (x: [ "--exclude-snapshot-name" x ]) cfg.excludeSnapshotName
-  ;
+  ++ lib.lists.concatMap (x: [
+    "--exclude-snapshot-name"
+    x
+  ]) cfg.excludeSnapshotName;
 in
 with lib;
 
@@ -29,7 +36,6 @@ with lib;
       default = [ ];
     };
   };
-
 
   config = mkIf cfg.enable {
     services.prometheus-node-exporter-textfiles.enable = true;
