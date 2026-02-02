@@ -45,9 +45,9 @@ buildNpmPackage (finalAttrs: {
     wrapProgram $out/bin/claude \
       --set DISABLE_AUTOUPDATER 1 \
       --set DISABLE_INSTALLATION_CHECKS 1 \
-      --set CLAUDE_CODE_DISABLE_FEEDBACK_SURVEY=1 \
-      --set CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC=1 \
-      --set IS_DEMO=1 \
+      --set CLAUDE_CODE_DISABLE_FEEDBACK_SURVEY 1 \
+      --set CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC 1 \
+      --set IS_DEMO 1 \
       --unset DEV \
       --prefix PATH : ${
         lib.makeBinPath (
