@@ -48,7 +48,9 @@ in
         # add cloud-provider tools
         (google-cloud-sdk.withExtraComponents [ google-cloud-sdk.components.gke-gcloud-auth-plugin ])
         awscli2
-        azure-cli
+        (azure-cli.withExtensions [
+          azure-cli-extensions.account
+        ])
 
         # logcli
         grafana-loki
