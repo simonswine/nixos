@@ -180,10 +180,10 @@
           inch-exporter = pkgs.inch-exporter;
           intel-gpu-exporter = pkgs.intel-gpu-exporter;
           jsonnet-language-server = pkgs.jsonnet-language-server;
-          kubernetes-1-31 = pkgs.kubernetes-1-31;
           kubernetes-1-32 = pkgs.kubernetes-1-32;
           kubernetes-1-33 = pkgs.kubernetes-1-33;
           kubernetes-1-34 = pkgs.kubernetes-1-34;
+          kubernetes-1-35 = pkgs.kubernetes-1-35;
           mi-flora-exporter = pkgs.mi-flora-exporter;
           miio = pkgs.miio;
           modbus-exporter = pkgs.modbus-exporter;

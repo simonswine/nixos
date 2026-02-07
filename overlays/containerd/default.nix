@@ -1,11 +1,11 @@
 self: super: {
   containerd = super.containerd.overrideAttrs (old: rec {
-    version = "2.1.5";
+    version = "2.2.1";
     src = super.fetchFromGitHub {
       owner = "containerd";
       repo = "containerd";
       rev = "v${version}";
-      hash = "sha256-P948Rn11kAENAX3qHrSmIdV6VgybbuHdOTAgcYWk2bg=";
+      hash = "sha256-fDOfN0XESrBTDW7Nxj9niqU93BQ5/JaGLwAR3u6Xaik=";
     };
     makeFlags =
       builtins.filter (
