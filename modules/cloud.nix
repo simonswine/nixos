@@ -23,7 +23,11 @@ in
 
   config = mkMerge [
     (mkIf (cfg.provider == "hcloud") {
-      boot.loader.grub.devices = [ "/dev/sda" ];
+      boot.loader.grub = {
+        efiSupport = true;
+        devices = [ "nodev" ];
+        efiInstallAsRemovable = true;
+      };
 
       system.activationScripts.bin-bash = stringAfter [ "stdio" ] ''
         # Create the required /bin/bash symlink; otherwise hcloud's
@@ -34,9 +38,11 @@ in
       '';
     })
     (mkIf (cfg.provider == "scaleway") {
-      boot.loader.grub.efiSupport = true;
-      boot.loader.grub.devices = [ "nodev" ];
-      boot.loader.grub.efiInstallAsRemovable = true;
+      boot.loader.grub = {
+        efiSupport = true;
+        devices = [ "nodev" ];
+        efiInstallAsRemovable = true;
+      };
 
       # Enable serial console
       boot.kernelParams = [
