@@ -46,7 +46,6 @@ in
                 name = "anthropic",
                 endpoint = "https://api.anthropic.com/v1/messages",
                 model_endpoint = "https://api.anthropic.com/v1/models",
-                model_cache_expiry_hours = 0,
                 api_key = {"gopass", "show", "--nosync", "grafana/console.anthropic.com", "api_key"},
                 params = {
                   chat = { max_tokens = 4096 },
@@ -82,6 +81,7 @@ in
                 end,
               },
             }
+            model_cache_expiry_hours = 0,
         }
       '';
 
