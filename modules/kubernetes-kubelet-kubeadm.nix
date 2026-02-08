@@ -66,7 +66,7 @@ in
           [
             gitMinimal
             openssh
-            utillinux
+            util-linux
             iproute2
             thin-provisioning-tools
           ]

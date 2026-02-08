@@ -78,7 +78,7 @@ in
         e2fsprogs,
         mtools,
         libfaketime,
-        utillinux,
+        util-linux,
         zstd,
       }:
       stdenv.mkDerivation {
@@ -89,7 +89,7 @@ in
           e2fsprogs
           mtools
           libfaketime
-          utillinux
+          util-linux
           zstd
         ];
 
