@@ -11,6 +11,8 @@ self: super: {
       # Fix for absolute symlinks in rootfs user lookup (NixOS compatibility)
       # https://github.com/containerd/containerd/pull/12732
       ./12732.patch
+      # Additional fix from https://github.com/containerd/containerd/issues/12683#issuecomment-3773170623
+      ./12732-x.patch
     ];
     makeFlags =
       builtins.filter (

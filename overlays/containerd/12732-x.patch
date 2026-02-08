@@ -1,0 +1,13 @@
+diff --git i/pkg/oci/spec_opts.go w/pkg/oci/spec_opts.go
+index 4f26f6da3..7b22f350b 100644
+--- i/pkg/oci/spec_opts.go
++++ w/pkg/oci/spec_opts.go
+@@ -1201,7 +1201,7 @@ func GIDFromFS(root fs.FS, filter func(user.Group) bool) (gid uint32, err error)
+ }
+ 
+ func getSupplementalGroupsFromFS(root fs.FS, filter func(user.Group) bool) ([]uint32, error) {
+-	f, err := root.Open("etc/group")
++	f, err := openUserFile(root, "etc/group")
+ 	if err != nil {
+ 		return []uint32{}, err
+ 	}
