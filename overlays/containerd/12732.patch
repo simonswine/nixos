@@ -1,0 +1,237 @@
+From 85b5418ef5a6adeac95c910bf8c33ae0fb7bbecb Mon Sep 17 00:00:00 2001
+From: Paulo Oliveira <paulo.hco47@gmail.com>
+Date: Sat, 27 Dec 2025 14:47:09 -0300
+Subject: [PATCH 1/2] fix(oci): handle absolute symlinks in rootfs user lookup
+
+Go 1.24 introduced stricter checks for os.DirFS (via os.Root), which causes failures when /etc/passwd or /etc/group are absolute symlinks pointing outside the mount root (common in NixOS).
+
+This patch introduces a helper that detects absolute symlinks and resolves them relative to the rootfs before opening, preventing the 'path escapes from parent' error.
+
+Fixes #12683
+
+Signed-off-by: Paulo Oliveira <paulo.hco47@gmail.com>
+---
+ pkg/oci/spec_opts.go | 44 ++++++++++++++++++++++++++++++++++++++++++--
+ pkg/oci/spec_test.go | 36 ++++++++++++++++++++++++++++++++++++
+ 2 files changed, 78 insertions(+), 2 deletions(-)
+
+diff --git a/pkg/oci/spec_opts.go b/pkg/oci/spec_opts.go
+index 8338279b9019..4f26f6da3f38 100644
+--- a/pkg/oci/spec_opts.go
++++ b/pkg/oci/spec_opts.go
+@@ -1152,7 +1152,7 @@ func UserFromPath(root string, filter func(user.User) bool) (user.User, error) {
+ // UserFromFS inspects the user object using /etc/passwd in the specified fs.FS.
+ // filter can be nil.
+ func UserFromFS(root fs.FS, filter func(user.User) bool) (user.User, error) {
+-	f, err := root.Open("etc/passwd")
++	f, err := openUserFile(root, "etc/passwd")
+ 	if err != nil {
+ 		return user.User{}, err
+ 	}
+@@ -1184,7 +1184,7 @@ func GIDFromPath(root string, filter func(user.Group) bool) (gid uint32, err err
+ // GIDFromFS inspects the GID using /etc/group in the specified fs.FS.
+ // filter can be nil.
+ func GIDFromFS(root fs.FS, filter func(user.Group) bool) (gid uint32, err error) {
+-	f, err := root.Open("etc/group")
++	f, err := openUserFile(root, "etc/group")
+ 	if err != nil {
+ 		return 0, err
+ 	}
+@@ -1816,3 +1816,43 @@ func WithWindowsNetworkNamespace(ns string) SpecOpts {
+ 		return nil
+ 	}
+ }
++
++// readLinker defines the ReadLink method locally.
++// We keep this shim to ensure compatibility with build environments where
++// the standard library's fs.ReadLinkFS interface is not yet available or recognized.
++type readLinker interface {
++	ReadLink(name string) (string, error)
++}
++
++// openUserFile attempts to open a file within the root fs.
++// It handles cases where the file is an absolute symlink (e.g., NixOS /etc/passwd -> /nix/store/...),
++// which triggers "path escapes from parent" errors in Go 1.24+ due to stricter os.DirFS validation.
++func openUserFile(root fs.FS, name string) (fs.File, error) {
++	f, err := root.Open(name)
++	if err == nil {
++		return f, nil
++	}
++
++	// Check if the FS implements our local ReadLink interface.
++	// We use a local interface instead of fs.ReadLinkFS to avoid strict dependency
++	// issues in some build environments.
++	if lfs, ok := root.(readLinker); ok {
++		if target, lerr := lfs.ReadLink(name); lerr == nil {
++			// Use filepath.IsAbs to handle platform-agnostic absolute path checks
++			if filepath.IsAbs(target) {
++				// Re-anchor the absolute path to the root.
++				// e.g. /nix/store/... becomes nix/store/... (relative to root fs)
++				// We use filepath.Rel to safely strip the leading separator.
++				rel, rerr := filepath.Rel(string(filepath.Separator), target)
++				if rerr == nil {
++					// filepath.Rel might return OS-specific separators (backslashes on Windows).
++					// fs.Open strictly expects forward slashes, so we convert it.
++					return root.Open(filepath.ToSlash(rel))
++				}
++			}
++		}
++	}
++
++	// Return the original error if we couldn't resolve it
++	return nil, err
++}
+diff --git a/pkg/oci/spec_test.go b/pkg/oci/spec_test.go
+index 5e0a48986e93..66e4231839a6 100644
+--- a/pkg/oci/spec_test.go
++++ b/pkg/oci/spec_test.go
+@@ -18,6 +18,9 @@ package oci
+ 
+ import (
+ 	"context"
++	"io"
++	"os"
++	"path/filepath"
+ 	"runtime"
+ 	"testing"
+ 
+@@ -325,3 +328,36 @@ func TestWithPrivileged(t *testing.T) {
+ 		t.Error("Did not find mount for cgroupfs")
+ 	}
+ }
++
++func TestOpenUserFile_AbsoluteSymlink(t *testing.T) {
++	tmpDir := t.TempDir()
++
++	targetName := "passwd"
++	targetPath := filepath.Join(tmpDir, targetName)
++	expectedContent := []byte("root:x:0:0:root:/root:/bin/bash")
++	if err := os.WriteFile(targetPath, expectedContent, 0644); err != nil {
++		t.Fatal(err)
++	}
++
++	linkName := "abs_link"
++	linkPath := filepath.Join(tmpDir, linkName)
++	if err := os.Symlink(targetPath, linkPath); err != nil {
++		t.Fatal(err)
++	}
++
++	rootFS := os.DirFS(tmpDir)
++
++	f, err := openUserFile(rootFS, linkName)
++	if err != nil {
++		t.Fatalf("openUserFile failed on absolute symlink: %v", err)
++	}
++	defer f.Close()
++
++	content, err := io.ReadAll(f)
++	if err != nil {
++		t.Fatal(err)
++	}
++	if string(content) != string(expectedContent) {
++		t.Errorf("expected content %q, got %q", string(expectedContent), string(content))
++	}
++}
+
+From 9bbb1309f051e54b51484fa0efbfe93e26223a2d Mon Sep 17 00:00:00 2001
+From: Paulo Oliveira <paulo.hco47@gmail.com>
+Date: Tue, 13 Jan 2026 20:00:34 -0300
+Subject: [PATCH 2/2] test(oci): use fstest and mock fs for better symlink
+ coverage
+
+Signed-off-by: Paulo Oliveira <paulo.hco47@gmail.com>
+---
+ pkg/oci/spec_test.go | 55 +++++++++++++++++++++++++++++++++-----------
+ 1 file changed, 41 insertions(+), 14 deletions(-)
+
+diff --git a/pkg/oci/spec_test.go b/pkg/oci/spec_test.go
+index 66e4231839a6..cca478d9d979 100644
+--- a/pkg/oci/spec_test.go
++++ b/pkg/oci/spec_test.go
+@@ -19,16 +19,17 @@ package oci
+ import (
+ 	"context"
+ 	"io"
++	"io/fs"
+ 	"os"
+ 	"path/filepath"
+ 	"runtime"
+ 	"testing"
+ 
+-	"github.com/opencontainers/runtime-spec/specs-go"
+-
+ 	"github.com/containerd/containerd/v2/core/containers"
+ 	"github.com/containerd/containerd/v2/pkg/namespaces"
+ 	"github.com/containerd/containerd/v2/pkg/testutil"
++	"github.com/containerd/continuity/fs/fstest"
++	"github.com/opencontainers/runtime-spec/specs-go"
+ )
+ 
+ func TestGenerateSpec(t *testing.T) {
+@@ -330,24 +331,35 @@ func TestWithPrivileged(t *testing.T) {
+ }
+ 
+ func TestOpenUserFile_AbsoluteSymlink(t *testing.T) {
+-	tmpDir := t.TempDir()
+-
+-	targetName := "passwd"
+-	targetPath := filepath.Join(tmpDir, targetName)
+-	expectedContent := []byte("root:x:0:0:root:/root:/bin/bash")
+-	if err := os.WriteFile(targetPath, expectedContent, 0644); err != nil {
+-		t.Fatal(err)
++	if runtime.GOOS == "windows" {
++		t.Skip("absolute symlink handling is only supported on non-Windows platforms")
+ 	}
+ 
+-	linkName := "abs_link"
+-	linkPath := filepath.Join(tmpDir, linkName)
+-	if err := os.Symlink(targetPath, linkPath); err != nil {
++	expectedContent := []byte("root:x:0:0:root:/root:/bin/bash" + t.Name())
++
++	root := t.TempDir()
++	// Use 'continuity' library to create a directory structure simulating NixOS
++	if err := fstest.Apply(
++		fstest.CreateDir("/etc", 0o755),
++		fstest.CreateDir("/nix/store/abcd", 0o755),
++		fstest.CreateFile("/nix/store/abcd/passwd", expectedContent, 0o644),
++		// /etc/passwd -> /nix/store/abcd/passwd (absolute symlink)
++		fstest.Symlink("/nix/store/abcd/passwd", "/etc/passwd"),
++	).Apply(root); err != nil {
+ 		t.Fatal(err)
+ 	}
+ 
+-	rootFS := os.DirFS(tmpDir)
++	rootFS := os.DirFS(root)
++
++	// Ensure the FS implements the ReadLink interface.
++	// If the native os.DirFS doesn't implement it (depending on Go version),
++	// wrap it in our readLinkFS helper.
++	if _, ok := rootFS.(readLinker); !ok {
++		t.Logf("os.DirFS does not implement ReadLink; wrapping to use ReadLink")
++		rootFS = readLinkFS{root: root, fs: rootFS}
++	}
+ 
+-	f, err := openUserFile(rootFS, linkName)
++	f, err := openUserFile(rootFS, "etc/passwd")
+ 	if err != nil {
+ 		t.Fatalf("openUserFile failed on absolute symlink: %v", err)
+ 	}
+@@ -361,3 +373,18 @@ func TestOpenUserFile_AbsoluteSymlink(t *testing.T) {
+ 		t.Errorf("expected content %q, got %q", string(expectedContent), string(content))
+ 	}
+ }
++
++// Helpers for testing ReadLink support
++type readLinkFS struct {
++	root string
++	fs   fs.FS
++}
++
++func (r readLinkFS) Open(name string) (fs.File, error) {
++	return r.fs.Open(name)
++}
++
++func (r readLinkFS) ReadLink(name string) (string, error) {
++	// Force link reading using the actual path on disk
++	return os.Readlink(filepath.Join(r.root, filepath.FromSlash(name)))
++}
