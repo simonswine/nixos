@@ -80,7 +80,7 @@ in
                   return payload
                 end,
               },
-            }
+            },
             model_cache_expiry_hours = 0,
         }
       '';
