@@ -109,7 +109,7 @@ let
       preferLocalBuild = true;
       json = builtins.toFile "${name}.json" (builtins.toJSON attrs);
       nativeBuildInputs = [ pkgs.remarshal ];
-    } ''json2yaml -i $json -o $out'';
+    } "json2yaml -i $json -o $out";
 in
 {
   disabledModules = [ "services/backup/zrepl.nix" ];
@@ -189,11 +189,11 @@ in
         serviceConfig = {
           Type = "simple";
           ExecStartPre = [
-            ''${pkgs.coreutils}/bin/install -m0700 -d /var/run/zrepl''
-            ''${pkgs.coreutils}/bin/install -m0700 -d /var/run/zrepl/stdinserver''
+            "${pkgs.coreutils}/bin/install -m0700 -d /var/run/zrepl"
+            "${pkgs.coreutils}/bin/install -m0700 -d /var/run/zrepl/stdinserver"
           ];
 
-          ExecStart = ''${pkgs.zrepl}/bin/zrepl daemon --config /etc/zrepl/zrepl.yml'';
+          ExecStart = "${pkgs.zrepl}/bin/zrepl daemon --config /etc/zrepl/zrepl.yml";
         };
         restartTriggers = [ config.environment.etc."zrepl/zrepl.yml".source ];
       };
