@@ -144,7 +144,7 @@ in
           name: config:
           nameValuePair name {
             enable = true;
-            settings = config;
+            config = config;
           }
         ) cfg.lspconfig;
       };
