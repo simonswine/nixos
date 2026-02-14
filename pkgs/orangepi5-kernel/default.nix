@@ -8,8 +8,8 @@
   src = fetchFromGitHub {
     owner = "armbian";
     repo = "linux-rockchip";
-    rev = "bd032d59a096344a1f29acf9965d8c46f9a847a8";
-    hash = "sha256-x+fLcFpQ5wtWFOFynzzw7oLZa4Drtp2/b72Fns0xUc0=";
+    rev = "34ab830bda234bd4d5b0e3a46451fe5f89e2cc35";
+    hash = "sha256-sXIZpYmQhSoCwdmi4Njav5435lc//NENH/wSwq7dDqQ=";
   };
   version = "6.1.115";
   modDirVersion = "6.1.115";
