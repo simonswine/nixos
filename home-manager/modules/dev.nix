@@ -98,6 +98,11 @@ in
         };
       };
 
+      programs.zellij = {
+        enable = true;
+        settings.theme = "catppuccin";
+      };
+
       home.packages = with pkgs; [
         drone-cli
         glow
