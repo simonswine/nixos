@@ -12,17 +12,17 @@
 
 rustPlatform.buildRustPackage {
   pname = "devfiler";
-  version = "git-2025-10-01";
+  version = "git-2026-02-18";
 
   src = fetchFromGitHub {
     owner = "elastic";
     repo = "devfiler";
-    rev = "4b20b5ee634e4b5c58016658957260a73b16800b";
-    hash = "sha256-7GvXkAIvtpYbhfpEc6A7i/6gdB8uHMKTlWi9man+aE8=";
+    rev = "649d48acbb69b04dc6565a6d0ae1e5d29c4e5555";
+    hash = "sha256-SD9kZnBUBpxH1E1ugAPYDq7HRMsyBHuQPM7nnMUKNVw=";
     fetchSubmodules = true;
   };
 
-  cargoHash = "sha256-EGBkbxqeKcXxKxdcZ9OO3ERaryaK+tkJrWeXKjf7Gro=";
+  cargoHash = "sha256-3ZGYcpj2ME8Wd9DXiYlcCu9bNoi2Cbu1zkhw/U/9tqM=";
 
   nativeBuildInputs = [
     pkg-config
