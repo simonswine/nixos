@@ -27,6 +27,57 @@ in
       simonswine.dev.beancount.enable = true;
       simonswine.dev.lua.enable = true;
 
+      programs.gh = {
+        enable = true;
+        settings.aliases = {
+          co = ''!id="$(gh pr list -L100 | fzf | cut -f1)"; [ -n "$id" ] && gh pr checkout "$id"'';
+        };
+      };
+
+      programs.git = {
+        enable = true;
+
+        extraConfig = {
+          user = {
+            name = "Christian Simon";
+            email = "simon@swine.de";
+            signingkey = "D29F745DD48CA0E0C33A7B081FF2C09C62045ED2";
+          };
+          init.defaultBranch = "main";
+
+          alias = {
+            hist = ''log --pretty=format:"%h %ad | %s%d [%an]" --graph'';
+          };
+
+          merge = {
+            conflictStyle = "diff3";
+            tool = "vimdiff";
+          };
+          mergetool.prompt = false;
+
+          pull.rebase = false;
+          push.default = "simple";
+
+          core.fsmonitor = true;
+          core.untrackedcache = true;
+        };
+
+        ignores = [
+          "/.perfgo/"
+          "/.claude/"
+          "/.idea/"
+          "/.ctags"
+          "/tags"
+          "/tags.lock"
+          "/tags.temp"
+          "/.ropeproject"
+          ".envrc"
+          ".direnv/"
+          "*~"
+          "*.swp"
+        ];
+      };
+
       home.packages = with pkgs; [
         git
         git-crypt
@@ -40,6 +91,12 @@ in
       simonswine.dev.rego.enable = true;
       simonswine.dev.dotnet.enable = true;
       simonswine.dev.java.enable = true;
+
+      programs.git.extraConfig.url = {
+        "ssh://git@github.com/grafana/" = {
+          insteadOf = "https://github.com/grafana/";
+        };
+      };
 
       home.packages = with pkgs; [
         drone-cli
