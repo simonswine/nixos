@@ -37,7 +37,7 @@ in
       programs.git = {
         enable = true;
 
-        extraConfig = {
+        settings = {
           user = {
             name = "Christian Simon";
             email = "simon@swine.de";
@@ -92,7 +92,7 @@ in
       simonswine.dev.dotnet.enable = true;
       simonswine.dev.java.enable = true;
 
-      programs.git.extraConfig.url = {
+      programs.git.settings.url = {
         "ssh://git@github.com/grafana/" = {
           insteadOf = "https://github.com/grafana/";
         };
