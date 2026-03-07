@@ -16,10 +16,13 @@ in
 
   config = mkIf cfg.enable {
     programs = {
-
       atuin.enableFishIntegration = true;
       fish = {
         enable = true;
+        # Use loginShellInit for login-specific variables
+        loginShellInit = ''
+          set -gx SHELL (which fish)
+        '';
       };
     };
   };
