@@ -36,6 +36,8 @@ in
   config = mkMerge [
     (mkIf cfg.enable {
 
+      nixpkgs.overlays = [ (import ../overlays/containerd/default.nix) ];
+
       boot.kernel.sysctl."net.ipv4.ip_forward" = 1;
       boot.kernel.sysctl."net.bridge.bridge-nf-call-iptables" = 1;
       boot.kernel.sysctl."net.bridge.bridge-nf-call-ip6tables" = 1;
