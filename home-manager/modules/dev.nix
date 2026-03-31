@@ -26,6 +26,7 @@ in
       simonswine.dev.jsonnet.enable = true;
       simonswine.dev.beancount.enable = true;
       simonswine.dev.lua.enable = true;
+      simonswine.dev.cad.enable = true;
 
       programs.gh = {
         enable = true;
