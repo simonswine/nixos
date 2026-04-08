@@ -33,6 +33,8 @@ buildGo126Module (finalAttrs: {
         "TestOpenAIClientStreamChoices"
         "TestGrepWithIgnoreFiles"
         "TestSearchImplementations"
+        "TestRunSubAgent"
+        "TestUpdateParentSessionCost"
       ];
     in
     [ "-skip=^${builtins.concatStringsSep "$|^" skippedTests}$" ];
