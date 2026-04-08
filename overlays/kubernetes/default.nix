@@ -18,7 +18,7 @@ let
         owner = "kubernetes";
         repo = "kubernetes";
         rev = "v${version}";
-        sha256 = khash;
+        hash = khash;
       };
 
       installPhase = ''
@@ -45,14 +45,9 @@ let
     });
 in
 {
-  kubernetes-1-32 = kubernetesVersion {
-    kver = "1.32.11";
-    khash = "/Hg0yf7Y8My+g3w36fA94ozCzhmI0sMjpF7FPZ/UykY=";
-  };
-
   kubernetes-1-33 = kubernetesVersion {
-    kver = "1.33.7";
-    khash = "439MCwbt6XRhKi+6wbyro33ptS//uIv0TeL2NQ/tD7M=";
+    kver = "1.33.10";
+    khash = "sha256-smIV+w2EBbOhGNLLMOC/H9QfLoDXMYIVOX/evxNNkqU=";
   };
 
   kubernetes-1-34 = kubernetesVersion {
