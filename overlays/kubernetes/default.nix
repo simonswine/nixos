@@ -56,7 +56,7 @@ in
   };
 
   kubernetes-1-35 = kubernetesVersion {
-    kver = "1.35.3";
-    khash = "sha256-woIp7AnW7r3y0rpKO03+0t6ONyNXTS1IYxW40E1O8DA=";
+    kver = "1.35.4";
+    khash = "sha256-UXYkReGD77Uu0P0iYvkK58Uj0f7CuXGMb1WJBD7/61U=";
   };
 }
