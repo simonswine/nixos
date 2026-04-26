@@ -20,12 +20,18 @@ let
     hash = "sha256-gZJq3ODNtyn+hLZ3TYn8ezLm3Qu12teqRHYWoY61R9Y=";
   };
 
-  # Build the Next.js frontend (standalone output) using pnpm workspace
+  # Build the Next.js frontend (standalone output) using pnpm workspace.
+  # The pnpm workspace root is apps/; the web package is apps/web/.
+  # Next.js standalone for a monorepo produces:
+  #   .next/standalone/
+  #     web/server.js    <- actual entry point
+  #     web/.next/       <- server-side bundles
+  #     node_modules/    <- minimal shared deps
+  # Static and public assets must be placed adjacent to server.js.
   kandev-web = stdenv.mkDerivation (finalAttrs: {
     pname = "kandev-web";
     inherit version src;
 
-    # pnpm workspace root is apps/
     sourceRoot = "${src.name}/apps";
 
     nativeBuildInputs = [
@@ -46,15 +52,15 @@ let
       runHook postBuild
     '';
 
-    # Next.js standalone output: server.js + minimal node_modules + .next/
-    # Static assets and public/ must be copied alongside per Next.js docs.
     installPhase = ''
       runHook preInstall
       mkdir -p "$out"
+      # Copy standalone output (gives us web/server.js and node_modules/)
       cp -r web/.next/standalone/. "$out/"
-      mkdir -p "$out/.next"
-      cp -r web/.next/static "$out/.next/static"
-      cp -r web/public "$out/public"
+      # Place static and public assets adjacent to server.js, as Next.js requires
+      mkdir -p "$out/web/.next"
+      cp -r web/.next/static "$out/web/.next/static"
+      cp -r web/public "$out/web/public"
       runHook postInstall
     '';
   });
@@ -91,15 +97,34 @@ buildGo126Module {
     "-X main.Commit=f48855e"
   ];
 
-  postInstall = ''
-    # Install the Next.js standalone server alongside the Go binary
-    mkdir -p "$out/share/kandev/web"
-    cp -r ${kandev-web}/. "$out/share/kandev/web/"
+  postInstall =
+    let
+      webDir = "${placeholder "out"}/share/kandev/web";
+      nodeServerJs = "${webDir}/web/server.js";
+      nodeBin = "${nodejs}/bin/node";
+    in
+    ''
+      # Install the Next.js standalone server
+      mkdir -p "$out/share/kandev/web"
+      cp -r ${kandev-web}/. "$out/share/kandev/web/"
 
-    # Ensure nodejs is on PATH so kandev can start the Next.js server process
-    wrapProgram "$out/bin/kandev" \
-      --prefix PATH : ${lib.makeBinPath [ nodejs ]}
-  '';
+      # Rename the Go binary so we can wrap it with a shell script
+      mv "$out/bin/kandev" "$out/bin/.kandev-bin"
+
+      # Create a wrapper that starts the Next.js server alongside the Go backend.
+      # The Go backend reverse-proxies all non-API requests via KANDEV_WEB_INTERNAL_URL.
+      makeWrapper "$out/bin/.kandev-bin" "$out/bin/kandev" \
+        --run '
+          _web_port="''${KANDEV_WEB_PORT:-37429}"
+          _web_dir="${webDir}"
+          HOSTNAME=127.0.0.1 PORT="$_web_port" \
+            ${nodeBin} ${nodeServerJs} &
+          _web_pid=$!
+          _cleanup() { kill "$_web_pid" 2>/dev/null; wait "$_web_pid" 2>/dev/null; }
+          trap _cleanup EXIT INT TERM
+        ' \
+        --set-default KANDEV_WEB_INTERNAL_URL "http://127.0.0.1:37429"
+    '';
 
   meta = {
     description = "AI Kanban & Development Environment orchestrating multiple AI coding agents";
