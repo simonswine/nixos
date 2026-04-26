@@ -19,5 +19,15 @@ in
       "${pkgs.openscad-lsp}/bin/openscad-lsp"
       "--stdio"
     ];
+
+    home.packages = [ pkgs.fluidcad ];
+
+    programs.nixvim = {
+      extraPlugins = [ pkgs.fluidcad-nvim ];
+
+      extraConfigLua = ''
+        require("fluidcad").setup({})
+      '';
+    };
   };
 }

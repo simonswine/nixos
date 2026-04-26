@@ -36,7 +36,13 @@
             "crush"
             "claude-code"
           ];
-        packageOverrides = pkgs: {
+        packageOverrides = pkgs:
+          let
+            fluidcad = pkgs.callPackage ./pkgs/fluidcad {
+              buildNpmPackage = pkgs.buildNpmPackage.override { nodejs = pkgs.nodejs_24; };
+            };
+          in
+          {
           austin = pkgs.callPackage ./pkgs/austin { };
           benchstat = pkgs.callPackage ./pkgs/benchstat { };
           cert-updater = pkgs.callPackage ./pkgs/cert-updater { };
@@ -48,6 +54,8 @@
           docker-machine = pkgs.callPackage ./pkgs/docker-machine { };
           docker-machine-driver-hetzner = pkgs.callPackage ./pkgs/docker-machine-driver-hetzner { };
           faillint = pkgs.callPackage ./pkgs/faillint { };
+          inherit fluidcad;
+          fluidcad-nvim = pkgs.callPackage ./pkgs/fluidcad-nvim { inherit fluidcad; nodejs = pkgs.nodejs_24; };
           fronius-exporter = pkgs.callPackage ./pkgs/fronius-exporter { };
           g810-led = pkgs.callPackage ./pkgs/g810-led { };
           get-focused-x-screen = pkgs.callPackage ./pkgs/get-focused-x-screen { };
@@ -171,6 +179,8 @@
           docker-machine = pkgs.docker-machine;
           docker-machine-driver-hetzner = pkgs.docker-machine-driver-hetzner;
           faillint = pkgs.faillint;
+          fluidcad = pkgs.fluidcad;
+          fluidcad-nvim = pkgs.fluidcad-nvim;
           fronius-exporter = pkgs.fronius-exporter;
           g810-led = pkgs.g810-led;
           gimli-addr2line = pkgs.gimli-addr2line;
