@@ -56,6 +56,7 @@
           faillint = pkgs.callPackage ./pkgs/faillint { };
           inherit fluidcad;
           fluidcad-nvim = pkgs.callPackage ./pkgs/fluidcad-nvim { inherit fluidcad; nodejs = pkgs.nodejs_24; };
+          kandev = pkgs.callPackage ./pkgs/kandev { };
           fronius-exporter = pkgs.callPackage ./pkgs/fronius-exporter { };
           g810-led = pkgs.callPackage ./pkgs/g810-led { };
           get-focused-x-screen = pkgs.callPackage ./pkgs/get-focused-x-screen { };
@@ -182,6 +183,7 @@
           fluidcad = pkgs.fluidcad;
           fluidcad-nvim = pkgs.fluidcad-nvim;
           fronius-exporter = pkgs.fronius-exporter;
+          kandev = pkgs.kandev;
           g810-led = pkgs.g810-led;
           gimli-addr2line = pkgs.gimli-addr2line;
           gitlab-runner = pkgs.gitlab-runner;
