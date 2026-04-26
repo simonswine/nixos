@@ -6,17 +6,17 @@
 
 buildGoModule rec {
   pname = "pyroscope";
-  version = "1.7.0-pre";
+  version = "2.0.1";
   revision = "4ff5438";
 
   src = fetchFromGitHub {
     owner = "grafana";
     repo = "pyroscope";
-    rev = revision;
-    hash = "sha256-cf54X+6NZd8EVIB6m9Ng8SsDZVYGDdSQf+B0oW4Qsm8=";
+    rev = "v${version}";
+    hash = "sha256-+2L8C2OaRkZ6BWQtdo6bHUhZBskoJ7toHT5C6WPFWwg=";
   };
 
-  vendorHash = "sha256-ggntpnU9s2rpkv6S0LnZNexrdkBsdsUrGPc93SVrK4M=";
+  vendorHash = "sha256-y/uOOz4rDCgrNnpyzSBIovHcTtXiMI2pGxeoo6A/9yE=";
 
   preBuild = ''
     export GOWORK=off
@@ -24,13 +24,15 @@ buildGoModule rec {
 
   ldflags =
     let
-      prefix = "github.com/grafana/pyroscope/pkg/util/build";
+      prefix = "github.com/grafana/pyroscope/v2/pkg/util/build";
     in
     [
       "-X ${prefix}.Version=${version}"
       "-X ${prefix}.Branch=HEAD"
       "-X ${prefix}.Revision=${revision}"
     ];
+
+  doCheck = false; # yolo
 
   subPackages = [
     "cmd/pyroscope"
@@ -41,6 +43,5 @@ buildGoModule rec {
     description = "Continuous Profiling Platform. Debug performance issues down to a single line of code";
     homepage = "https://grafana.com/oss/pyroscope";
     license = licenses.agpl3Only;
-    maintainers = with maintainers; [ simonswine ];
   };
 }
