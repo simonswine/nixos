@@ -46,8 +46,8 @@ let
 in
 {
   kubernetes-1-33 = kubernetesVersion {
-    kver = "1.33.10";
-    khash = "sha256-smIV+w2EBbOhGNLLMOC/H9QfLoDXMYIVOX/evxNNkqU=";
+    kver = "1.33.11";
+    khash = "sha256-wkyIUxs1wtJLLBJq1PQtRErTX3AxhmOxIx4gM9w/K00=";
   };
 
   kubernetes-1-34 = kubernetesVersion {
