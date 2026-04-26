@@ -1,67 +1,73 @@
-# NOTE: Use the following command to update the package
-# ```sh
-# nix-shell maintainers/scripts/update.nix --argstr commit true --arg predicate '(path: pkg: builtins.elem path [["claude-code"] ["claude-code-bin"] ["vscode-extensions" "anthropic" "claude-code"]])'
-# ```
 {
   lib,
-  stdenv,
-  buildNpmPackage,
-  fetchzip,
+  stdenvNoCC,
+  fetchurl,
+  installShellFiles,
+  makeBinaryWrapper,
+  autoPatchelfHook,
   versionCheckHook,
   writableTmpDirAsHomeHook,
   bubblewrap,
   procps,
+  ripgrep,
   socat,
 }:
-buildNpmPackage (finalAttrs: {
+let
+  baseUrl = "https://storage.googleapis.com/claude-code-dist-86c565f3-f756-42ad-8dfa-d59b1c096819/claude-code-releases";
+  manifest = lib.importJSON ./manifest.json;
+  platformKey = "${stdenvNoCC.hostPlatform.node.platform}-${stdenvNoCC.hostPlatform.node.arch}";
+  platformManifestEntry = manifest.platforms.${platformKey};
+in
+stdenvNoCC.mkDerivation (finalAttrs: {
   pname = "claude-code";
-  version = "2.1.97";
+  inherit (manifest) version;
 
-  src = fetchzip {
-    url = "https://registry.npmjs.org/@anthropic-ai/claude-code/-/claude-code-${finalAttrs.version}.tgz";
-    hash = "sha256-J92ILqBJmXyAueUPZ+HYZY0ls3OfN2EAhFyQHTOQF5A=";
+  src = fetchurl {
+    url = "${baseUrl}/${finalAttrs.version}/${platformKey}/claude";
+    sha256 = platformManifestEntry.checksum;
   };
 
-  npmDepsHash = "sha256-0fZu5r/zQjUSbm49FhZSqiIyMKdmH050NSxoVWd3XoU=";
+  dontUnpack = true;
+  dontBuild = true;
+  __noChroot = stdenvNoCC.hostPlatform.isDarwin;
+  # otherwise the bun runtime is executed instead of the binary
+  dontStrip = true;
+
+  nativeBuildInputs = [
+    installShellFiles
+    makeBinaryWrapper
+  ] ++ lib.optionals stdenvNoCC.hostPlatform.isElf [ autoPatchelfHook ];
 
   strictDeps = true;
 
-  postPatch = ''
-    cp ${./package-lock.json} package-lock.json
+  installPhase = ''
+    runHook preInstall
 
-    # https://github.com/anthropics/claude-code/issues/15195
-    substituteInPlace cli.js \
-          --replace-fail '#!/bin/sh' '#!/usr/bin/env sh'
-  '';
+    installBin $src
 
-  dontNpmBuild = true;
-
-  env.AUTHORIZED = "1";
-
-  # `claude-code` tries to auto-update by default, this disables that functionality.
-  # https://docs.anthropic.com/en/docs/agents-and-tools/claude-code/overview#environment-variables
-  # The DEV=true env var causes claude to crash with `TypeError: window.WebSocket is not a constructor`
-  postInstall = ''
     wrapProgram $out/bin/claude \
       --set DISABLE_AUTOUPDATER 1 \
+      --set-default FORCE_AUTOUPDATE_PLUGINS 1 \
       --set DISABLE_INSTALLATION_CHECKS 1 \
       --set CLAUDE_CODE_DISABLE_FEEDBACK_SURVEY 1 \
       --set CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC 1 \
       --set IS_DEMO 1 \
-      --unset DEV \
+      --set USE_BUILTIN_RIPGREP 0 \
       --prefix PATH : ${
         lib.makeBinPath (
           [
-            # claude-code uses [node-tree-kill](https://github.com/pkrumins/node-tree-kill) which requires procps's pgrep(darwin) or ps(linux)
             procps
+            ripgrep
           ]
           # the following packages are required for the sandbox to work (Linux only)
-          ++ lib.optionals stdenv.hostPlatform.isLinux [
+          ++ lib.optionals stdenvNoCC.hostPlatform.isLinux [
             bubblewrap
             socat
           ]
         )
       }
+
+    runHook postInstall
   '';
 
   doInstallCheck = true;
@@ -70,6 +76,7 @@ buildNpmPackage (finalAttrs: {
     versionCheckHook
   ];
   versionCheckKeepEnvironment = [ "HOME" ];
+  versionCheckProgramArg = "--version";
 
   passthru.updateScript = ./update.sh;
 
@@ -79,11 +86,20 @@ buildNpmPackage (finalAttrs: {
     downloadPage = "https://www.npmjs.com/package/@anthropic-ai/claude-code";
     license = lib.licenses.unfree;
     maintainers = with lib.maintainers; [
+      adeci
       malo
       markus1189
       omarjatoi
+      oskarwires
       xiaoxiangmoe
     ];
     mainProgram = "claude";
+    platforms = [
+      "aarch64-darwin"
+      "x86_64-darwin"
+      "aarch64-linux"
+      "x86_64-linux"
+    ];
+    sourceProvenance = with lib.sourceTypes; [ binaryNativeCode ];
   };
 })
