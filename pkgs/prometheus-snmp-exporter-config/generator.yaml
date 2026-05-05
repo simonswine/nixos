@@ -40,3 +40,51 @@ modules:
         type: EnumAsStateSet
       dot1dTpFdbPort:
         ignore: true
+
+  # Rapid Spanning Tree Protocol (IEEE 802.1w / RFC 4318)
+  rstp:
+    walk:
+      - dot1dStpTimeSinceTopologyChange
+      - dot1dStpTopChanges
+      - dot1dStpDesignatedRoot
+      - dot1dStpRootCost
+      - dot1dStpRootPort
+      - dot1dStpPriority
+      - dot1dStpPortState
+      - dot1dStpPortForwardTransitions
+      - dot1dStpPortDesignatedRoot
+      - dot1dStpPortDesignatedCost
+      - dot1dStpPortPathCost32
+    lookups:
+      - source_indexes: [dot1dStpPort]
+        lookup: dot1dBasePortIfIndex
+      - source_indexes: [dot1dBasePortIfIndex]
+        lookup: ifName
+        drop_source_indexes: true
+    overrides:
+      dot1dStpDesignatedRoot:
+        name: rstp_switch_designated_root_info
+        type: OctetString
+      dot1dStpTimeSinceTopologyChange:
+        name: rstp_switch_last_topology_change_seconds
+        scale: 0.01
+      dot1dStpTopChanges:
+        name: rstp_switch_topology_changes_total
+      dot1dStpPriority:
+        name: rstp_switch_priority
+      dot1dStpRootCost:
+        name: rstp_switch_root_cost
+      dot1dStpRootPort:
+        name: rstp_switch_root_port
+      dot1dStpPortDesignatedCost:
+        name: rstp_port_designated_cost
+      dot1dStpPortDesignatedRoot:
+        name: rstp_port_designated_root_info
+        type: OctetString
+      dot1dStpPortPathCost32:
+        name: rstp_port_path_cost
+      dot1dStpPortState:
+        name: rstp_port_state
+        type: EnumAsStateSet
+      dot1dStpPortForwardTransitions:
+        name: rstp_port_state_transitions_total
