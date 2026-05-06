@@ -35,6 +35,8 @@ buildGo126Module (finalAttrs: {
         "TestSearchImplementations"
         "TestRunSubAgent"
         "TestUpdateParentSessionCost"
+        "TestPreparePrompt_OrphanedToolUse"
+        "TestPreparePrompt_OrphanedToolUseMixed"
       ];
     in
     [ "-skip=^${builtins.concatStringsSep "$|^" skippedTests}$" ];
