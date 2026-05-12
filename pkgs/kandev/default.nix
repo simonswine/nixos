@@ -11,13 +11,13 @@
 }:
 
 let
-  version = "0.37";
+  version = "0.45.0";
 
   src = fetchFromGitHub {
     owner = "kdlbs";
     repo = "kandev";
     tag = "v${version}";
-    hash = "sha256-gZJq3ODNtyn+hLZ3TYn8ezLm3Qu12teqRHYWoY61R9Y=";
+    hash = "sha256-7KzTsT/R5cE27uTs6PtjbUnIZ5xrn9nLALfMu8jiMEA=";
   };
 
   # Build the Next.js frontend (standalone output) using pnpm workspace.
@@ -43,7 +43,7 @@ let
       inherit (finalAttrs) pname version src;
       sourceRoot = "${src.name}/apps";
       fetcherVersion = 3;
-      hash = "sha256-D4r2HwMDWiNVu2vCGd0UqNEvN4Snc3IAqSV92AX7/CY=";
+      hash = "sha256-5VgXm9mjaSERWYqqBPdt/6qy+jy6GDiKcexJjZPx+wM=";
     };
 
     buildPhase = ''
@@ -74,7 +74,7 @@ buildGo126Module {
   # Go module lives in apps/backend/
   modRoot = "apps/backend";
 
-  vendorHash = "sha256-7vc/hRjyylwou9ehFi0rR9evB4cyhSFZAPf/V8JgJhY=";
+  vendorHash = "sha256-SqtP29vAHiuoJbBr8DwWO7rvFO8XrtZ/vA5BHJaCDgg=";
 
   # mattn/go-sqlite3 requires CGO
   env.CGO_ENABLED = "1";
@@ -94,7 +94,7 @@ buildGo126Module {
     "-s"
     "-w"
     "-X main.Version=v${version}"
-    "-X main.Commit=f48855e"
+    "-X main.Commit=f9f2da2"
   ];
 
   postInstall =
