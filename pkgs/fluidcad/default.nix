@@ -6,28 +6,35 @@
 
 buildNpmPackage rec {
   pname = "fluidcad";
-  version = "0.0.6";
+  version = "0.0.33";
 
   src = fetchFromGitHub {
     owner = "Fluid-CAD";
     repo = "FluidCAD";
     rev = "v${version}";
-    hash = "sha256-NjR0TV7vx7oVrk43ZNvRdIteBaDdKnOtMM+hM0jJYQg=";
+    hash = "sha256-N9xLYxsZY3UQ7L+BuxZm8bUQb9Voj9H4hSK7/6/mLaI=";
   };
 
-  npmDepsHash = "sha256-gK0/yNtr3+uKiziowOHp13ajJLOA5aOHe1qYCY+58X4=";
+  npmDepsHash = "sha256-jQjTb6TEUtJtMUQaQqGCMcH7aiGga5CR1M5ySs0cUeM=";
 
   postInstall = ''
     # The npm workspace for extension/vscode creates a dangling symlink in the
     # installed package since the VSCode extension source is not part of the dist.
     rm -f $out/lib/node_modules/fluidcad/node_modules/fluidcad
 
-    # Patch vite-manager.js so that user scripts can `import 'fluidcad'` without
-    # having it installed locally. Vite SSR resolves modules from the user's
-    # workspace; we redirect 'fluidcad' to the Nix store via resolve.alias and
-    # mark it noExternal so it goes through Vite's resolver rather than Node's.
+    # Remove fluidcad from ssr.external so Vite resolves it via our plugin
+    # rather than Node's require, which would fail since the package lives in
+    # the Nix store rather than the user's node_modules.
     sed -i \
-      "s|root: rootPath,|root: rootPath, resolve: { alias: { fluidcad: '$out/lib/node_modules/fluidcad' } }, ssr: { noExternal: ['fluidcad'] },|" \
+      "s|external: \['fluidcad'\]|external: []|" \
+      "$out/lib/node_modules/fluidcad/server/dist/vite-manager.js"
+
+    # Inject a resolveId plugin that maps all fluidcad subpath exports to their
+    # absolute Nix store paths. A simple resolve.alias wouldn't work here
+    # because Vite's string alias does a prefix substitution (fluidcad/core ->
+    # /store/path/core) which bypasses the package.json exports map.
+    sed -i \
+      "s|plugins: \[|plugins: [{ name: 'fluidcad-resolver', resolveId(id) { const m = { 'fluidcad': '$out/lib/node_modules/fluidcad/lib/dist/index.js', 'fluidcad/core': '$out/lib/node_modules/fluidcad/lib/dist/core/index.js', 'fluidcad/filters': '$out/lib/node_modules/fluidcad/lib/dist/filters/index.js', 'fluidcad/constraints': '$out/lib/node_modules/fluidcad/lib/dist/features/2d/constraints/geometry-qualifier.js', 'fluidcad/math': '$out/lib/node_modules/fluidcad/lib/dist/math/index.js' }; return m[id]; } },|" \
       "$out/lib/node_modules/fluidcad/server/dist/vite-manager.js"
   '';
 

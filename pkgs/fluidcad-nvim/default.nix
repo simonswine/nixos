@@ -7,12 +7,12 @@
 }:
 
 let
-  version = "0.0.6";
+  version = "0.0.33";
   src = fetchFromGitHub {
     owner = "Fluid-CAD";
     repo = "FluidCAD";
     rev = "v${version}";
-    hash = "sha256-NjR0TV7vx7oVrk43ZNvRdIteBaDdKnOtMM+hM0jJYQg=";
+    hash = "sha256-N9xLYxsZY3UQ7L+BuxZm8bUQb9Voj9H4hSK7/6/mLaI=";
   };
 in
 
