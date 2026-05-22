@@ -44,7 +44,7 @@ in
           After = [ "network.target" ];
         };
         Service = {
-          ExecStart = "${pkgs.nodejs}/bin/node ${pkgs.kandev}/share/kandev/web/web/server.js";
+          ExecStart = "${pkgs.nodejs}/bin/node ${pkgs.kandev-frontend}/web/server.js";
           Environment = [
             "HOSTNAME=127.0.0.1"
             "PORT=${toString cfg.webPort}"
@@ -66,7 +66,7 @@ in
           Requires = [ "kandev-web.service" ];
         };
         Service = {
-          ExecStart = "${pkgs.bash}/bin/bash -c '. $HOME/.shell.grafana.secrets; exec ${pkgs.kandev}/bin/.kandev-bin -port ${toString cfg.backendPort}'";
+          ExecStart = "${pkgs.bash}/bin/bash -c '. $HOME/.shell.grafana.secrets; exec ${pkgs.kandev}/bin/kandev -port ${toString cfg.backendPort}'";
           Environment = [
             "KANDEV_WEB_INTERNAL_URL=http://127.0.0.1:${toString cfg.webPort}"
             "PATH=${path}"
