@@ -120,7 +120,6 @@ in
 
         # ai stuff
         claude-code
-        crush
         opencode
 
         # protobuf

@@ -33,7 +33,6 @@
         allowUnfreePredicate =
           pkg:
           builtins.elem (lib.getName pkg) [
-            "crush"
             "claude-code"
           ];
         packageOverrides = pkgs:
@@ -48,7 +47,6 @@
           benchstat = pkgs.callPackage ./pkgs/benchstat { };
           cert-updater = pkgs.callPackage ./pkgs/cert-updater { };
           claude-code = pkgs.callPackage ./pkgs/claude-code { };
-          crush = pkgs.callPackage ./pkgs/crush { };
           devfiler = pkgs.callPackage ./pkgs/devfiler { };
           dezoomify-rs = pkgs.callPackage ./pkgs/dezoomify-rs { };
           dhclient = pkgs.callPackage ./pkgs/dhclient { };
@@ -179,7 +177,6 @@
           benchstat = pkgs.benchstat;
           cert-updater = pkgs.cert-updater;
           claude-code = pkgs.claude-code;
-          crush = pkgs.crush;
           cloud-init = pkgs.cloud-init;
           containerd = pkgs.containerd;
           devfiler = pkgs.devfiler;
