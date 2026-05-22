@@ -41,6 +41,7 @@
             fluidcad = pkgs.callPackage ./pkgs/fluidcad {
               buildNpmPackage = pkgs.buildNpmPackage.override { nodejs = pkgs.nodejs_24; };
             };
+            kandev = pkgs.callPackage ./pkgs/kandev { };
           in
           {
           austin = pkgs.callPackage ./pkgs/austin { };
@@ -56,9 +57,9 @@
           faillint = pkgs.callPackage ./pkgs/faillint { };
           inherit fluidcad;
           fluidcad-nvim = pkgs.callPackage ./pkgs/fluidcad-nvim { inherit fluidcad; nodejs = pkgs.nodejs_24; };
-          kandev = pkgs.callPackage ./pkgs/kandev { };
+          inherit kandev;
           kandev-frontend = pkgs.callPackage ./pkgs/kandev-frontend {
-            inherit (pkgs.kandev) version src;
+            inherit (kandev) version src;
           };
           opencode = pkgs.callPackage ./pkgs/opencode { };
           version-check-home-hook = pkgs.callPackage ./pkgs/version-check-home-hook { };
