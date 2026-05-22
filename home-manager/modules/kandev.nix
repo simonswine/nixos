@@ -70,6 +70,7 @@ in
           Environment = [
             "KANDEV_WEB_INTERNAL_URL=http://127.0.0.1:${toString cfg.webPort}"
             "PATH=${path}"
+            "GIT_CONFIG_GLOBAL=/home/christian/.config/git/config-kandev"
           ];
           Restart = "on-failure";
         };
