@@ -23,7 +23,7 @@ stdenv.mkDerivation {
     inherit version src;
     sourceRoot = "${src.name}/apps";
     fetcherVersion = 3;
-    hash = "sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=";
+    hash = "sha256-t4/dzf3TPzqHHkPEzfCePW23ZqT/526iU6RnJQXCcnw=";
   };
 
   buildPhase = ''
