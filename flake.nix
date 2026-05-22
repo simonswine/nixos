@@ -191,6 +191,7 @@
           fluidcad-nvim = pkgs.fluidcad-nvim;
           fronius-exporter = pkgs.fronius-exporter;
           kandev = pkgs.kandev;
+          kandev-frontend = pkgs.kandev-frontend;
           opencode = pkgs.opencode;
           g810-led = pkgs.g810-led;
           gimli-addr2line = pkgs.gimli-addr2line;
