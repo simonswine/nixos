@@ -15,6 +15,7 @@ done < <(
 )
 
 nix-update kandev --flake --commit --build
+nix-update kandev-frontend --flake --version=skip --commit --build
 nix-update crush --flake --use-update-script --commit --build
 nix-update claude-code --flake --use-update-script --commit --build
 nix-update opencode --flake --use-update-script --commit --build

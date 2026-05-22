@@ -57,6 +57,9 @@
           inherit fluidcad;
           fluidcad-nvim = pkgs.callPackage ./pkgs/fluidcad-nvim { inherit fluidcad; nodejs = pkgs.nodejs_24; };
           kandev = pkgs.callPackage ./pkgs/kandev { };
+          kandev-frontend = pkgs.callPackage ./pkgs/kandev-frontend {
+            inherit (pkgs.kandev) version src;
+          };
           opencode = pkgs.callPackage ./pkgs/opencode { };
           version-check-home-hook = pkgs.callPackage ./pkgs/version-check-home-hook { };
           wrap-buddy = pkgs.callPackage ./pkgs/wrap-buddy { };

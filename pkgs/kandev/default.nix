@@ -1,69 +1,20 @@
 {
   lib,
-  stdenv,
   buildGo126Module,
   fetchFromGitHub,
-  pnpm,
-  nodejs,
   sqlite,
   pkg-config,
-  makeWrapper,
 }:
 
 let
-  version = "0.45.0";
+  version = "0.50.0";
 
   src = fetchFromGitHub {
     owner = "kdlbs";
     repo = "kandev";
     tag = "v${version}";
-    hash = "sha256-7KzTsT/R5cE27uTs6PtjbUnIZ5xrn9nLALfMu8jiMEA=";
+    hash = "sha256-tdZ46Q7p0RljZ3Rr9ESJoVysxYicEl3DNKUhaY39Q1Q=";
   };
-
-  # Build the Next.js frontend (standalone output) using pnpm workspace.
-  # The pnpm workspace root is apps/; the web package is apps/web/.
-  # Next.js standalone for a monorepo produces:
-  #   .next/standalone/
-  #     web/server.js    <- actual entry point
-  #     web/.next/       <- server-side bundles
-  #     node_modules/    <- minimal shared deps
-  # Static and public assets must be placed adjacent to server.js.
-  kandev-web = stdenv.mkDerivation (finalAttrs: {
-    pname = "kandev-web";
-    inherit version src;
-
-    sourceRoot = "${src.name}/apps";
-
-    nativeBuildInputs = [
-      nodejs
-      pnpm.configHook
-    ];
-
-    pnpmDeps = pnpm.fetchDeps {
-      inherit (finalAttrs) pname version src;
-      sourceRoot = "${src.name}/apps";
-      fetcherVersion = 3;
-      hash = "sha256-5VgXm9mjaSERWYqqBPdt/6qy+jy6GDiKcexJjZPx+wM=";
-    };
-
-    buildPhase = ''
-      runHook preBuild
-      pnpm --filter @kandev/web build
-      runHook postBuild
-    '';
-
-    installPhase = ''
-      runHook preInstall
-      mkdir -p "$out"
-      # Copy standalone output (gives us web/server.js and node_modules/)
-      cp -r web/.next/standalone/. "$out/"
-      # Place static and public assets adjacent to server.js, as Next.js requires
-      mkdir -p "$out/web/.next"
-      cp -r web/.next/static "$out/web/.next/static"
-      cp -r web/public "$out/web/public"
-      runHook postInstall
-    '';
-  });
 
 in
 
@@ -71,18 +22,13 @@ buildGo126Module {
   pname = "kandev";
   inherit version src;
 
-  # Go module lives in apps/backend/
   modRoot = "apps/backend";
 
-  vendorHash = "sha256-SqtP29vAHiuoJbBr8DwWO7rvFO8XrtZ/vA5BHJaCDgg=";
+  vendorHash = "sha256-83LgMQdZIbRRhrIqWop7NX3WxhkFS3johs1PydTBKmE=";
 
-  # mattn/go-sqlite3 requires CGO
   env.CGO_ENABLED = "1";
 
-  nativeBuildInputs = [
-    pkg-config
-    makeWrapper
-  ];
+  nativeBuildInputs = [ pkg-config ];
   buildInputs = [ sqlite ];
 
   subPackages = [
@@ -96,35 +42,6 @@ buildGo126Module {
     "-X main.Version=v${version}"
     "-X main.Commit=f9f2da2"
   ];
-
-  postInstall =
-    let
-      webDir = "${placeholder "out"}/share/kandev/web";
-      nodeServerJs = "${webDir}/web/server.js";
-      nodeBin = "${nodejs}/bin/node";
-    in
-    ''
-      # Install the Next.js standalone server
-      mkdir -p "$out/share/kandev/web"
-      cp -r ${kandev-web}/. "$out/share/kandev/web/"
-
-      # Rename the Go binary so we can wrap it with a shell script
-      mv "$out/bin/kandev" "$out/bin/.kandev-bin"
-
-      # Create a wrapper that starts the Next.js server alongside the Go backend.
-      # The Go backend reverse-proxies all non-API requests via KANDEV_WEB_INTERNAL_URL.
-      makeWrapper "$out/bin/.kandev-bin" "$out/bin/kandev" \
-        --run '
-          _web_port="''${KANDEV_WEB_PORT:-37429}"
-          _web_dir="${webDir}"
-          HOSTNAME=127.0.0.1 PORT="$_web_port" \
-            ${nodeBin} ${nodeServerJs} &
-          _web_pid=$!
-          _cleanup() { kill "$_web_pid" 2>/dev/null; wait "$_web_pid" 2>/dev/null; }
-          trap _cleanup EXIT INT TERM
-        ' \
-        --set-default KANDEV_WEB_INTERNAL_URL "http://127.0.0.1:37429"
-    '';
 
   meta = {
     description = "AI Kanban & Development Environment orchestrating multiple AI coding agents";
