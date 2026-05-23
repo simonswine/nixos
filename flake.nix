@@ -11,11 +11,16 @@
     };
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
     nixpkgs.url = "github:nixos/nixpkgs/nixos-25.11-small";
+    nuschtosSearch = {
+      url = "github:NuschtOS/search";
+      inputs.flake-utils.follows = "flake-utils";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     nixvim = {
       url = "github:nix-community/nixvim/nixos-25.11";
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.systems.follows = "systems";
-      inputs.nuschtosSearch.inputs.flake-utils.follows = "flake-utils";
+      inputs.nuschtosSearch.follows = "nuschtosSearch";
     };
   };
 
