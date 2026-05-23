@@ -1,19 +1,12 @@
 self: super: {
   containerd = super.containerd.overrideAttrs (old: rec {
-    version = "2.2.1";
+    version = "2.3.1";
     src = super.fetchFromGitHub {
       owner = "containerd";
       repo = "containerd";
       rev = "v${version}";
-      hash = "sha256-fDOfN0XESrBTDW7Nxj9niqU93BQ5/JaGLwAR3u6Xaik=";
+      hash = "sha256-BpKBrMluU5MmojJp/9Og5UrkUBLHav5qx6Re1SFhlhY=";
     };
-    patches = (old.patches or [ ]) ++ [
-      # Fix for absolute symlinks in rootfs user lookup (NixOS compatibility)
-      # https://github.com/containerd/containerd/pull/12732
-      ./12732.patch
-      # Additional fix from https://github.com/containerd/containerd/issues/12683#issuecomment-3773170623
-      ./12732-x.patch
-    ];
     makeFlags =
       builtins.filter (
         x: (!super.lib.strings.hasPrefix "VERSION=" x) && (!super.lib.strings.hasPrefix "REVISION=" x)
