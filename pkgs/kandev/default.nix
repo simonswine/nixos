@@ -7,13 +7,13 @@
 }:
 
 let
-  version = "0.50.0";
+  version = "0.51.0";
 
   src = fetchFromGitHub {
     owner = "kdlbs";
     repo = "kandev";
     tag = "v${version}";
-    hash = "sha256-tdZ46Q7p0RljZ3Rr9ESJoVysxYicEl3DNKUhaY39Q1Q=";
+    hash = "sha256-lELJRMPs9fUqif9cp6UsZl4MyXSonEkJnYk756DZEp0=";
   };
 
 in
