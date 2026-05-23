@@ -1,5 +1,7 @@
 self: super: {
-  containerd = super.containerd.overrideAttrs (old: rec {
+  containerd = (super.containerd.override {
+    buildGoModule = super.buildGoModule.override { go = super.go_1_26; };
+  }).overrideAttrs (old: rec {
     version = "2.3.1";
     src = super.fetchFromGitHub {
       owner = "containerd";
