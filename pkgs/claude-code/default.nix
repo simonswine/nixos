@@ -36,7 +36,8 @@ stdenvNoCC.mkDerivation (finalAttrs: {
   nativeBuildInputs = [
     installShellFiles
     makeBinaryWrapper
-  ] ++ lib.optionals stdenvNoCC.hostPlatform.isElf [ autoPatchelfHook ];
+  ]
+  ++ lib.optionals stdenvNoCC.hostPlatform.isElf [ autoPatchelfHook ];
 
   strictDeps = true;
 

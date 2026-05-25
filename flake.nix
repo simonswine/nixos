@@ -40,7 +40,8 @@
           builtins.elem (lib.getName pkg) [
             "claude-code"
           ];
-        packageOverrides = pkgs:
+        packageOverrides =
+          pkgs:
           let
             fluidcad = pkgs.callPackage ./pkgs/fluidcad {
               buildNpmPackage = pkgs.buildNpmPackage.override { nodejs = pkgs.nodejs_24; };
@@ -48,61 +49,64 @@
             kandev = pkgs.callPackage ./pkgs/kandev { };
           in
           {
-          austin = pkgs.callPackage ./pkgs/austin { };
-          benchstat = pkgs.callPackage ./pkgs/benchstat { };
-          cert-updater = pkgs.callPackage ./pkgs/cert-updater { };
-          claude-code = pkgs.callPackage ./pkgs/claude-code { };
-          devfiler = pkgs.callPackage ./pkgs/devfiler { };
-          dezoomify-rs = pkgs.callPackage ./pkgs/dezoomify-rs { };
-          dhclient = pkgs.callPackage ./pkgs/dhclient { };
-          docker-machine = pkgs.callPackage ./pkgs/docker-machine { };
-          docker-machine-driver-hetzner = pkgs.callPackage ./pkgs/docker-machine-driver-hetzner { };
-          faillint = pkgs.callPackage ./pkgs/faillint { };
-          inherit fluidcad;
-          fluidcad-nvim = pkgs.callPackage ./pkgs/fluidcad-nvim { inherit fluidcad; nodejs = pkgs.nodejs_24; };
-          inherit kandev;
-          kandev-frontend = pkgs.callPackage ./pkgs/kandev-frontend {
-            inherit (kandev) version src;
+            austin = pkgs.callPackage ./pkgs/austin { };
+            benchstat = pkgs.callPackage ./pkgs/benchstat { };
+            cert-updater = pkgs.callPackage ./pkgs/cert-updater { };
+            claude-code = pkgs.callPackage ./pkgs/claude-code { };
+            devfiler = pkgs.callPackage ./pkgs/devfiler { };
+            dezoomify-rs = pkgs.callPackage ./pkgs/dezoomify-rs { };
+            dhclient = pkgs.callPackage ./pkgs/dhclient { };
+            docker-machine = pkgs.callPackage ./pkgs/docker-machine { };
+            docker-machine-driver-hetzner = pkgs.callPackage ./pkgs/docker-machine-driver-hetzner { };
+            faillint = pkgs.callPackage ./pkgs/faillint { };
+            inherit fluidcad;
+            fluidcad-nvim = pkgs.callPackage ./pkgs/fluidcad-nvim {
+              inherit fluidcad;
+              nodejs = pkgs.nodejs_24;
+            };
+            inherit kandev;
+            kandev-frontend = pkgs.callPackage ./pkgs/kandev-frontend {
+              inherit (kandev) version src;
+            };
+            opencode = pkgs.callPackage ./pkgs/opencode { };
+            version-check-home-hook = pkgs.callPackage ./pkgs/version-check-home-hook { };
+            wrap-buddy = pkgs.callPackage ./pkgs/wrap-buddy { };
+            fronius-exporter = pkgs.callPackage ./pkgs/fronius-exporter { };
+            g810-led = pkgs.callPackage ./pkgs/g810-led { };
+            get-focused-x-screen = pkgs.callPackage ./pkgs/get-focused-x-screen { };
+            gimli-addr2line = pkgs.callPackage ./pkgs/gimli-addr2line { };
+            gitlab-runner = pkgs.callPackage ./pkgs/gitlab-runner { };
+            goda = pkgs.callPackage ./pkgs/goda { };
+            growatt-proxy-exporter = pkgs.callPackage ./pkgs/growatt-proxy-exporter { };
+            heatmiser-exporter = pkgs.callPackage ./pkgs/heatmiser-exporter { };
+            inch-exporter = pkgs.callPackage ./pkgs/inch-exporter { };
+            intel-gpu-exporter = pkgs.callPackage ./pkgs/intel-gpu-exporter { };
+            jsonnet-language-server = pkgs.callPackage ./pkgs/jsonnet-language-server { };
+            mi-flora-exporter = pkgs.callPackage ./pkgs/mi-flora-exporter { };
+            miio = pkgs.callPackage ./pkgs/python-miio { };
+            modbus-exporter = pkgs.callPackage ./pkgs/modbus-exporter { };
+            modularise = pkgs.callPackage ./pkgs/modularise { };
+            mtv-dl = pkgs.callPackage ./pkgs/mtv-dl { };
+            nut-exporter = pkgs.callPackage ./pkgs/nut-exporter { };
+            orangepi-firmware = pkgs.callPackage ./pkgs/orangepi-firmware { };
+            phpspy = pkgs.callPackage ./pkgs/phpspy { };
+            profilecli = pkgs.callPackage ./pkgs/profilecli { };
+            prometheus-node-exporter-restic = pkgs.callPackage ./pkgs/prometheus-node-exporter-restic { };
+            prometheus-node-exporter-smartmon = pkgs.callPackage ./pkgs/prometheus-node-exporter-smartmon { };
+            prometheus-node-exporter-zfs = pkgs.callPackage ./pkgs/prometheus-node-exporter-zfs { };
+            prometheus-snmp-exporter-config = pkgs.callPackage ./pkgs/prometheus-snmp-exporter-config { };
+            pyroscope = pkgs.callPackage ./pkgs/pyroscope { };
+            rift = pkgs.callPackage ./pkgs/rift { };
+            roc-vad = pkgs.callPackage ./pkgs/roc-vad { };
+            sleepwatcher = pkgs.callPackage ./pkgs/sleepwatcher { };
+            sonnenbatterie-exporter = pkgs.callPackage ./pkgs/sonnenbatterie-exporter { };
+            tod0 = pkgs.callPackage ./pkgs/tod0 { };
+            tplink-switch-exporter = pkgs.callPackage ./pkgs/tplink-switch-exporter { };
+            tz-cli = pkgs.callPackage ./pkgs/tz-cli { };
+            vim-markdown-composer = pkgs.callPackage ./pkgs/vim-markdown-composer { };
+            yasdi = pkgs.callPackage ./pkgs/yasdi { };
+            yasdi-exporter = pkgs.callPackage ./pkgs/yasdi-exporter { };
           };
-          opencode = pkgs.callPackage ./pkgs/opencode { };
-          version-check-home-hook = pkgs.callPackage ./pkgs/version-check-home-hook { };
-          wrap-buddy = pkgs.callPackage ./pkgs/wrap-buddy { };
-          fronius-exporter = pkgs.callPackage ./pkgs/fronius-exporter { };
-          g810-led = pkgs.callPackage ./pkgs/g810-led { };
-          get-focused-x-screen = pkgs.callPackage ./pkgs/get-focused-x-screen { };
-          gimli-addr2line = pkgs.callPackage ./pkgs/gimli-addr2line { };
-          gitlab-runner = pkgs.callPackage ./pkgs/gitlab-runner { };
-          goda = pkgs.callPackage ./pkgs/goda { };
-          growatt-proxy-exporter = pkgs.callPackage ./pkgs/growatt-proxy-exporter { };
-          heatmiser-exporter = pkgs.callPackage ./pkgs/heatmiser-exporter { };
-          inch-exporter = pkgs.callPackage ./pkgs/inch-exporter { };
-          intel-gpu-exporter = pkgs.callPackage ./pkgs/intel-gpu-exporter { };
-          jsonnet-language-server = pkgs.callPackage ./pkgs/jsonnet-language-server { };
-          mi-flora-exporter = pkgs.callPackage ./pkgs/mi-flora-exporter { };
-          miio = pkgs.callPackage ./pkgs/python-miio { };
-          modbus-exporter = pkgs.callPackage ./pkgs/modbus-exporter { };
-          modularise = pkgs.callPackage ./pkgs/modularise { };
-          mtv-dl = pkgs.callPackage ./pkgs/mtv-dl { };
-          nut-exporter = pkgs.callPackage ./pkgs/nut-exporter { };
-          orangepi-firmware = pkgs.callPackage ./pkgs/orangepi-firmware { };
-          phpspy = pkgs.callPackage ./pkgs/phpspy { };
-          profilecli = pkgs.callPackage ./pkgs/profilecli { };
-          prometheus-node-exporter-restic = pkgs.callPackage ./pkgs/prometheus-node-exporter-restic { };
-          prometheus-node-exporter-smartmon = pkgs.callPackage ./pkgs/prometheus-node-exporter-smartmon { };
-          prometheus-node-exporter-zfs = pkgs.callPackage ./pkgs/prometheus-node-exporter-zfs { };
-          prometheus-snmp-exporter-config = pkgs.callPackage ./pkgs/prometheus-snmp-exporter-config { };
-          pyroscope = pkgs.callPackage ./pkgs/pyroscope { };
-          rift = pkgs.callPackage ./pkgs/rift { };
-          roc-vad = pkgs.callPackage ./pkgs/roc-vad { };
-          sleepwatcher = pkgs.callPackage ./pkgs/sleepwatcher { };
-          sonnenbatterie-exporter = pkgs.callPackage ./pkgs/sonnenbatterie-exporter { };
-          tod0 = pkgs.callPackage ./pkgs/tod0 { };
-          tplink-switch-exporter = pkgs.callPackage ./pkgs/tplink-switch-exporter { };
-          tz-cli = pkgs.callPackage ./pkgs/tz-cli { };
-          vim-markdown-composer = pkgs.callPackage ./pkgs/vim-markdown-composer { };
-          yasdi = pkgs.callPackage ./pkgs/yasdi { };
-          yasdi-exporter = pkgs.callPackage ./pkgs/yasdi-exporter { };
-        };
       };
       nixosModulesPkgs = {
         nixpkgs = {
