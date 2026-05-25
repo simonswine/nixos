@@ -13,22 +13,34 @@ let
 
   serveConfig = {
     type = mkOption {
-      type = types.enum [ "stdinserver" ];
+      type = types.enum [
+        "stdinserver"
+        "local"
+      ];
     };
 
     client_identities = mkOption {
       type = with types; nullOr (listOf str);
       default = null;
     };
+
+    listener_name = mkOption {
+      type = with types; nullOr str;
+      default = null;
+    };
   };
 
   connectConfig = {
     type = mkOption {
-      type = types.enum [ "ssh+stdinserver" ];
+      type = types.enum [
+        "ssh+stdinserver"
+        "local"
+      ];
     };
 
     host = mkOption {
-      type = types.str;
+      type = with types; nullOr str;
+      default = null;
     };
 
     user = mkOption {
@@ -37,11 +49,22 @@ let
     };
 
     identity_file = mkOption {
-      type = types.str;
+      type = with types; nullOr str;
+      default = null;
     };
 
     port = mkOption {
-      default = 22;
+      default = null;
+    };
+
+    listener_name = mkOption {
+      type = with types; nullOr str;
+      default = null;
+    };
+
+    client_identity = mkOption {
+      type = with types; nullOr str;
+      default = null;
     };
   };
 
