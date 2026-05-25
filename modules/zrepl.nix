@@ -11,6 +11,35 @@ let
   filterAttrsRec =
     pred: v: if isAttrs v then filterAttrs pred (mapAttrs (path: filterAttrsRec pred) v) else v;
 
+  # Fields valid only for ssh+stdinserver connect
+  sshConnectFields = [ "host" "user" "identity_file" "port" ];
+  # Fields valid only for local connect
+  localConnectFields = [ "listener_name" "client_identity" ];
+  # Fields valid only for local serve
+  localServeFields = [ "listener_name" ];
+  # Fields valid only for stdinserver serve
+  stdinserverServeFields = [ "client_identities" ];
+
+  filterConnect =
+    c:
+    if c.type == "local" then
+      removeAttrs c sshConnectFields
+    else
+      removeAttrs c localConnectFields;
+
+  filterServe =
+    s:
+    if s.type == "local" then
+      removeAttrs s stdinserverServeFields
+    else
+      removeAttrs s localServeFields;
+
+  filterJob =
+    job:
+    job
+    // optionalAttrs (job ? connect && job.connect != null) { connect = filterConnect job.connect; }
+    // optionalAttrs (job ? serve && job.serve != null) { serve = filterServe job.serve; };
+
   serveConfig = {
     type = mkOption {
       type = types.enum [
@@ -54,7 +83,7 @@ let
     };
 
     port = mkOption {
-      default = null;
+      default = 22;
     };
 
     listener_name = mkOption {
@@ -190,7 +219,7 @@ in
 
       jobs = mapAttrsToList (
         n: v:
-        (filterAttrsRec (n: v: v != null) (
+        filterJob (filterAttrsRec (n: v: v != null) (
           {
             name = n;
           }
