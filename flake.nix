@@ -10,14 +10,14 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-25.11-small";
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-26.05-small";
     nuschtosSearch = {
       url = "github:NuschtOS/search";
       inputs.flake-utils.follows = "flake-utils";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     nixvim = {
-      url = "github:nix-community/nixvim/nixos-25.11";
+      url = "github:nix-community/nixvim/nixos-26.05";
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.systems.follows = "systems";
       inputs.nuschtosSearch.follows = "nuschtosSearch";
@@ -39,6 +39,7 @@
           pkg:
           builtins.elem (lib.getName pkg) [
             "claude-code"
+            "blink-cmp-spell"
           ];
         packageOverrides =
           pkgs:
@@ -81,6 +82,7 @@
             heatmiser-exporter = pkgs.callPackage ./pkgs/heatmiser-exporter { };
             inch-exporter = pkgs.callPackage ./pkgs/inch-exporter { };
             intel-gpu-exporter = pkgs.callPackage ./pkgs/intel-gpu-exporter { };
+            js-yaml = pkgs.callPackage ./pkgs/js-yaml { };
             jsonnet-language-server = pkgs.callPackage ./pkgs/jsonnet-language-server { };
             mi-flora-exporter = pkgs.callPackage ./pkgs/mi-flora-exporter { };
             miio = pkgs.callPackage ./pkgs/python-miio { };
@@ -207,6 +209,7 @@
           heatmiser-exporter = pkgs.heatmiser-exporter;
           inch-exporter = pkgs.inch-exporter;
           intel-gpu-exporter = pkgs.intel-gpu-exporter;
+          js-yaml = pkgs.js-yaml;
           jsonnet-language-server = pkgs.jsonnet-language-server;
           kubernetes-1-33 = pkgs.kubernetes-1-33;
           kubernetes-1-34 = pkgs.kubernetes-1-34;

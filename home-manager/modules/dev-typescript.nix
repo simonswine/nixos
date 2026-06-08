@@ -18,13 +18,13 @@ in
     home.packages = with pkgs; [
       nodejs
       typescript
-      nodePackages.yarn
-      nodePackages.prettier
+      yarn
+      prettier
       prettierd
     ];
     simonswine.neovim = {
       lspconfig.ts_ls.cmd = [
-        "${pkgs.nodePackages.typescript-language-server}/bin/typescript-language-server"
+        "${pkgs.typescript-language-server}/bin/typescript-language-server"
         "--stdio"
       ];
       conformConfig = {

@@ -52,7 +52,7 @@ in
         gotestsum
         impl
         mockgen
-        gotools # for goimports
+        gosimports # replaces gotools/goimports (gotools conflicts with gopls modernize in 26.05)
       ];
 
       programs.nixvim.plugins = {

@@ -19,7 +19,7 @@ in
       jsonnet
       jsonnet-bundler
       tanka
-      nodePackages.js-yaml
+      js-yaml
     ];
     programs.nixvim.extraConfigLua = ''
       -- Function to evaluate jsonnet files

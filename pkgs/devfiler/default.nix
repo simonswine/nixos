@@ -22,7 +22,16 @@ rustPlatform.buildRustPackage {
     fetchSubmodules = true;
   };
 
-  cargoHash = "sha256-41Ay9nNALfTQEe8R2enaVlMD00PI3hRwEGIb5X7KzGM=";
+  cargoLock.lockFile = ./Cargo.lock;
+
+  # Bump rocksdb crate 0.22.0 -> 0.24.0 (librocksdb-sys 0.16 -> 0.17, RocksDB
+  # 8.10 -> 10.4) to get GCC 15 compatibility. Also drop the rocksdb jemalloc
+  # feature to avoid a tikv-jemalloc-sys version conflict with devfiler's own
+  # global allocator dependency.
+  postPatch = ''
+    cp ${./Cargo.lock} Cargo.lock
+    cp ${./Cargo.toml} Cargo.toml
+  '';
 
   nativeBuildInputs = [
     pkg-config

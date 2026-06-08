@@ -1,0 +1,12 @@
+{
+  "name": "js-yaml",
+  "version": "4.1.0",
+  "description": "YAML 1.2 parser and serializer",
+  "license": "MIT",
+  "dependencies": {
+    "argparse": "^2.0.1"
+  },
+  "bin": {
+    "js-yaml": "bin/js-yaml.js"
+  }
+}
