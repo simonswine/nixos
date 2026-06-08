@@ -64,6 +64,7 @@ stdenv.mkDerivation rec {
     "-Wno-error=stringop-truncation"
     "-Wno-error=format-overflow"
     "-Wno-error=stringop-overflow=8"
+    "-Wno-error=old-style-definition"
   ];
 
   installFlags = [ "DESTDIR=\${out}" ];
