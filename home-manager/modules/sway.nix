@@ -139,7 +139,7 @@ in
           {
             modifier = modifier;
 
-            terminal = "${pkgs.xfce.xfce4-terminal}/bin/xfce4-terminal";
+            terminal = "${pkgs.xfce4-terminal}/bin/xfce4-terminal";
 
             gaps = {
               inner = 10;
