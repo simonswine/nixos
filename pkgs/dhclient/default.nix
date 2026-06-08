@@ -59,13 +59,12 @@ stdenv.mkDerivation rec {
   ++ lib.optional (stdenv.hostPlatform != stdenv.buildPlatform) "BUILD_CC=$(CC_FOR_BUILD)";
 
   NIX_CFLAGS_COMPILE = builtins.toString [
+    "-std=gnu17"
     "-Wno-error=pointer-compare"
     "-Wno-error=format-truncation"
     "-Wno-error=stringop-truncation"
     "-Wno-error=format-overflow"
     "-Wno-error=stringop-overflow=8"
-    "-Wno-error=old-style-definition"
-    "-Wno-error=incompatible-pointer-types"
   ];
 
   installFlags = [ "DESTDIR=\${out}" ];
