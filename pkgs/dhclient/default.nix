@@ -65,6 +65,7 @@ stdenv.mkDerivation rec {
     "-Wno-error=format-overflow"
     "-Wno-error=stringop-overflow=8"
     "-Wno-error=old-style-definition"
+    "-Wno-error=incompatible-pointer-types"
   ];
 
   installFlags = [ "DESTDIR=\${out}" ];
