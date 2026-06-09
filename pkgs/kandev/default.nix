@@ -4,16 +4,17 @@
   fetchFromGitHub,
   sqlite,
   pkg-config,
+  git,
 }:
 
 let
-  version = "0.51.0";
+  version = "0.56.0";
 
   src = fetchFromGitHub {
     owner = "kdlbs";
     repo = "kandev";
     tag = "v${version}";
-    hash = "sha256-lELJRMPs9fUqif9cp6UsZl4MyXSonEkJnYk756DZEp0=";
+    hash = "sha256-8UBKXJd5Tet6X3cr0uqy+llFZjH6HUSbtvFtLhQ1QYo=";
   };
 
 in
@@ -24,11 +25,14 @@ buildGo126Module {
 
   modRoot = "apps/backend";
 
-  vendorHash = "sha256-83LgMQdZIbRRhrIqWop7NX3WxhkFS3johs1PydTBKmE=";
+  vendorHash = "sha256-EooUFPyo+HEF/nNa6VqEVq4CZ4Li3cnyKE1YU6bw+zY=";
 
   env.CGO_ENABLED = "1";
 
-  nativeBuildInputs = [ pkg-config ];
+  nativeBuildInputs = [
+    pkg-config
+    git
+  ];
   buildInputs = [ sqlite ];
 
   subPackages = [
