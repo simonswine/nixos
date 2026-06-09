@@ -69,9 +69,11 @@ in
 
     programs.nixvim = {
       nixpkgs.source = pkgs.path;
-      nixpkgs.config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) [
-        "blink-cmp-spell"
-      ];
+      nixpkgs.config.allowUnfreePredicate =
+        pkg:
+        builtins.elem (lib.getName pkg) [
+          "blink-cmp-spell"
+        ];
       viAlias = true;
       vimAlias = true;
       vimdiffAlias = true;
