@@ -42,7 +42,7 @@ base64 = "0.22.0"
 egui = "0.33.3"
 egui_plot = "0.34.1"
 egui_extras = { version = "0.33.3", features = ["image"] }
-egui_commonmark = "0.22.0"
+egui_commonmark = "0.23.0"
 egui-phosphor = "0.11.0"
 fallible-iterator = "0.3.0"
 chrono = "0.4.31"
