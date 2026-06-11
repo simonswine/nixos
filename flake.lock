@@ -104,12 +104,15 @@
       }
     },
     "nixos-hardware": {
+      "inputs": {
+        "nixpkgs": "nixpkgs"
+      },
       "locked": {
-        "lastModified": 1775490113,
-        "narHash": "sha256-2ZBhDNZZwYkRmefK5XLOusCJHnoeKkoN95hoSGgMxWM=",
+        "lastModified": 1781168557,
+        "narHash": "sha256-LOnLQ2tpYF9gqIDDr3+j3DbpJJr/QCH6zPRT2GzEUOE=",
         "owner": "NixOS",
         "repo": "nixos-hardware",
-        "rev": "c775c2772ba56e906cbeb4e0b2db19079ef11ff7",
+        "rev": "6358ff76821101c178e3ab4919a62799bfe3652e",
         "type": "github"
       },
       "original": {
@@ -121,11 +124,24 @@
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1780907025,
-        "narHash": "sha256-BQrfHoYh271gIejveSVAtli3jPt9N8UVGeoXqjXp0kU=",
+        "lastModified": 1767892417,
+        "narHash": "sha256-8bW3q88CEg2u4hSP66Vf4lpbLonHz7hqDNBMcCY7E9U=",
+        "rev": "3497aa5c9457a9d88d71fa93a4a8368816fbeeba",
+        "type": "tarball",
+        "url": "https://releases.nixos.org/nixos/unstable/nixos-26.05pre924538.3497aa5c9457/nixexprs.tar.xz"
+      },
+      "original": {
+        "type": "tarball",
+        "url": "https://channels.nixos.org/nixos-unstable/nixexprs.tar.xz"
+      }
+    },
+    "nixpkgs_2": {
+      "locked": {
+        "lastModified": 1781176983,
+        "narHash": "sha256-m9YiA+7R78L1018qaHY3zkGUTDy7SUej5wuZoxxUqCU=",
         "owner": "nixos",
         "repo": "nixpkgs",
-        "rev": "b1d735948e5ca778ca50a881be98db8333372972",
+        "rev": "88a9d48c8af83291a3d1d33ab0955d276accf6f1",
         "type": "github"
       },
       "original": {
@@ -146,11 +162,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1780865915,
-        "narHash": "sha256-4xRJfkhNerOe2bw060aPucwtdWy1YRGQIASwKgbBBjU=",
+        "lastModified": 1781038653,
+        "narHash": "sha256-MxUVyE7A5QMJXOEFQhOHsqs4UPhujeDgdFhguE7Wmic=",
         "owner": "nix-community",
         "repo": "nixvim",
-        "rev": "d63c1edbd76f928362884537ff1f7cd514fc4db7",
+        "rev": "e7ce6708cc5b6275406a8feee06ca50c5cafd6bf",
         "type": "github"
       },
       "original": {
@@ -171,11 +187,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1776097945,
-        "narHash": "sha256-zQFcpo9Caj9ZLvjGHnvXsPjwyUmznf1kixcMA0+e0bw=",
+        "lastModified": 1780920922,
+        "narHash": "sha256-tf3fIqMVHiy/NqmOjPIWdbd34/QehVaIG4f2dihkQ2Y=",
         "owner": "NuschtOS",
         "repo": "search",
-        "rev": "d15c05d20b434704c3e84f9dea161b8184b6643d",
+        "rev": "497eedec7bf40e7a91cd7bd837df80f6947b39fc",
         "type": "github"
       },
       "original": {
@@ -189,7 +205,7 @@
         "flake-utils": "flake-utils",
         "nixos-generators": "nixos-generators",
         "nixos-hardware": "nixos-hardware",
-        "nixpkgs": "nixpkgs",
+        "nixpkgs": "nixpkgs_2",
         "nixvim": "nixvim",
         "nuschtosSearch": "nuschtosSearch",
         "systems": "systems"
