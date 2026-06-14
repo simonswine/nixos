@@ -103,6 +103,7 @@
             sonnenbatterie-exporter = pkgs.callPackage ./pkgs/sonnenbatterie-exporter { };
             tod0 = pkgs.callPackage ./pkgs/tod0 { };
             tplink-switch-exporter = pkgs.callPackage ./pkgs/tplink-switch-exporter { };
+            tttool = pkgs.callPackage ./pkgs/tttool { };
             tz-cli = pkgs.callPackage ./pkgs/tz-cli { };
             vim-markdown-composer = pkgs.callPackage ./pkgs/vim-markdown-composer { };
             yasdi = pkgs.callPackage ./pkgs/yasdi { };
@@ -233,6 +234,7 @@
           sonnenbatterie-exporter = pkgs.sonnenbatterie-exporter;
           tod0 = pkgs.tod0;
           tplink-switch-exporter = pkgs.tplink-switch-exporter;
+          tttool = pkgs.tttool;
           tz-cli = pkgs.tz-cli;
           vim-markdown-composer = pkgs.vim-markdown-composer;
           yasdi = pkgs.yasdi;
