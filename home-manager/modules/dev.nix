@@ -102,6 +102,7 @@ in
       programs.zellij = {
         enable = true;
         settings.theme = "catppuccin";
+        settings.show_startup_tips = false;
         extraConfig = ''
           // --- falcode-zellij: floating agent-status popup ---
           keybinds {
