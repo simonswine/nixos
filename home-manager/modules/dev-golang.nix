@@ -152,6 +152,11 @@ in
               "goimports"
             ];
           };
+          formatters = {
+            goimports = {
+              command = "${pkgs.gosimports}/bin/gosimports";
+            };
+          };
         };
       };
     }

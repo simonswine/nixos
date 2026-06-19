@@ -57,6 +57,7 @@ in
       fd
       fixjson
       ripgrep
+      tree-sitter
     ];
 
     programs.tmux.extraConfig = ''
