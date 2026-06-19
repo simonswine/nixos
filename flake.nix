@@ -68,8 +68,10 @@
             kandev-frontend = pkgs.callPackage ./pkgs/kandev-frontend {
               inherit (kandev) version src;
             };
+            falcode-zellij = pkgs.callPackage ./pkgs/falcode-zellij { };
             opencode = pkgs.callPackage ./pkgs/opencode { };
             version-check-home-hook = pkgs.callPackage ./pkgs/version-check-home-hook { };
+            zellij-attention = pkgs.callPackage ./pkgs/zellij-attention { };
             wrap-buddy = pkgs.callPackage ./pkgs/wrap-buddy { };
             fronius-exporter = pkgs.callPackage ./pkgs/fronius-exporter { };
             g810-led = pkgs.callPackage ./pkgs/g810-led { };
@@ -194,6 +196,7 @@
           dezoomify-rs = pkgs.dezoomify-rs;
           docker-machine = pkgs.docker-machine;
           docker-machine-driver-hetzner = pkgs.docker-machine-driver-hetzner;
+          falcode-zellij = pkgs.falcode-zellij;
           faillint = pkgs.faillint;
           fluidcad = pkgs.fluidcad;
           fluidcad-nvim = pkgs.fluidcad-nvim;
@@ -239,6 +242,7 @@
           vim-markdown-composer = pkgs.vim-markdown-composer;
           yasdi = pkgs.yasdi;
           yasdi-exporter = pkgs.yasdi-exporter;
+          zellij-attention = pkgs.zellij-attention;
         }
         // lib.optionalAttrs pkgs.stdenv.hostPlatform.isLinux {
           dhclient = pkgs.dhclient;

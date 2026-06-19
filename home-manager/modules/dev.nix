@@ -102,6 +102,104 @@ in
       programs.zellij = {
         enable = true;
         settings.theme = "catppuccin";
+        extraConfig = ''
+          // --- falcode-zellij: floating agent-status popup ---
+          keybinds {
+              shared {
+                  bind "Alt o" {
+                      LaunchOrFocusPlugin "file:${config.xdg.configHome}/zellij/plugins/falcode-zellij-sessions.wasm" {
+                          floating true
+                          state_dir "${config.home.homeDirectory}/.local/state/falcode-zellij"
+                      }
+                  }
+              }
+          }
+
+          // --- zellij-attention: tab icons while agents are working ---
+          load_plugins {
+              "file:${config.xdg.configHome}/zellij/plugins/zellij-attention.wasm" {
+                  enabled "true"
+                  waiting_icon "⏳"
+                  completed_icon "✅"
+              }
+          }
+        '';
+      };
+
+      # Install the zellij WASM plugins into ~/.config/zellij/plugins/
+      xdg.configFile."zellij/plugins/falcode-zellij-sessions.wasm" = {
+        source = "${pkgs.falcode-zellij}/lib/zellij/plugins/falcode-zellij-sessions.wasm";
+      };
+      xdg.configFile."zellij/plugins/zellij-attention.wasm" = {
+        source = "${pkgs.zellij-attention}/lib/zellij/plugins/zellij-attention.wasm";
+      };
+
+      # OpenCode plugin: report agent status to falcode popup
+      xdg.configFile."opencode/plugins/falcode.js" = {
+        source = "${pkgs.falcode-zellij}/lib/opencode/plugins/falcode.js";
+      };
+      xdg.configFile."opencode/opencode.json" = {
+        text = builtins.toJSON {
+          "$schema" = "https://opencode.ai/config.json";
+          plugin = [ "./plugins/falcode.js" ];
+          instructions = [ "instructions.md" ];
+        };
+      };
+      xdg.configFile."opencode/instructions.md".text = ''
+        # Global Notes
+
+        - Create new branches with `git checkout -b "$(date '+%Y%m%d_')<slug-description-of-change>"`.
+      '';
+
+      # Claude Code hook: report agent status + attention pipes to falcode state dir
+      home.file.".local/state/falcode-zellij/falcode-hook.sh" = {
+        source = "${pkgs.falcode-zellij}/lib/claude-extension/falcode-hook.sh";
+        executable = true;
+      };
+      home.file.".local/state/falcode-zellij/oc-notify.sh" = {
+        source = "${pkgs.falcode-zellij}/lib/scripts/oc-notify.sh";
+        executable = true;
+      };
+      # Wire Claude hooks; merges into any existing settings via JSON merge
+      home.file.".claude/settings.json" = {
+        text = builtins.toJSON {
+          includeCoAuthoredBy = false;
+          includeGitStatus = false;
+          enabledPlugins = {
+            "slack@claude-plugins-official" = true;
+          };
+          extraKnownMarketplaces = {
+            "claude-plugins-official" = {
+              source = {
+                source = "github";
+                repo = "anthropics/claude-plugins-official";
+              };
+            };
+          };
+          hooks = {
+            SessionStart = [
+              { hooks = [ { type = "command"; command = "${config.home.homeDirectory}/.local/state/falcode-zellij/falcode-hook.sh SessionStart"; } ]; }
+            ];
+            UserPromptSubmit = [
+              { hooks = [ { type = "command"; command = "${config.home.homeDirectory}/.local/state/falcode-zellij/falcode-hook.sh UserPromptSubmit"; } ]; }
+            ];
+            PreToolUse = [
+              { hooks = [ { type = "command"; command = "${config.home.homeDirectory}/.local/state/falcode-zellij/falcode-hook.sh PreToolUse"; } ]; }
+            ];
+            PostToolUse = [
+              { hooks = [ { type = "command"; command = "${config.home.homeDirectory}/.local/state/falcode-zellij/falcode-hook.sh PostToolUse"; } ]; }
+            ];
+            Notification = [
+              { hooks = [ { type = "command"; command = "${config.home.homeDirectory}/.local/state/falcode-zellij/falcode-hook.sh Notification"; } ]; }
+            ];
+            Stop = [
+              { hooks = [ { type = "command"; command = "${config.home.homeDirectory}/.local/state/falcode-zellij/falcode-hook.sh Stop"; } ]; }
+            ];
+            SessionEnd = [
+              { hooks = [ { type = "command"; command = "${config.home.homeDirectory}/.local/state/falcode-zellij/falcode-hook.sh SessionEnd"; } ]; }
+            ];
+          };
+        };
       };
 
       home.packages = with pkgs; [
