@@ -111,11 +111,13 @@ in
       };
 
       extraPlugins = with pkgs.vimPlugins; [
+        mini-nvim
         outline-nvim
         vim-fugitive
         vim-rhubarb
       ];
       extraConfigLua = ''
+        require("mini.icons").setup {}
         require("outline").setup {}
       '';
 
