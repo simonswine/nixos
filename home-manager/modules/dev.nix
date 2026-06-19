@@ -103,6 +103,8 @@ in
         enable = true;
         settings.theme = "catppuccin";
         settings.show_startup_tips = false;
+        settings.pane_viewport_serialization = true;
+        settings.scrollback_lines_to_serialize = 10000;
         extraConfig = ''
           // --- falcode-zellij: floating agent-status popup ---
           keybinds {
