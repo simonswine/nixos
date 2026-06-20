@@ -181,25 +181,74 @@ in
           };
           hooks = {
             SessionStart = [
-              { hooks = [ { type = "command"; command = "${config.home.homeDirectory}/.local/state/falcode-zellij/falcode-hook.sh SessionStart"; } ]; }
+              {
+                hooks = [
+                  {
+                    type = "command";
+                    command = "${config.home.homeDirectory}/.local/state/falcode-zellij/falcode-hook.sh SessionStart";
+                  }
+                ];
+              }
             ];
             UserPromptSubmit = [
-              { hooks = [ { type = "command"; command = "${config.home.homeDirectory}/.local/state/falcode-zellij/falcode-hook.sh UserPromptSubmit"; } ]; }
+              {
+                hooks = [
+                  {
+                    type = "command";
+                    command = "${config.home.homeDirectory}/.local/state/falcode-zellij/falcode-hook.sh UserPromptSubmit";
+                  }
+                ];
+              }
             ];
             PreToolUse = [
-              { hooks = [ { type = "command"; command = "${config.home.homeDirectory}/.local/state/falcode-zellij/falcode-hook.sh PreToolUse"; } ]; }
+              {
+                hooks = [
+                  {
+                    type = "command";
+                    command = "${config.home.homeDirectory}/.local/state/falcode-zellij/falcode-hook.sh PreToolUse";
+                  }
+                ];
+              }
             ];
             PostToolUse = [
-              { hooks = [ { type = "command"; command = "${config.home.homeDirectory}/.local/state/falcode-zellij/falcode-hook.sh PostToolUse"; } ]; }
+              {
+                hooks = [
+                  {
+                    type = "command";
+                    command = "${config.home.homeDirectory}/.local/state/falcode-zellij/falcode-hook.sh PostToolUse";
+                  }
+                ];
+              }
             ];
             Notification = [
-              { hooks = [ { type = "command"; command = "${config.home.homeDirectory}/.local/state/falcode-zellij/falcode-hook.sh Notification"; } ]; }
+              {
+                hooks = [
+                  {
+                    type = "command";
+                    command = "${config.home.homeDirectory}/.local/state/falcode-zellij/falcode-hook.sh Notification";
+                  }
+                ];
+              }
             ];
             Stop = [
-              { hooks = [ { type = "command"; command = "${config.home.homeDirectory}/.local/state/falcode-zellij/falcode-hook.sh Stop"; } ]; }
+              {
+                hooks = [
+                  {
+                    type = "command";
+                    command = "${config.home.homeDirectory}/.local/state/falcode-zellij/falcode-hook.sh Stop";
+                  }
+                ];
+              }
             ];
             SessionEnd = [
-              { hooks = [ { type = "command"; command = "${config.home.homeDirectory}/.local/state/falcode-zellij/falcode-hook.sh SessionEnd"; } ]; }
+              {
+                hooks = [
+                  {
+                    type = "command";
+                    command = "${config.home.homeDirectory}/.local/state/falcode-zellij/falcode-hook.sh SessionEnd";
+                  }
+                ];
+              }
             ];
           };
         };
