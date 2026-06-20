@@ -4,10 +4,31 @@
 """Update script for opencode package (binary releases)."""
 
 import json
+import os
 import subprocess
 from pathlib import Path
 
-HASHES_FILE = Path(__file__).parent / "hashes.json"
+# Relative location of hashes.json within the flake root
+# (this file lives at <flakeroot>/pkgs/opencode/update.py).
+_HASHES_RELATIVE = Path(__file__).resolve().relative_to(Path(__file__).resolve().parents[2]).with_name("hashes.json")
+
+
+def _resolve_hashes_file() -> Path:
+    """Locate a writable hashes.json.
+
+    When run directly from the working tree (e.g. ``python update.py``),
+    ``__file__`` points into the repo and we write next to it. When invoked by
+    ``nix-update --flake``, the flake is copied to the read-only nix store, so
+    ``__file__`` lives there; nix-update runs the script with ``cwd`` set to the
+    local flake root, so fall back to a path relative to the cwd.
+    """
+    script_dir = Path(__file__).resolve().parent
+    if os.access(script_dir, os.W_OK):
+        return script_dir / "hashes.json"
+    return Path.cwd() / _HASHES_RELATIVE
+
+
+HASHES_FILE = _resolve_hashes_file()
 
 # Map nix platforms to release asset names
 PLATFORMS = {
