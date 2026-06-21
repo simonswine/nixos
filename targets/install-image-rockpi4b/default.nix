@@ -46,8 +46,9 @@ in
     ];
   };
 
+  image.baseName = "nixos-sd-image-rockpi4b";
+
   sdImage = {
-    imageBaseName = "nixos-sd-image-rockpi4b";
     firmwareSize = 512; # MiB
     populateFirmwareCommands = lib.mkForce ''
       ${config.boot.loader.generic-extlinux-compatible.populateCmd} -c ${config.system.build.toplevel} -d ./firmware

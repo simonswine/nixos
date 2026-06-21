@@ -13,7 +13,7 @@
 
   boot.initrd.systemd = {
     enable = true;
-    enableTpm2 = false;
+    tpm2.enable = false;
   };
 
   networking.hostName = "tma-beamer";
