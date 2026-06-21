@@ -5,9 +5,9 @@
       url = "github:numtide/flake-utils";
       inputs.systems.follows = "systems";
     };
-    nixos-generators = {
-      url = "github:nix-community/nixos-generators";
-      inputs.nixpkgs.follows = "nixpkgs";
+    nixos-images = {
+      url = "github:nix-community/nixos-images";
+      inputs.nixos-stable.follows = "nixpkgs";
     };
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
     nixpkgs.url = "github:nixos/nixpkgs/nixos-26.05-small";
@@ -177,14 +177,20 @@
         };
 
         packages = {
-          hcloud-kexec = inputs.nixos-generators.nixosGenerate {
-            system = system;
-            modules = [
-              ./targets/hcloud-kexec/default.nix
-              ./targets/hcloud-kexec/hardware-configuration.nix
-            ];
-            format = "kexec-bundle";
-          };
+          # Maintained kexec installer from nix-community/nixos-images
+          # (the previously-used nixos-generators is archived/unmaintained).
+          # Boots the NixOS installer environment via kexec from Hetzner's
+          # rescue system; the resulting tarball is extracted and `kexec/run`
+          # is executed by the packer boot-kexec.sh script.
+          hcloud-kexec =
+            (lib.nixosSystem {
+              system = system;
+              modules = [
+                inputs.nixos-images.nixosModules.kexec-installer
+                inputs.nixos-images.nixosModules.noninteractive
+                ./targets/hcloud-kexec/default.nix
+              ];
+            }).config.system.build.kexecInstallerTarball;
 
           austin = pkgs.austin;
           benchstat = pkgs.benchstat;
