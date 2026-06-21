@@ -232,7 +232,6 @@
           prometheus-snmp-exporter-config = pkgs.prometheus-snmp-exporter-config;
           pyroscope = pkgs.pyroscope;
           rift = pkgs.rift;
-          roc-vad = pkgs.roc-vad;
           sleepwatcher = pkgs.sleepwatcher;
           sonnenbatterie-exporter = pkgs.sonnenbatterie-exporter;
           tod0 = pkgs.tod0;
@@ -247,6 +246,9 @@
         // lib.optionalAttrs pkgs.stdenv.hostPlatform.isLinux {
           dhclient = pkgs.dhclient;
           get-focused-x-screen = pkgs.get-focused-x-screen;
+        }
+        // lib.optionalAttrs pkgs.stdenv.hostPlatform.isDarwin {
+          roc-vad = pkgs.roc-vad;
         };
 
       }
