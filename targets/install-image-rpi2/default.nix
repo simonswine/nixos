@@ -10,6 +10,8 @@
     ../../common/install-image-base.nix
   ];
 
+  boot.zfs.forceImportRoot = true;
+
   sdImage = {
     # Gap in front of the /boot/firmware partition, in mebibytes (1024×1024 bytes).
     # Can be increased to make more space for boards requiring to dd u-boot SPL before actual partitions.

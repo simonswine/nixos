@@ -6,6 +6,7 @@
   ];
 
   boot.supportedFilesystems = [ "zfs" ];
+  boot.zfs.forceImportRoot = true;
   networking.hostId = "deadcafe";
   cloud.provider = "scaleway";
 

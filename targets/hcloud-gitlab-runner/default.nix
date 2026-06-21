@@ -36,6 +36,7 @@ in
 
 {
   boot.supportedFilesystems = [ "zfs" ];
+  boot.zfs.forceImportRoot = true;
   boot.binfmt.emulatedSystems = [ "aarch64-linux" ];
   networking.hostId = "deadcafe";
   cloud.provider = "hcloud";
