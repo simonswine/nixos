@@ -40,7 +40,7 @@ smallvec = "1.11.1"
 arc-swap = "1.6.0"
 base64 = "0.22.0"
 egui = "0.33.3"
-egui_plot = "0.34.1"
+egui_plot = "0.36.0"
 egui_extras = { version = "0.33.3", features = ["image"] }
 egui_commonmark = "0.22.0"
 egui-phosphor = "0.11.0"
