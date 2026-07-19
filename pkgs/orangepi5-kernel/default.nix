@@ -21,6 +21,7 @@
   version = "6.1.115";
   modDirVersion = "6.1.115";
   extraMeta.branch = "6.1";
+  features.efiBootStub = true;
   # this is from https://raw.githubusercontent.com/Joshua-Riek/linux-rockchip/ffa29fd4b815ff04b78e9f850ac42c6b7011ad17/debian.rockchip/config/config.common.ubuntu
   # then a docker container is used to make oldconfig
   # with modules
