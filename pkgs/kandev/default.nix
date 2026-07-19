@@ -8,13 +8,13 @@
 }:
 
 let
-  version = "0.56.0";
+  version = "0.79.0";
 
   src = fetchFromGitHub {
     owner = "kdlbs";
     repo = "kandev";
     tag = "v${version}";
-    hash = "sha256-8UBKXJd5Tet6X3cr0uqy+llFZjH6HUSbtvFtLhQ1QYo=";
+    hash = "sha256-AaVEIZaFfw3xuhs99J0y+CgYQqZ9KqAo9eUaJ8ImAXg=";
   };
 
 in
@@ -25,7 +25,7 @@ buildGo126Module {
 
   modRoot = "apps/backend";
 
-  vendorHash = "sha256-EooUFPyo+HEF/nNa6VqEVq4CZ4Li3cnyKE1YU6bw+zY=";
+  vendorHash = "sha256-S3mVvmd6GDySS8hsmzUyZNlzZM1gYuT4uOWCs/gm7ek=";
 
   env.CGO_ENABLED = "1";
 
