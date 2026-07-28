@@ -1,4 +1,5 @@
 {
+  lib,
   stdenv,
   fetchFromGitHub,
   cmake,
@@ -24,6 +25,16 @@ stdenv.mkDerivation {
 
   prePatch = ''
     cd projects/generic-cmake
+  '';
+
+  postPatch = ''
+    substituteInPlace CMakeLists.txt \
+      --replace-fail 'CMAKE_MINIMUM_REQUIRED(VERSION 2.4)' 'CMAKE_MINIMUM_REQUIRED(VERSION 3.5)' \
+      --replace-fail 'CMAKE_POLICY(SET CMP0003 OLD)' 'CMAKE_POLICY(SET CMP0003 NEW)'
+    ${lib.optionalString stdenv.hostPlatform.isLinux ''
+      substituteInPlace ../../os/os_linux.h \
+        --replace-fail '#include <termio.h>' '#include <termios.h>'
+    ''}
   '';
 
   nativeBuildInputs = [ cmake ];

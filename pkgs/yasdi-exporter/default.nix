@@ -1,11 +1,15 @@
 {
   lib,
+  stdenv,
   buildGoModule,
   fetchFromGitHub,
   makeWrapper,
   yasdi,
 }:
 
+let
+  libraryPathVar = if stdenv.hostPlatform.isDarwin then "DYLD_LIBRARY_PATH" else "LD_LIBRARY_PATH";
+in
 buildGoModule {
   name = "yasdi-exporter";
   version = "a4d2ea7";
@@ -20,9 +24,16 @@ buildGoModule {
 
   nativeBuildInputs = [ makeWrapper ];
 
+  postPatch = lib.optionalString stdenv.hostPlatform.isDarwin ''
+    substituteInPlace yasdi/{connection,device}.go \
+      --replace-fail '-l:libyasdimaster.so.1' '-lyasdimaster'
+  '';
+
+  CGO_LDFLAGS = "-L${yasdi}/lib";
+
   postInstall = ''
     wrapProgram $out/bin/yasdi_exporter \
-      --prefix LD_LIBRARY_PATH : "${lib.makeLibraryPath [ yasdi ]}"
+      --prefix ${libraryPathVar} : "${lib.makeLibraryPath [ yasdi ]}"
   '';
 
   buildInputs = [ yasdi ];
