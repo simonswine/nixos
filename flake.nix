@@ -220,9 +220,9 @@
           intel-gpu-exporter = pkgs.intel-gpu-exporter;
           js-yaml = pkgs.js-yaml;
           jsonnet-language-server = pkgs.jsonnet-language-server;
-          kubernetes-1-33 = pkgs.kubernetes-1-33;
           kubernetes-1-34 = pkgs.kubernetes-1-34;
           kubernetes-1-35 = pkgs.kubernetes-1-35;
+          kubernetes-1-36 = pkgs.kubernetes-1-36;
           mi-flora-exporter = pkgs.mi-flora-exporter;
           miio = pkgs.miio;
           modbus-exporter = pkgs.modbus-exporter;
