@@ -72,6 +72,7 @@
             opencode = pkgs.callPackage ./pkgs/opencode { };
             version-check-home-hook = pkgs.callPackage ./pkgs/version-check-home-hook { };
             zellij-attention = pkgs.callPackage ./pkgs/zellij-attention { };
+            zellij-room = pkgs.callPackage ./pkgs/zellij-room { };
             wrap-buddy = pkgs.callPackage ./pkgs/wrap-buddy { };
             fronius-exporter = pkgs.callPackage ./pkgs/fronius-exporter { };
             g810-led = pkgs.callPackage ./pkgs/g810-led { };
@@ -248,6 +249,7 @@
           yasdi = pkgs.yasdi;
           yasdi-exporter = pkgs.yasdi-exporter;
           zellij-attention = pkgs.zellij-attention;
+          zellij-room = pkgs.zellij-room;
         }
         // lib.optionalAttrs pkgs.stdenv.hostPlatform.isLinux {
           dhclient = pkgs.dhclient;

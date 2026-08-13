@@ -107,12 +107,22 @@ in
         settings.scrollback_lines_to_serialize = 10000;
         extraConfig = ''
           // --- falcode-zellij: floating agent-status popup ---
+          // --- room: fuzzy session/tab/pane switcher ---
           keybinds {
               shared {
                   bind "Alt o" {
                       LaunchOrFocusPlugin "file:${config.xdg.configHome}/zellij/plugins/falcode-zellij-sessions.wasm" {
                           floating true
                           state_dir "${config.home.homeDirectory}/.local/state/falcode-zellij"
+                      }
+                  }
+              }
+              shared_except "locked" {
+                  bind "Ctrl y" {
+                      LaunchOrFocusPlugin "file:${config.xdg.configHome}/zellij/plugins/room.wasm" {
+                          floating true
+                          ignore_case true
+                          quick_jump true
                       }
                   }
               }
@@ -135,6 +145,9 @@ in
       };
       xdg.configFile."zellij/plugins/zellij-attention.wasm" = {
         source = "${pkgs.zellij-attention}/lib/zellij/plugins/zellij-attention.wasm";
+      };
+      xdg.configFile."zellij/plugins/room.wasm" = {
+        source = "${pkgs.zellij-room}/lib/zellij/plugins/room.wasm";
       };
 
       # OpenCode plugin: report agent status to falcode popup
