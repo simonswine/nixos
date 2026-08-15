@@ -90,5 +90,10 @@ in
         LimitNOFILE = "32768:524288";
       };
     };
+
+    systemd.services.kubelet = {
+      requires = [ "containerd.service" ];
+      after = [ "containerd.service" ];
+    };
   };
 }
