@@ -136,13 +136,22 @@
           )
           (lib.filterAttrs (_: entryType: entryType == "regular") (builtins.readDir ./home-manager/modules));
 
+      # Targets that are not deployed as a system of their own and therefore
+      # are not exposed as nixosConfigurations. kubevirt-vpn only exists as a
+      # qcow container disk (see kubevirtConfigurations below) and relies on
+      # the image format module for its root filesystem and bootloader, so it
+      # cannot be evaluated standalone.
+      nonSystemTargets = [ "kubevirt-vpn" ];
+
       # Only directories with a default.nix are actual targets; ./targets also
       # holds shared fragments (e.g. generic/kubernetes.nix) that are imported
       # by them.
       targets = lib.attrNames (
         lib.filterAttrs (
           name: entryType:
-          entryType == "directory" && builtins.pathExists (./targets + "/${name}/default.nix")
+          entryType == "directory"
+          && !(lib.elem name nonSystemTargets)
+          && builtins.pathExists (./targets + "/${name}/default.nix")
         ) (builtins.readDir ./targets)
       );
 
@@ -310,6 +319,16 @@
             ]) targets
           )
         );
+
+      # Systems that are only ever built as an image, not deployed directly.
+      # Kept out of nixosConfigurations so `nix flake check` does not try to
+      # evaluate them as standalone systems; build-docker-image.sh builds
+      # .config.system.build.qcow from here.
+      kubevirtConfigurations = {
+        kubevirt-vpn = (build-target "kubevirt-vpn" "x86_64-linux").value.extendModules {
+          modules = [ ./targets/kubevirt-vpn/qcow.nix ];
+        };
+      };
 
       hardware = {
         orangepi5plus = ./hardware/orangepi5plus/default.nix;
