@@ -284,6 +284,7 @@ in
         # ai stuff
         claude-code
         opencode
+        pi-coding-agent
 
         # protobuf
         protoscope

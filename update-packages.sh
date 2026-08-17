@@ -18,3 +18,4 @@ nix-update kandev --flake --commit --build
 nix-update kandev-frontend --flake --version=skip --commit --build
 nix-update claude-code --flake --use-update-script --commit --build
 nix-update opencode --flake --use-update-script --commit --build
+nix-update pi-coding-agent --flake --commit --build --custom-dep modelData

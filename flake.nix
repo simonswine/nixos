@@ -94,6 +94,7 @@
             nut-exporter = pkgs.callPackage ./pkgs/nut-exporter { };
             orangepi-firmware = pkgs.callPackage ./pkgs/orangepi-firmware { };
             phpspy = pkgs.callPackage ./pkgs/phpspy { };
+            pi-coding-agent = pkgs.callPackage ./pkgs/pi-coding-agent { };
             profilecli = pkgs.callPackage ./pkgs/profilecli { };
             prometheus-node-exporter-restic = pkgs.callPackage ./pkgs/prometheus-node-exporter-restic { };
             prometheus-node-exporter-smartmon = pkgs.callPackage ./pkgs/prometheus-node-exporter-smartmon { };
@@ -232,6 +233,7 @@
           nut-exporter = pkgs.nut-exporter;
           orangepi-firmware = pkgs.orangepi-firmware;
           phpspy = pkgs.phpspy;
+          pi-coding-agent = pkgs.pi-coding-agent;
           profilecli = pkgs.profilecli;
           prometheus-node-exporter-restic = pkgs.prometheus-node-exporter-restic;
           prometheus-node-exporter-smartmon = pkgs.prometheus-node-exporter-smartmon;
