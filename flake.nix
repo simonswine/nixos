@@ -136,8 +136,14 @@
           )
           (lib.filterAttrs (_: entryType: entryType == "regular") (builtins.readDir ./home-manager/modules));
 
+      # Only directories with a default.nix are actual targets; ./targets also
+      # holds shared fragments (e.g. generic/kubernetes.nix) that are imported
+      # by them.
       targets = lib.attrNames (
-        lib.filterAttrs (_: entryType: entryType == "directory") (builtins.readDir ./targets)
+        lib.filterAttrs (
+          name: entryType:
+          entryType == "directory" && builtins.pathExists (./targets + "/${name}/default.nix")
+        ) (builtins.readDir ./targets)
       );
 
       build-target = target: system: {
@@ -178,88 +184,96 @@
           gitlab-runner-nix = pkgs.callPackage ./docker/gitlab-runner-nix { };
         };
 
-        packages = {
-          # Maintained kexec installer from nix-community/nixos-images
-          # (the previously-used nixos-generators is archived/unmaintained).
-          # Boots the NixOS installer environment via kexec from Hetzner's
-          # rescue system; the resulting tarball is extracted and `kexec/run`
-          # is executed by the packer boot-kexec.sh script.
-          hcloud-kexec =
-            (lib.nixosSystem {
-              system = system;
-              modules = [
-                inputs.nixos-images.nixosModules.kexec-installer
-                inputs.nixos-images.nixosModules.noninteractive
-                ./targets/hcloud-kexec/default.nix
-              ];
-            }).config.system.build.kexecInstallerTarball;
+        # Drop packages that meta.platforms/meta.badPlatforms declare as
+        # unavailable here, so `nix flake check` does not trip over e.g. the
+        # Linux-only exporters when evaluated on Darwin.
+        packages = lib.filterAttrs (_: lib.meta.availableOn pkgs.stdenv.hostPlatform) (
+          {
+            austin = pkgs.austin;
+            benchstat = pkgs.benchstat;
+            cert-updater = pkgs.cert-updater;
+            claude-code = pkgs.claude-code;
+            containerd = pkgs.containerd;
+            devfiler = pkgs.devfiler;
+            dezoomify-rs = pkgs.dezoomify-rs;
+            docker-machine = pkgs.docker-machine;
+            docker-machine-driver-hetzner = pkgs.docker-machine-driver-hetzner;
+            falcode-zellij = pkgs.falcode-zellij;
+            faillint = pkgs.faillint;
+            fluidcad = pkgs.fluidcad;
+            fluidcad-nvim = pkgs.fluidcad-nvim;
+            fronius-exporter = pkgs.fronius-exporter;
+            kandev = pkgs.kandev;
+            kandev-frontend = pkgs.kandev-frontend;
+            opencode = pkgs.opencode;
+            g810-led = pkgs.g810-led;
+            gimli-addr2line = pkgs.gimli-addr2line;
+            gitlab-runner = pkgs.gitlab-runner;
+            goda = pkgs.goda;
+            growatt-proxy-exporter = pkgs.growatt-proxy-exporter;
+            heatmiser-exporter = pkgs.heatmiser-exporter;
+            inch-exporter = pkgs.inch-exporter;
+            intel-gpu-exporter = pkgs.intel-gpu-exporter;
+            js-yaml = pkgs.js-yaml;
+            jsonnet-language-server = pkgs.jsonnet-language-server;
+            kubernetes-1-34 = pkgs.kubernetes-1-34;
+            kubernetes-1-35 = pkgs.kubernetes-1-35;
+            kubernetes-1-36 = pkgs.kubernetes-1-36;
+            mi-flora-exporter = pkgs.mi-flora-exporter;
+            miio = pkgs.miio;
+            modbus-exporter = pkgs.modbus-exporter;
+            modularise = pkgs.modularise;
+            mtv-dl = pkgs.mtv-dl;
+            nut-exporter = pkgs.nut-exporter;
+            orangepi-firmware = pkgs.orangepi-firmware;
+            phpspy = pkgs.phpspy;
+            pi-coding-agent = pkgs.pi-coding-agent;
+            profilecli = pkgs.profilecli;
+            prometheus-node-exporter-restic = pkgs.prometheus-node-exporter-restic;
+            prometheus-node-exporter-smartmon = pkgs.prometheus-node-exporter-smartmon;
+            prometheus-node-exporter-zfs = pkgs.prometheus-node-exporter-zfs;
+            prometheus-snmp-exporter-config = pkgs.prometheus-snmp-exporter-config;
+            pyroscope = pkgs.pyroscope;
+            rift = pkgs.rift;
+            sleepwatcher = pkgs.sleepwatcher;
+            sonnenbatterie-exporter = pkgs.sonnenbatterie-exporter;
+            tod0 = pkgs.tod0;
+            tplink-switch-exporter = pkgs.tplink-switch-exporter;
+            tttool = pkgs.tttool;
+            tz-cli = pkgs.tz-cli;
+            vim-markdown-composer = pkgs.vim-markdown-composer;
+            yasdi = pkgs.yasdi;
+            yasdi-exporter = pkgs.yasdi-exporter;
+            zellij-attention = pkgs.zellij-attention;
+            zellij-room = pkgs.zellij-room;
+          }
+          // lib.optionalAttrs pkgs.stdenv.hostPlatform.isLinux {
+            # meta.platforms is unrestricted, but the closure pulls in the
+            # Linux-only dmidecode, so the filter above cannot catch it.
+            cloud-init = pkgs.cloud-init;
+            dhclient = pkgs.dhclient;
+            get-focused-x-screen = pkgs.get-focused-x-screen;
 
-          austin = pkgs.austin;
-          benchstat = pkgs.benchstat;
-          cert-updater = pkgs.cert-updater;
-          claude-code = pkgs.claude-code;
-          cloud-init = pkgs.cloud-init;
-          containerd = pkgs.containerd;
-          devfiler = pkgs.devfiler;
-          dezoomify-rs = pkgs.dezoomify-rs;
-          docker-machine = pkgs.docker-machine;
-          docker-machine-driver-hetzner = pkgs.docker-machine-driver-hetzner;
-          falcode-zellij = pkgs.falcode-zellij;
-          faillint = pkgs.faillint;
-          fluidcad = pkgs.fluidcad;
-          fluidcad-nvim = pkgs.fluidcad-nvim;
-          fronius-exporter = pkgs.fronius-exporter;
-          kandev = pkgs.kandev;
-          kandev-frontend = pkgs.kandev-frontend;
-          opencode = pkgs.opencode;
-          g810-led = pkgs.g810-led;
-          gimli-addr2line = pkgs.gimli-addr2line;
-          gitlab-runner = pkgs.gitlab-runner;
-          goda = pkgs.goda;
-          growatt-proxy-exporter = pkgs.growatt-proxy-exporter;
-          heatmiser-exporter = pkgs.heatmiser-exporter;
-          inch-exporter = pkgs.inch-exporter;
-          intel-gpu-exporter = pkgs.intel-gpu-exporter;
-          js-yaml = pkgs.js-yaml;
-          jsonnet-language-server = pkgs.jsonnet-language-server;
-          kubernetes-1-34 = pkgs.kubernetes-1-34;
-          kubernetes-1-35 = pkgs.kubernetes-1-35;
-          kubernetes-1-36 = pkgs.kubernetes-1-36;
-          mi-flora-exporter = pkgs.mi-flora-exporter;
-          miio = pkgs.miio;
-          modbus-exporter = pkgs.modbus-exporter;
-          modularise = pkgs.modularise;
-          mtv-dl = pkgs.mtv-dl;
-          nut-exporter = pkgs.nut-exporter;
-          orangepi-firmware = pkgs.orangepi-firmware;
-          phpspy = pkgs.phpspy;
-          pi-coding-agent = pkgs.pi-coding-agent;
-          profilecli = pkgs.profilecli;
-          prometheus-node-exporter-restic = pkgs.prometheus-node-exporter-restic;
-          prometheus-node-exporter-smartmon = pkgs.prometheus-node-exporter-smartmon;
-          prometheus-node-exporter-zfs = pkgs.prometheus-node-exporter-zfs;
-          prometheus-snmp-exporter-config = pkgs.prometheus-snmp-exporter-config;
-          pyroscope = pkgs.pyroscope;
-          rift = pkgs.rift;
-          sleepwatcher = pkgs.sleepwatcher;
-          sonnenbatterie-exporter = pkgs.sonnenbatterie-exporter;
-          tod0 = pkgs.tod0;
-          tplink-switch-exporter = pkgs.tplink-switch-exporter;
-          tttool = pkgs.tttool;
-          tz-cli = pkgs.tz-cli;
-          vim-markdown-composer = pkgs.vim-markdown-composer;
-          yasdi = pkgs.yasdi;
-          yasdi-exporter = pkgs.yasdi-exporter;
-          zellij-attention = pkgs.zellij-attention;
-          zellij-room = pkgs.zellij-room;
-        }
-        // lib.optionalAttrs pkgs.stdenv.hostPlatform.isLinux {
-          dhclient = pkgs.dhclient;
-          get-focused-x-screen = pkgs.get-focused-x-screen;
-        }
-        // lib.optionalAttrs pkgs.stdenv.hostPlatform.isDarwin {
-          roc-vad = pkgs.roc-vad;
-        };
+            # Maintained kexec installer from nix-community/nixos-images
+            # (the previously-used nixos-generators is archived/unmaintained).
+            # Boots the NixOS installer environment via kexec from Hetzner's
+            # rescue system; the resulting tarball is extracted and `kexec/run`
+            # is executed by the packer boot-kexec.sh script.
+            # NixOS build product, so it cannot be evaluated on Darwin.
+            hcloud-kexec =
+              (lib.nixosSystem {
+                system = system;
+                modules = [
+                  inputs.nixos-images.nixosModules.kexec-installer
+                  inputs.nixos-images.nixosModules.noninteractive
+                  ./targets/hcloud-kexec/default.nix
+                ];
+              }).config.system.build.kexecInstallerTarball;
+          }
+          // lib.optionalAttrs pkgs.stdenv.hostPlatform.isDarwin {
+            roc-vad = pkgs.roc-vad;
+          }
+        );
 
       }
     )
