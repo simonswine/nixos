@@ -70,8 +70,11 @@ in
   };
 
   # mount wireguard config
+  # KubeVirt exposes secret volumes as iso9660 disks; fsType no longer
+  # defaults to "auto", so it has to be spelled out.
   fileSystems."/run/secrets/wireguard" = {
     device = "/dev/disk/by-id/virtio-wireguard-config";
+    fsType = "iso9660";
     options = [
       "uid=0"
       "gid=0"
@@ -115,6 +118,7 @@ in
   # mount service account secret
   fileSystems."/run/secrets/kubernetes.io/serviceaccount" = {
     device = "/dev/disk/by-id/virtio-service-account";
+    fsType = "iso9660";
     options = [
       "uid=0"
       "gid=0"
