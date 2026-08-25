@@ -1,0 +1,112 @@
+diff --git a/src/config.rs b/src/config.rs
+--- a/src/config.rs
++++ b/src/config.rs
+@@ -8,6 +8,8 @@ pub struct NotificationConfig {
+     pub enabled: bool,
+     /// Icon for waiting state (e.g., "⏳")
+     pub waiting_icon: String,
++    /// Icon for a question or permission request (e.g., "❓")
++    pub question_icon: String,
+     /// Icon for completed state (e.g., "✓")
+     pub completed_icon: String,
+ }
+@@ -17,6 +19,7 @@ impl Default for NotificationConfig {
+         Self {
+             enabled: true,
+             waiting_icon: "⏳".to_string(),
++            question_icon: "❓".to_string(),
+             completed_icon: "✅".to_string(),
+         }
+     }
+@@ -27,6 +30,7 @@ impl NotificationConfig {
+     /// Accepts flat key-value pairs:
+     /// - `enabled`: "true" enables, anything else disables
+     /// - `waiting_icon`: icon string (warns if > 4 chars)
++    /// - `question_icon`: icon string (warns if > 4 chars)
+     /// - `completed_icon`: icon string (warns if > 4 chars)
+     ///
+     /// Invalid values fall back to defaults with warnings.
+@@ -51,2 +51,14 @@ impl NotificationConfig {
+             result.waiting_icon = icon.clone();
+         }
++
++        // Parse question_icon
++        if let Some(icon) = config.get("question_icon") {
++            if icon.chars().count() > 4 {
++                eprintln!(
++                    "zellij-attention: Warning: question_icon '{}' is longer than 4 chars, may not display well",
++                    icon
++                );
++            }
++            result.question_icon = icon.clone();
++        }
++
+diff --git a/src/lib.rs b/src/lib.rs
+--- a/src/lib.rs
++++ b/src/lib.rs
+@@ -107,7 +107,8 @@ impl State {
+     /// Checks if a tab name ends with one of our notification icon suffixes.
+     pub(crate) fn tab_name_has_icon(&self, name: &str) -> bool {
+         let waiting_suffix = format!(" {}", self.config.waiting_icon);
++        let question_suffix = format!(" {}", self.config.question_icon);
+         let completed_suffix = format!(" {}", self.config.completed_icon);
+-        name.ends_with(&waiting_suffix) || name.ends_with(&completed_suffix)
++        name.ends_with(&waiting_suffix) || name.ends_with(&question_suffix) || name.ends_with(&completed_suffix)
+     }
+     /// Strips notification icon suffixes from a tab name.
+@@ -114,6 +115,6 @@ impl State {
+     pub(crate) fn strip_icons(&self, name: &str) -> String {
+         let mut result = name.to_string();
+-        for icon in [&self.config.waiting_icon, &self.config.completed_icon] {
++        for icon in [&self.config.waiting_icon, &self.config.question_icon, &self.config.completed_icon] {
+             let suffix = format!(" {}", icon);
+             while result.ends_with(&suffix) {
+                 result.truncate(result.len() - suffix.len());
+@@ -164,6 +165,9 @@ impl State {
+                     }
+                 }
++                if notifications.contains(&NotificationType::Question) {
++                    return Some(NotificationType::Question);
++                }
+                 if notifications.contains(&NotificationType::Waiting) {
+                     return Some(NotificationType::Waiting);
+                 }
+                 if notifications.contains(&NotificationType::Completed) {
+@@ -252,6 +256,7 @@ impl State {
+             if let Some(notification) = self.get_tab_notification_state(tab.position) {
+                 let icon = match notification {
+                     NotificationType::Waiting => &self.config.waiting_icon,
++                    NotificationType::Question => &self.config.question_icon,
+                     NotificationType::Completed => &self.config.completed_icon,
+                 };
+                 let new_name = format!("{} {}", base_name, icon);
+@@ -355,6 +360,7 @@ impl ZellijPlugin for State {
+         let notification_type = match event_type.to_lowercase().as_str() {
+             "waiting" => NotificationType::Waiting,
++            "question" => NotificationType::Question,
+             "completed" => NotificationType::Completed,
+             unknown => {
+                 eprintln!("zellij-attention: Unknown event type: {}\n", unknown);
+                 unblock_cli_pipe_input(&pipe_message.name);
+diff --git a/src/state.rs b/src/state.rs
+--- a/src/state.rs
++++ b/src/state.rs
+@@ -5,6 +5,8 @@ pub enum NotificationType {
+ pub enum NotificationType {
+     /// Command is still running
+     Waiting,
++    /// Agent needs a response or permission from the user
++    Question,
+     /// Command has completed
+     Completed,
+ }
+diff --git a/.cargo/config.toml b/.cargo/config.toml
+--- a/.cargo/config.toml
++++ b/.cargo/config.toml
+@@ -1,2 +1,5 @@
+ [build]
+ target = "wasm32-wasip1"
++
++[target.wasm32-wasip1]
++linker = "@wasm-ld@"
+diff --git a/src/config.rs b/src/config.rs

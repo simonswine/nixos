@@ -1,0 +1,47 @@
+diff --git a/opencode-plugin/falcode.js b/opencode-plugin/falcode.js
+index 9a3c8a3..21b870d 100644
+--- a/opencode-plugin/falcode.js
++++ b/opencode-plugin/falcode.js
+@@ -401,7 +401,15 @@ function sendAttentionPipe(event, paneId) {
+ }
+ function attentionEventFor(newStatus, prevStatus) {
++  const needsUserInput = newStatus === "asking_permissions" || newStatus === "waiting_user_answers";
++  const wasWaitingForUser = prevStatus === "asking_permissions" || prevStatus === "waiting_user_answers";
+   const wasActive = ATTENTION_ACTIVE_STATES.has(prevStatus);
+   const isActive = ATTENTION_ACTIVE_STATES.has(newStatus);
++  if (needsUserInput) {
++    return "question";
++  }
++  if (wasWaitingForUser && isActive) {
++    return "waiting";
++  }
+   if (!wasActive && isActive) {
+     return Bun.env.FALCODE_ATTENTION_ENTER_EVENT ?? "waiting";
+   }
+diff --git a/claude-extension/falcode-hook.sh b/claude-extension/falcode-hook.sh
+index 1c12bb2..b6eb596 100755
+--- a/claude-extension/falcode-hook.sh
++++ b/claude-extension/falcode-hook.sh
+@@ -216,13 +216,21 @@ if [[ ${FALCODE_DISABLE_ATTENTION:-} != "1" ]]; then
+   was_active=0
+   is_active=0
++  needs_user_input=0
++  was_waiting_for_user=0
+   case "$PREV_STATUS" in working|asking_permissions|waiting_user_answers) was_active=1;; esac
+   case "$STATUS"      in working|asking_permissions|waiting_user_answers) is_active=1;;  esac
++  case "$PREV_STATUS" in asking_permissions|waiting_user_answers) was_waiting_for_user=1;; esac
++  case "$STATUS"      in asking_permissions|waiting_user_answers) needs_user_input=1;; esac
+   attention_event=""
+-  if [[ $was_active -eq 0 && $is_active -eq 1 ]]; then
++  if [[ $needs_user_input -eq 1 ]]; then
++    attention_event="question"
++  elif [[ $was_waiting_for_user -eq 1 && $is_active -eq 1 ]]; then
++    attention_event="waiting"
++  elif [[ $was_active -eq 0 && $is_active -eq 1 ]]; then
+     attention_event="${FALCODE_ATTENTION_ENTER_EVENT:-waiting}"
+   elif [[ $was_active -eq 1 && $is_active -eq 0 ]]; then
+     attention_event="${FALCODE_ATTENTION_EXIT_EVENT:-completed}"
+   fi
+   if [[ -n $attention_event ]]; then
+     ( zellij pipe --name "zellij-attention::${attention_event}::${PANE_ID}" >/dev/null 2>&1 & )
+   fi

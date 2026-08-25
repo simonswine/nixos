@@ -1,26 +1,41 @@
 {
   lib,
-  stdenvNoCC,
-  fetchurl,
+  applyPatches,
+  buildPackages,
+  fetchFromGitHub,
+  pkgsCross,
 }:
 let
   version = "0.3.1";
 in
-stdenvNoCC.mkDerivation {
+pkgsCross.wasi32.rustPlatform.buildRustPackage {
   pname = "zellij-attention";
   inherit version;
 
-  src = fetchurl {
-    url = "https://github.com/KiryuuLight/zellij-attention/releases/download/v${version}/zellij-attention.wasm";
-    hash = "sha256-QgkzerYacxRI7HMzYvPvaZqQW7tcARKpOm1hY2D9ci8=";
+  src = applyPatches {
+    src = fetchFromGitHub {
+      owner = "KiryuuLight";
+      repo = "zellij-attention";
+      rev = "v${version}";
+      hash = "sha256-T36mzLbXCUqBeLa5hUX4/gMZ/c41szKAcLrsyXB6TIQ=";
+    };
+    patches = [ ./question-icon.patch ];
   };
 
-  dontUnpack = true;
-  dontBuild = true;
+  cargoHash = "sha256-kXBfhSrb0UQ6tmM7I9tmQOii1JPCYOS9rcRbse0i89Q=";
+  postPatch = ''
+    substituteInPlace .cargo/config.toml \
+      --replace-fail @wasm-ld@ ${buildPackages.llvmPackages.lld}/bin/wasm-ld
+  '';
+  buildPhase = ''
+    cargo build --offline --release --target wasm32-wasip1 \
+      --config 'target.wasm32-wasip1.linker="${buildPackages.llvmPackages.lld}/bin/wasm-ld"'
+  '';
+  doCheck = false;
 
   installPhase = ''
     runHook preInstall
-    install -Dm644 $src $out/lib/zellij/plugins/zellij-attention.wasm
+    install -Dm644 target/wasm32-wasip1/release/zellij-attention.wasm $out/lib/zellij/plugins/zellij-attention.wasm
     runHook postInstall
   '';
 

@@ -3,6 +3,7 @@
   stdenvNoCC,
   fetchurl,
   fetchFromGitHub,
+  applyPatches,
 }:
 let
   # Released WASM popup binary — stable v0.0.11
@@ -14,11 +15,14 @@ let
 
   # Scripts / plugins from main (includes Claude hook + zellij-attention pipes)
   mainRev = "972df9c2b7c3741c9cea88dbae50b4547b344ca2";
-  src = fetchFromGitHub {
-    owner = "victor-falcon";
-    repo = "falcode-zellij";
-    rev = mainRev;
-    hash = "sha256-0ekNMUyoOh/I94mz4mq35EF9Vg2K213PCMr6DetekGE=";
+  src = applyPatches {
+    src = fetchFromGitHub {
+      owner = "victor-falcon";
+      repo = "falcode-zellij";
+      rev = mainRev;
+      hash = "sha256-0ekNMUyoOh/I94mz4mq35EF9Vg2K213PCMr6DetekGE=";
+    };
+    patches = [ ./question-attention.patch ];
   };
 in
 stdenvNoCC.mkDerivation {

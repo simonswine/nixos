@@ -138,6 +138,7 @@ in
               "file:${config.xdg.configHome}/zellij/plugins/zellij-attention.wasm" {
                   enabled "true"
                   waiting_icon "⏳"
+                  question_icon "❓"
                   completed_icon "✅"
               }
           }
