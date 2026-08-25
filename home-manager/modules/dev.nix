@@ -86,6 +86,11 @@ in
 
     })
     (mkIf cfg.grafanaLabs {
+      home.sessionVariables = {
+        OPENCODE_DISABLE_PROJECT_CONFIG = "true";
+        CLAUDE_SETTINGS_SOURCES = "user";
+      };
+
       simonswine.dev.golang.enable = true;
       simonswine.dev.jsonnet.enable = true;
       simonswine.dev.typescript.enable = true;

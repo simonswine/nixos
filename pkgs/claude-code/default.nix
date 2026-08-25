@@ -10,6 +10,7 @@
   bubblewrap,
   procps,
   ripgrep,
+  runtimeShell,
   socat,
 }:
 let
@@ -45,8 +46,9 @@ stdenvNoCC.mkDerivation (finalAttrs: {
     runHook preInstall
 
     installBin $src
+    mv $out/bin/claude $out/bin/claude-bin
 
-    wrapProgram $out/bin/claude \
+    wrapProgram $out/bin/claude-bin \
       --set DISABLE_AUTOUPDATER 1 \
       --set-default FORCE_AUTOUPDATE_PLUGINS 1 \
       --set DISABLE_INSTALLATION_CHECKS 1 \
@@ -67,6 +69,32 @@ stdenvNoCC.mkDerivation (finalAttrs: {
           ]
         )
       }
+
+    cat > $out/bin/claude <<EOF
+    #!${runtimeShell}
+
+    case "\$1" in
+      auth|auto-mode|daemon|doctor|gateway|install|mcp|plugin|plugins|project|setup-token|update|--help|--version)
+        exec "$out/bin/claude-bin" "\$@"
+        ;;
+    esac
+
+    if [ -n "\$CLAUDE_SETTINGS_SOURCES" ]; then
+      for arg in "\$@"; do
+        case "\$arg" in
+          --setting-sources|--setting-sources=*)
+            exec "$out/bin/claude-bin" "\$@"
+            ;;
+        esac
+      done
+
+      # Project MCP configuration is unaffected.
+      exec "$out/bin/claude-bin" --setting-sources "\$CLAUDE_SETTINGS_SOURCES" "\$@"
+    fi
+
+    exec "$out/bin/claude-bin" "\$@"
+    EOF
+    chmod 755 $out/bin/claude
 
     runHook postInstall
   '';
