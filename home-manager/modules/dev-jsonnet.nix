@@ -19,6 +19,7 @@ in
       jsonnet
       jsonnet-bundler
       tanka
+      rustanka
       js-yaml
     ];
     programs.nixvim.extraConfigLua = ''

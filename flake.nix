@@ -103,6 +103,7 @@
             pyroscope = pkgs.callPackage ./pkgs/pyroscope { };
             rift = pkgs.callPackage ./pkgs/rift { };
             roc-vad = pkgs.callPackage ./pkgs/roc-vad { };
+            rustanka = pkgs.callPackage ./pkgs/rustanka { };
             sleepwatcher = pkgs.callPackage ./pkgs/sleepwatcher { };
             sonnenbatterie-exporter = pkgs.callPackage ./pkgs/sonnenbatterie-exporter { };
             tod0 = pkgs.callPackage ./pkgs/tod0 { };
@@ -244,6 +245,7 @@
             prometheus-snmp-exporter-config = pkgs.prometheus-snmp-exporter-config;
             pyroscope = pkgs.pyroscope;
             rift = pkgs.rift;
+            rustanka = pkgs.rustanka;
             sleepwatcher = pkgs.sleepwatcher;
             sonnenbatterie-exporter = pkgs.sonnenbatterie-exporter;
             tod0 = pkgs.tod0;
