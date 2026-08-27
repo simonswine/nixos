@@ -11,6 +11,10 @@
     };
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
     nixpkgs.url = "github:nixos/nixpkgs/nixos-26.05-small";
+    rust-overlay = {
+      url = "github:oxalica/rust-overlay";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     nuschtosSearch = {
       url = "github:NuschtOS/search";
       inputs.flake-utils.follows = "flake-utils";
@@ -103,6 +107,12 @@
             pyroscope = pkgs.callPackage ./pkgs/pyroscope { };
             rift = pkgs.callPackage ./pkgs/rift { };
             roc-vad = pkgs.callPackage ./pkgs/roc-vad { };
+            rustledger = pkgs.callPackage ./pkgs/rustledger {
+              rustPlatform = pkgs.makeRustPlatform {
+                cargo = inputs.rust-overlay.packages.${pkgs.stdenv.hostPlatform.system}.rust_1_98_0;
+                rustc = inputs.rust-overlay.packages.${pkgs.stdenv.hostPlatform.system}.rust_1_98_0;
+              };
+            };
             rustanka = pkgs.callPackage ./pkgs/rustanka { };
             sleepwatcher = pkgs.callPackage ./pkgs/sleepwatcher { };
             sonnenbatterie-exporter = pkgs.callPackage ./pkgs/sonnenbatterie-exporter { };
@@ -245,6 +255,7 @@
             prometheus-snmp-exporter-config = pkgs.prometheus-snmp-exporter-config;
             pyroscope = pkgs.pyroscope;
             rift = pkgs.rift;
+            rustledger = pkgs.rustledger;
             rustanka = pkgs.rustanka;
             sleepwatcher = pkgs.sleepwatcher;
             sonnenbatterie-exporter = pkgs.sonnenbatterie-exporter;

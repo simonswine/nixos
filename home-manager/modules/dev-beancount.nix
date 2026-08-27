@@ -18,10 +18,10 @@ in
     home.packages = with pkgs; [
       beancount
       fava
+      rustledger
     ];
     simonswine.neovim.lspconfig.beancount.cmd = [
-      "${pkgs.beancount-language-server}/bin/beancount-language-server"
-      "--stdio"
+      "${pkgs.rustledger}/bin/rledger-lsp"
     ];
   };
 }
