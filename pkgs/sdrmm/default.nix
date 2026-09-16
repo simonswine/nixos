@@ -56,7 +56,7 @@ rustPlatform.buildRustPackage (finalAttrs: {
   # Upstream uses nightly-only Cargo settings for development checks. They are
   # not needed to build the server and prevent using the supported Rust 1.98.
   postPatch = ''
-    rm .cargo/config.toml
+    rm -f .cargo/config.toml
   '';
 
   preBuild = ''
