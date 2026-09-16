@@ -113,6 +113,19 @@
                 rustc = inputs.rust-overlay.packages.${pkgs.stdenv.hostPlatform.system}.rust_1_98_0;
               };
             };
+            sdrmm = pkgs.callPackage ./pkgs/sdrmm {
+              pnpm = pkgs.pnpm_11.overrideAttrs {
+                version = "11.15.1";
+                src = pkgs.fetchurl {
+                  url = "https://registry.npmjs.org/pnpm/-/pnpm-11.15.1.tgz";
+                  hash = "sha256-J0YGKbEBEWBOf5iIJ1O1M5iYaCDCDgoGXzpKXp59tx8=";
+                };
+              };
+              rustPlatform = pkgs.makeRustPlatform {
+                cargo = inputs.rust-overlay.packages.${pkgs.stdenv.hostPlatform.system}.rust_1_98_0;
+                rustc = inputs.rust-overlay.packages.${pkgs.stdenv.hostPlatform.system}.rust_1_98_0;
+              };
+            };
             rustanka = pkgs.callPackage ./pkgs/rustanka { };
             sleepwatcher = pkgs.callPackage ./pkgs/sleepwatcher { };
             sonnenbatterie-exporter = pkgs.callPackage ./pkgs/sonnenbatterie-exporter { };
@@ -256,6 +269,7 @@
             pyroscope = pkgs.pyroscope;
             rift = pkgs.rift;
             rustledger = pkgs.rustledger;
+            sdrmm = pkgs.sdrmm;
             rustanka = pkgs.rustanka;
             sleepwatcher = pkgs.sleepwatcher;
             sonnenbatterie-exporter = pkgs.sonnenbatterie-exporter;
