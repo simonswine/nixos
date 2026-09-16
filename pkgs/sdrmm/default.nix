@@ -20,7 +20,7 @@ rustPlatform.buildRustPackage (finalAttrs: {
     owner = "Newspicel";
     repo = "sdrminusminus";
     rev = "840dc2e4d27208b1e7a8d2a294949335964216be";
-    hash = "sha256-IDfqNM47cMCM/1dSI1w5M7P34pra8bLUaFxMlB1TKq8=";
+    hash = "sha256-sHngWPN1R59kxr6ogFmjaTVvlNnfCByBuh0+TWqMTf4=";
   };
 
   cargoLock = {
