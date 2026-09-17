@@ -77,7 +77,6 @@
             version-check-home-hook = pkgs.callPackage ./pkgs/version-check-home-hook { };
             zellij-attention = pkgs.callPackage ./pkgs/zellij-attention { };
             zellij-room = pkgs.callPackage ./pkgs/zellij-room { };
-            wrap-buddy = pkgs.callPackage ./pkgs/wrap-buddy { };
             fronius-exporter = pkgs.callPackage ./pkgs/fronius-exporter { };
             g810-led = pkgs.callPackage ./pkgs/g810-led { };
             get-focused-x-screen = pkgs.callPackage ./pkgs/get-focused-x-screen { };
@@ -92,6 +91,7 @@
             jsonnet-language-server = pkgs.callPackage ./pkgs/jsonnet-language-server { };
             mi-flora-exporter = pkgs.callPackage ./pkgs/mi-flora-exporter { };
             miio = pkgs.callPackage ./pkgs/python-miio { };
+            models-dev = pkgs.callPackage ./pkgs/models-dev { };
             modbus-exporter = pkgs.callPackage ./pkgs/modbus-exporter { };
             modularise = pkgs.callPackage ./pkgs/modularise { };
             mtv-dl = pkgs.callPackage ./pkgs/mtv-dl { };
@@ -254,6 +254,7 @@
             kubernetes-1-36 = pkgs.kubernetes-1-36;
             mi-flora-exporter = pkgs.mi-flora-exporter;
             miio = pkgs.miio;
+            models-dev = pkgs.models-dev;
             modbus-exporter = pkgs.modbus-exporter;
             modularise = pkgs.modularise;
             mtv-dl = pkgs.mtv-dl;
