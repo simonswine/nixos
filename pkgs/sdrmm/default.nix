@@ -2,14 +2,15 @@
   lib,
   rustPlatform,
   fetchFromGitHub,
+  fetchurl,
   fetchPnpmDeps,
   pnpmConfigHook,
   pnpm,
   nodejs_26,
   pkg-config,
   cmake,
-  ffmpeg,
   libopus,
+  python3,
 }:
 
 rustPlatform.buildRustPackage (finalAttrs: {
@@ -39,6 +40,11 @@ rustPlatform.buildRustPackage (finalAttrs: {
   };
   pnpmRoot = "web";
 
+  ffmpegSrc = fetchurl {
+    url = "https://ffmpeg.org/releases/ffmpeg-9.0.1.tar.xz";
+    hash = "sha256-zzjg4ox+VgWULEp3dVNJsBRYBKOXrzfrH7THfLI39jU=";
+  };
+
   nativeBuildInputs = [
     cmake
     rustPlatform.bindgenHook
@@ -49,7 +55,6 @@ rustPlatform.buildRustPackage (finalAttrs: {
   ];
 
   buildInputs = [
-    ffmpeg
     libopus
   ];
 
@@ -60,6 +65,10 @@ rustPlatform.buildRustPackage (finalAttrs: {
   '';
 
   preBuild = ''
+    # Bindings are generated from the restricted FFmpeg version upstream tests
+    # against; Nixpkgs' newer FFmpeg exposes incompatible parser types.
+    ${python3}/bin/python3 scripts/build-media.py --archive "$ffmpegSrc" --prefix "$PWD/.media"
+    export FFMPEG_DIR="$PWD/.media"
     pnpm --dir web build
   '';
 
