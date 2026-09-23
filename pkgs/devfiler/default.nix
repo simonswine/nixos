@@ -12,13 +12,13 @@
 
 rustPlatform.buildRustPackage {
   pname = "devfiler";
-  version = "0-unstable-2026-03-30";
+  version = "0-unstable-2026-08-24";
 
   src = fetchFromGitHub {
     owner = "elastic";
     repo = "devfiler";
-    rev = "681c08d5a5f840c075e6c5f3e59d92e41bd49214";
-    hash = "sha256-EODY7zXegZPx9DawTFsrCChDcLF7uPSoHfb7B+3XDP0=";
+    rev = "429ef146cc763846c379730764d7d64c93fc0f9d";
+    hash = "sha256-CH7zAOjBwMFvFEqhkQ4vF2uGuiv0x+Eou42Nt/f4cek=";
     fetchSubmodules = true;
   };
 
