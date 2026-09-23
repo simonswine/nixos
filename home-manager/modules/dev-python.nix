@@ -15,8 +15,26 @@ in
   };
 
   config = mkIf cfg.enable {
-    simonswine.neovim.lspconfig.pylsp.cmd = [
-      "${pkgs.python3Packages.python-lsp-server}/bin/pylsp"
-    ];
+    simonswine.neovim = {
+      lspconfig = {
+        pyright = {
+          cmd = [
+            "${pkgs.pyright}/bin/pyright-langserver"
+            "--stdio"
+          ];
+          settings.pyright.disableOrganizeImports = true;
+        };
+
+        ruff.cmd = [
+          "${pkgs.ruff}/bin/ruff"
+          "server"
+        ];
+      };
+
+      conformConfig = {
+        formatters_by_ft.python = [ "ruff_format" ];
+        formatters.ruff_format.command = "${pkgs.ruff}/bin/ruff";
+      };
+    };
   };
 }
