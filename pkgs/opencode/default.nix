@@ -84,7 +84,7 @@ let
 in
 stdenv.mkDerivation (finalAttrs: {
   pname = "opencode";
-  version = "1.18.31";
+  version = "1.18.34";
 
   __structuredAttrs = true;
   strictDeps = true;
@@ -93,7 +93,7 @@ stdenv.mkDerivation (finalAttrs: {
     owner = "anomalyco";
     repo = "opencode";
     tag = "v${finalAttrs.version}";
-    hash = "sha256-Q0DYH5GHQGZ6ICyMR5rWq86DvfWpQERGZeLYTJb7cj0=";
+    hash = "sha256-ygTBG79utH0A1Dmg+tjEeTA633bLO0OfDdi6AwwQnZw=";
   };
 
   postPatch =
