@@ -369,6 +369,7 @@
         rpi2 = self.nixosConfigurations.install-image-rpi2.config.system.build.sdImage;
       };
 
+      darwinModules.roc-vad = import ./darwin/modules/roc-vad.nix;
       nixosModules = myNixosModules;
       homeManagerModules = myHomeManagerModules;
     };

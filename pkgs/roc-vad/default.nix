@@ -69,6 +69,7 @@ stdenvNoCC.mkDerivation rec {
     license = licenses.mpl20;
     maintainers = with maintainers; [ simonswine ];
     platforms = platforms.darwin;
+    sourceProvenance = [ sourceTypes.binaryNativeCode ];
     mainProgram = "roc-vad";
   };
 }
