@@ -222,69 +222,19 @@
         # unavailable here, so `nix flake check` does not trip over e.g. the
         # Linux-only exporters when evaluated on Darwin.
         packages = lib.filterAttrs (_: lib.meta.availableOn pkgs.stdenv.hostPlatform) (
-          {
-            austin = pkgs.austin;
-            benchstat = pkgs.benchstat;
-            cert-updater = pkgs.cert-updater;
-            claude-code = pkgs.claude-code;
+          # Use the final package set so nixpkgs overrides remain effective.
+          lib.genAttrs (builtins.attrNames (
+            builtins.removeAttrs (pkgsConfig.packageOverrides pkgs) [
+              "dhclient"
+              "get-focused-x-screen"
+              "roc-vad"
+            ]
+          )) (name: pkgs.${name})
+          // {
             containerd = pkgs.containerd;
-            devfiler = pkgs.devfiler;
-            dezoomify-rs = pkgs.dezoomify-rs;
-            docker-machine = pkgs.docker-machine;
-            docker-machine-driver-hetzner = pkgs.docker-machine-driver-hetzner;
-            falcode-zellij = pkgs.falcode-zellij;
-            faillint = pkgs.faillint;
-            fluidcad = pkgs.fluidcad;
-            fluidcad-nvim = pkgs.fluidcad-nvim;
-            fronius-exporter = pkgs.fronius-exporter;
-            kandev = pkgs.kandev;
-            kandev-frontend = pkgs.kandev-frontend;
-            opencode = pkgs.opencode;
-            g810-led = pkgs.g810-led;
-            gimli-addr2line = pkgs.gimli-addr2line;
-            gitlab-runner = pkgs.gitlab-runner;
-            goda = pkgs.goda;
-            growatt-proxy-exporter = pkgs.growatt-proxy-exporter;
-            heatmiser-exporter = pkgs.heatmiser-exporter;
-            inch-exporter = pkgs.inch-exporter;
-            intel-gpu-exporter = pkgs.intel-gpu-exporter;
-            js-yaml = pkgs.js-yaml;
-            jsonnet-language-server = pkgs.jsonnet-language-server;
             kubernetes-1-34 = pkgs.kubernetes-1-34;
             kubernetes-1-35 = pkgs.kubernetes-1-35;
             kubernetes-1-36 = pkgs.kubernetes-1-36;
-            mi-flora-exporter = pkgs.mi-flora-exporter;
-            miio = pkgs.miio;
-            models-dev = pkgs.models-dev;
-            modbus-exporter = pkgs.modbus-exporter;
-            modularise = pkgs.modularise;
-            mtv-dl = pkgs.mtv-dl;
-            nut-exporter = pkgs.nut-exporter;
-            orangepi-firmware = pkgs.orangepi-firmware;
-            phpspy = pkgs.phpspy;
-            pi-coding-agent = pkgs.pi-coding-agent;
-            profilecli = pkgs.profilecli;
-            prometheus-node-exporter-restic = pkgs.prometheus-node-exporter-restic;
-            prometheus-node-exporter-smartmon = pkgs.prometheus-node-exporter-smartmon;
-            prometheus-node-exporter-zfs = pkgs.prometheus-node-exporter-zfs;
-            prometheus-snmp-exporter-config = pkgs.prometheus-snmp-exporter-config;
-            pyroscope = pkgs.pyroscope;
-            rift = pkgs.rift;
-            rustledger = pkgs.rustledger;
-            sdrmm = pkgs.sdrmm;
-            rustanka = pkgs.rustanka;
-            sleepwatcher = pkgs.sleepwatcher;
-            sonora = pkgs.sonora;
-            sonnenbatterie-exporter = pkgs.sonnenbatterie-exporter;
-            tod0 = pkgs.tod0;
-            tplink-switch-exporter = pkgs.tplink-switch-exporter;
-            tttool = pkgs.tttool;
-            tz-cli = pkgs.tz-cli;
-            vim-markdown-composer = pkgs.vim-markdown-composer;
-            yasdi = pkgs.yasdi;
-            yasdi-exporter = pkgs.yasdi-exporter;
-            zellij-attention = pkgs.zellij-attention;
-            zellij-room = pkgs.zellij-room;
           }
           // lib.optionalAttrs pkgs.stdenv.hostPlatform.isLinux {
             # meta.platforms is unrestricted, but the closure pulls in the
