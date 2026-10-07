@@ -128,6 +128,7 @@
             };
             rustanka = pkgs.callPackage ./pkgs/rustanka { };
             sleepwatcher = pkgs.callPackage ./pkgs/sleepwatcher { };
+            sonora = pkgs.callPackage ./pkgs/sonora { };
             sonnenbatterie-exporter = pkgs.callPackage ./pkgs/sonnenbatterie-exporter { };
             tod0 = pkgs.callPackage ./pkgs/tod0 { };
             tplink-switch-exporter = pkgs.callPackage ./pkgs/tplink-switch-exporter { };
@@ -273,6 +274,7 @@
             sdrmm = pkgs.sdrmm;
             rustanka = pkgs.rustanka;
             sleepwatcher = pkgs.sleepwatcher;
+            sonora = pkgs.sonora;
             sonnenbatterie-exporter = pkgs.sonnenbatterie-exporter;
             tod0 = pkgs.tod0;
             tplink-switch-exporter = pkgs.tplink-switch-exporter;
