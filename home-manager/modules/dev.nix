@@ -59,7 +59,6 @@ in
           pull.rebase = false;
           push.default = "simple";
 
-          core.fsmonitor = true;
           core.untrackedcache = true;
         };
 
@@ -97,6 +96,17 @@ in
       simonswine.dev.rego.enable = true;
       simonswine.dev.dotnet.enable = true;
       simonswine.dev.java.enable = true;
+
+      programs.git.includes = [
+        {
+          condition = "gitdir:~/git/github.com/grafana/";
+          contents = {
+            gpg.format = "ssh";
+            user.signingKey = "~/.ssh/id_ed25519.pub";
+            commit.gpgSign = true;
+          };
+        }
+      ];
 
       programs.git.settings.url = {
         "ssh://git@github.com/grafana/" = {
