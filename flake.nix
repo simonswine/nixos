@@ -42,6 +42,7 @@
           pkg:
           builtins.elem (lib.getName pkg) [
             "claude-code"
+            "bambu-studio"
             "blink-cmp-spell"
           ];
         packageOverrides =
@@ -54,6 +55,7 @@
           in
           {
             austin = pkgs.callPackage ./pkgs/austin { };
+            bambu-studio = pkgs.callPackage ./pkgs/bambu-studio { };
             benchstat = pkgs.callPackage ./pkgs/benchstat { };
             cert-updater = pkgs.callPackage ./pkgs/cert-updater { };
             claude-code = pkgs.callPackage ./pkgs/claude-code { };
