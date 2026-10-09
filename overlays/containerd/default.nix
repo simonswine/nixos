@@ -4,12 +4,12 @@ self: super: {
       buildGoModule = super.buildGoModule.override { go = super.go_1_26; };
     }).overrideAttrs
       (old: rec {
-        version = "2.3.4";
+        version = "2.4.1";
         src = super.fetchFromGitHub {
           owner = "containerd";
           repo = "containerd";
           rev = "v${version}";
-          hash = "sha256-IGgToUpkbqtjGJD+GtCPSeHW9ZRnSS8NMfECok9HgjU=";
+          hash = "sha256-wp4cP3kYm1k9ZPj9B37dQx8//1Ept8aIfZseob9Nyv0=";
         };
         makeFlags =
           builtins.filter (
