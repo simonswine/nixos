@@ -234,9 +234,9 @@
           )) (name: pkgs.${name})
           // {
             containerd = pkgs.containerd;
-            kubernetes-1-34 = pkgs.kubernetes-1-34;
             kubernetes-1-35 = pkgs.kubernetes-1-35;
             kubernetes-1-36 = pkgs.kubernetes-1-36;
+            kubernetes-1-37 = pkgs.kubernetes-1-37;
           }
           // lib.optionalAttrs pkgs.stdenv.hostPlatform.isLinux {
             # meta.platforms is unrestricted, but the closure pulls in the
