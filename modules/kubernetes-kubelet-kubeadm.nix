@@ -71,6 +71,7 @@ in
             util-linux
             iproute2
             thin-provisioning-tools
+            zfs
           ]
           ++ deps
           ++ top.path;
