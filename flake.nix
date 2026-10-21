@@ -257,6 +257,7 @@
                 modules = [
                   inputs.nixos-images.nixosModules.kexec-installer
                   inputs.nixos-images.nixosModules.noninteractive
+                  ./modules/pki.nix
                   ./targets/hcloud-kexec/default.nix
                 ];
               }).config.system.build.kexecInstallerTarball;
