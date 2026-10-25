@@ -301,6 +301,7 @@ in
         claude-code
         opencode
         pi-coding-agent
+        herdr
 
         # protobuf
         protoscope
