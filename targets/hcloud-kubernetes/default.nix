@@ -12,6 +12,8 @@
   networking.hostId = "deadcafe";
   cloud.provider = "hcloud";
 
+  virtualisation.containerd-kubelet.gvisor.enable = true;
+
   # Enable the OpenSSH daemon.
   services.openssh.enable = true;
 
