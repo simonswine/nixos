@@ -11,6 +11,8 @@ self: super: {
           rev = "v${version}";
           hash = "sha256-wp4cP3kYm1k9ZPj9B37dQx8//1Ept8aIfZseob9Nyv0=";
         };
+        # Remap hard-linked inodes only once in the user-namespace fallback.
+        patches = (old.patches or [ ]) ++ [ ./userns-hardlinks.patch ];
         makeFlags =
           builtins.filter (
             x: (!super.lib.strings.hasPrefix "VERSION=" x) && (!super.lib.strings.hasPrefix "REVISION=" x)
