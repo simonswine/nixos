@@ -65,6 +65,7 @@
             docker-machine = pkgs.callPackage ./pkgs/docker-machine { };
             docker-machine-driver-hetzner = pkgs.callPackage ./pkgs/docker-machine-driver-hetzner { };
             faillint = pkgs.callPackage ./pkgs/faillint { };
+            gvisor = pkgs.callPackage ./pkgs/gvisor { };
             inherit fluidcad;
             fluidcad-nvim = pkgs.callPackage ./pkgs/fluidcad-nvim {
               inherit fluidcad;
