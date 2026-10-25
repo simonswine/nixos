@@ -87,6 +87,7 @@
             goda = pkgs.callPackage ./pkgs/goda { };
             growatt-proxy-exporter = pkgs.callPackage ./pkgs/growatt-proxy-exporter { };
             heatmiser-exporter = pkgs.callPackage ./pkgs/heatmiser-exporter { };
+            herdr = pkgs.callPackage ./pkgs/herdr { };
             inch-exporter = pkgs.callPackage ./pkgs/inch-exporter { };
             intel-gpu-exporter = pkgs.callPackage ./pkgs/intel-gpu-exporter { };
             js-yaml = pkgs.callPackage ./pkgs/js-yaml { };
