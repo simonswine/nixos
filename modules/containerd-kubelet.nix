@@ -13,6 +13,17 @@ in
   options.virtualisation.containerd-kubelet = {
     enable = mkEnableOption "containerd as kubelet container runtime";
 
+    gvisor = {
+      enable = mkEnableOption "gVisor container runtime";
+
+      package = mkOption {
+        type = types.package;
+        default = pkgs.gvisor;
+        defaultText = literalExpression "pkgs.gvisor";
+        description = "gVisor package providing runsc and its containerd shim.";
+      };
+    };
+
     kata = {
       enable = mkEnableOption "enable kata container runtime";
 
@@ -28,7 +39,8 @@ in
     environment.systemPackages = [
       pkgs.cri-tools
     ]
-    ++ lib.optional cfg.kata.enable cfg.kata.package;
+    ++ lib.optional cfg.kata.enable cfg.kata.package
+    ++ lib.optional cfg.gvisor.enable cfg.gvisor.package;
     environment.etc."crictl.yaml".text = ''
       runtime-endpoint: unix:///run/containerd/containerd.sock
     '';
@@ -52,6 +64,13 @@ in
                   options = {
                     SystemdCgroup = true;
                   };
+                };
+              }
+              // lib.optionalAttrs cfg.gvisor.enable {
+                runsc = {
+                  runtime_type = "io.containerd.runsc.v1";
+                  runtime_path = "${cfg.gvisor.package}/bin/containerd-shim-runsc-v1";
+                  options.BinaryName = "${cfg.gvisor.package}/bin/runsc";
                 };
               }
               // lib.optionalAttrs cfg.kata.enable {
@@ -84,7 +103,8 @@ in
         pkgs.zfs
         pkgs.iptables-nftables-compat
       ]
-      ++ lib.optional cfg.kata.enable cfg.kata.package;
+      ++ lib.optional cfg.kata.enable cfg.kata.package
+      ++ lib.optional cfg.gvisor.enable cfg.gvisor.package;
       serviceConfig = {
         # This limit was reduce from infinty to 1024:524288 as part of nixos 24.11. Raising that limit slightly.
         LimitNOFILE = "32768:524288";
