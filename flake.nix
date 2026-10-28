@@ -93,6 +93,7 @@
             intel-gpu-exporter = pkgs.callPackage ./pkgs/intel-gpu-exporter { };
             js-yaml = pkgs.callPackage ./pkgs/js-yaml { };
             jsonnet-language-server = pkgs.callPackage ./pkgs/jsonnet-language-server { };
+            maccy-cli = pkgs.callPackage ./pkgs/maccy-cli { };
             mi-flora-exporter = pkgs.callPackage ./pkgs/mi-flora-exporter { };
             miio = pkgs.callPackage ./pkgs/python-miio { };
             models-dev = pkgs.callPackage ./pkgs/models-dev { };
