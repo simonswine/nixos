@@ -56,6 +56,7 @@
           {
             austin = pkgs.callPackage ./pkgs/austin { };
             bambu-studio = pkgs.callPackage ./pkgs/bambu-studio { };
+            bambutop = pkgs.callPackage ./pkgs/bambutop { };
             benchstat = pkgs.callPackage ./pkgs/benchstat { };
             cert-updater = pkgs.callPackage ./pkgs/cert-updater { };
             claude-code = pkgs.callPackage ./pkgs/claude-code { };
