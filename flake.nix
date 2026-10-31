@@ -11,6 +11,11 @@
     };
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
     nixpkgs.url = "github:nixos/nixpkgs/nixos-26.05-small";
+    nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
+    nixos-apple-silicon = {
+      url = "github:nix-community/nixos-apple-silicon";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+    };
     rust-overlay = {
       url = "github:oxalica/rust-overlay";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -265,6 +270,17 @@
                   ./targets/hcloud-kexec/default.nix
                 ];
               }).config.system.build.kexecInstallerTarball;
+          }
+          // lib.optionalAttrs (system == "aarch64-linux") {
+            # Evaluate only the kernel: no machine-specific Apple firmware is needed.
+            asahi-kernel =
+              (inputs.nixpkgs-unstable.lib.nixosSystem {
+                inherit system;
+                modules = [
+                  inputs.nixos-apple-silicon.nixosModules.default
+                  { hardware.asahi.enable = true; }
+                ];
+              }).config.boot.kernelPackages.kernel;
           }
           // lib.optionalAttrs pkgs.stdenv.hostPlatform.isDarwin {
             roc-vad = pkgs.roc-vad;
