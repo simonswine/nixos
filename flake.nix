@@ -83,6 +83,7 @@
             };
             falcode-zellij = pkgs.callPackage ./pkgs/falcode-zellij { };
             opencode = pkgs.callPackage ./pkgs/opencode { };
+            openttmgr = pkgs.callPackage ./pkgs/openttmgr { };
             version-check-home-hook = pkgs.callPackage ./pkgs/version-check-home-hook { };
             zellij-attention = pkgs.callPackage ./pkgs/zellij-attention { };
             zellij-room = pkgs.callPackage ./pkgs/zellij-room { };
