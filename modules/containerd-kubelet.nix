@@ -12,6 +12,11 @@ in
 {
   options.virtualisation.containerd-kubelet = {
     enable = mkEnableOption "containerd as kubelet container runtime";
+    snapshotter = mkOption {
+      type = types.enum [ "zfs" "btrfs" "overlayfs" ];
+      default = "zfs";
+      description = "Snapshotter used by CRI and the transfer service.";
+    };
 
     gvisor = {
       enable = mkEnableOption "gVisor container runtime";
@@ -57,7 +62,7 @@ in
           "io.containerd.grpc.v1.cri" = {
             containerd = {
               default_runtime_name = "runc";
-              snapshotter = "zfs";
+              snapshotter = cfg.snapshotter;
               runtimes = {
                 runc = {
                   runtime_type = "io.containerd.runc.v2";
@@ -86,7 +91,7 @@ in
             unpack_config = [
               {
                 platform = "linux/amd64";
-                snapshotter = "zfs";
+                snapshotter = cfg.snapshotter;
               }
             ];
           };
@@ -100,9 +105,9 @@ in
 
     systemd.services.containerd = {
       path = [
-        pkgs.zfs
         pkgs.iptables-nftables-compat
       ]
+      ++ lib.optional (cfg.snapshotter == "zfs") pkgs.zfs
       ++ lib.optional cfg.kata.enable cfg.kata.package
       ++ lib.optional cfg.gvisor.enable cfg.gvisor.package;
       serviceConfig = {

@@ -26,8 +26,9 @@
   boot.extraModulePackages = [ ];
 
   fileSystems."/" = {
-    device = "rpool/ROOT/nixos";
-    fsType = "zfs";
+    device = "/dev/disk/by-label/nixos";
+    fsType = "btrfs";
+    options = [ "subvol=@root" "compress=zstd" "noatime" ];
   };
 
   fileSystems."/boot" = {
@@ -36,24 +37,19 @@
   };
 
   fileSystems."/nix" = {
-    device = "rpool/nix";
-    fsType = "zfs";
+    device = "/dev/disk/by-label/nixos";
+    fsType = "btrfs";
+    options = [ "subvol=@nix" "compress=zstd" "noatime" ];
   };
 
-  fileSystems."/nix/var" = {
-    device = "rpool/nix/var";
-    fsType = "zfs";
+  fileSystems."/var/lib/containerd/io.containerd.snapshotter.v1.btrfs" = {
+    device = "/dev/disk/by-label/nixos";
+    fsType = "btrfs";
+    options = [ "subvol=@containerd" "compress=zstd" "noatime" ];
   };
 
-  fileSystems."/nix/store" = {
-    device = "rpool/nix/store";
-    fsType = "zfs";
-  };
-
-  fileSystems."/var/lib/containerd/io.containerd.snapshotter.v1.zfs" = {
-    device = "rpool/containerd";
-    fsType = "zfs";
-  };
+  systemd.services.containerd.requires = [ "var-lib-containerd-io.containerd.snapshotter.v1.btrfs.mount" ];
+  systemd.services.containerd.after = [ "var-lib-containerd-io.containerd.snapshotter.v1.btrfs.mount" ];
 
   swapDevices = [ ];
 

@@ -20,6 +20,7 @@
   # here: the kexec installer has no root pool to import at boot, and enabling
   # the full ZFS boot machinery on top of the netboot image causes a
   # conflicting `zfs-import.service` definition.
+  boot.supportedFilesystems = [ "btrfs" ];
   boot.kernelModules = [ "zfs" ];
   boot.extraModulePackages = [
     config.boot.kernelPackages.${config.boot.zfs.package.kernelModuleAttribute}
@@ -30,6 +31,7 @@
   # ZFS userspace, git (to clone the flake repo) and cachix (binary cache).
   environment.systemPackages = [
     config.boot.zfs.package
+    pkgs.btrfs-progs
     pkgs.git
     pkgs.cachix
   ];
