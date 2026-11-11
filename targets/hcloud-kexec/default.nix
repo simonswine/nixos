@@ -20,6 +20,26 @@
   # here: the kexec installer has no root pool to import at boot, and enabling
   # the full ZFS boot machinery on top of the netboot image causes a
   # conflicting `zfs-import.service` definition.
+
+  # Use the regular nixpkgs tools instead of the static builds bundled by
+  # nixos-images.
+  system.build.kexecInstallerTarball = lib.mkForce (
+    pkgs.runCommand "kexec-tarball" { } ''
+      mkdir kexec $out
+      # References inside the compressed tarball are invisible to Nix's
+      # closure scanner. Retain the tools so cache downloads include their
+      # dynamic linker and shared libraries on the rescue host.
+      ln -s ${pkgs.kexec-tools} $out/kexec-tools
+      ln -s ${pkgs.iproute2} $out/iproute2
+      cp "${config.system.build.netbootRamdisk}/initrd" kexec/initrd
+      cp "${config.system.build.kernel}/${config.system.boot.loader.kernelFile}" kexec/bzImage
+      cp "${config.system.build.kexecRun}" kexec/run
+      cp "${pkgs.kexec-tools}/bin/kexec" kexec/kexec
+      cp "${pkgs.iproute2}/bin/ip" kexec/ip
+      tar -czvf $out/${config.system.kexec-installer.name}-${pkgs.stdenv.hostPlatform.system}.tar.gz kexec
+    ''
+  );
+
   boot.supportedFilesystems = [ "btrfs" ];
   boot.kernelModules = [ "zfs" ];
   boot.extraModulePackages = [
