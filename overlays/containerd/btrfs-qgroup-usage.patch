@@ -1,0 +1,619 @@
+Compute btrfs snapshot usage from quota accounting instead of walking
+
+The btrfs snapshotter sizes an active snapshot by walking it recursively.
+Because every layer is created as `btrfs subvolume snapshot <parent>`, layer N
+physically contains layers 1..N, so a stats collection pass costs
+O(layers x rootfs) stat() calls rather than O(unique files).  On a six-node
+arm64 cluster with ~40 containers per node that is 1.5M stat() calls per pass,
+8-9 minutes of wall clock, and a permanent ~47% of one core per node.
+
+btrfs already accounts for exactly the quantity the snapshotter wants.  The
+level 0 qgroup btrfs creates alongside each subvolume tracks the extents only
+that subvolume references, which for a snapshot is what has been written since
+it was taken -- the same number fs.DiffUsage walks the tree to compute.  Reading
+it is a single tree search ioctl pinned to one key.
+
+Simple quotas (`btrfs quota enable --simple`, Linux 6.7+) make this cheap on
+both ends: extents are charged to the subvolume that created them at write
+time, with no backref walk and no rescan, unlike full qgroups.
+
+Adds a `usage_mode` option to the btrfs snapshotter plugin:
+
+  auto   - quota accounting when the filesystem has quotas enabled, walk
+           otherwise (default; preserves current behaviour on filesystems
+           without quotas)
+  qgroup - always quota accounting, refuse to start without quotas
+  walk   - always walk, the pre-patch behaviour
+  none   - report zero usage without measuring anything
+
+Usage() never forces a transaction commit, so stats collection stays cheap;
+Commit() syncs first, since the value it computes is persisted.  Inodes are
+reported as zero because btrfs accounts bytes, not inodes.
+
+Two things to know when enabling quotas on a populated filesystem: simple
+quotas only account for extents written after they were turned on, so snapshots
+that already existed report zero until they are re-created, and a subvolume
+that has no qgroup at all is walked rather than reported as zero.
+
+Reported-by and tested-on: OrangePi 5 Plus (rk3588) Gentoo k8s cluster.
+
+Upstream-Issue: https://github.com/containerd/containerd/issues/13967
+Based-on: https://github.com/containerd/containerd/pull/1836 (AkihiroSuda,
+  the qgroup approach; reworked for containerd 2.x, single-key lookups,
+  squota detection, no implicit quota enable, and a configurable mode)
+Related: https://github.com/containerd/containerd/issues/6067
+Related: https://github.com/containerd/containerd/issues/4217
+
+--- a/plugins/snapshots/btrfs/btrfs.go
++++ b/plugins/snapshots/btrfs/btrfs.go
+@@ -20,6 +20,7 @@
+ 
+ import (
+ 	"context"
++	"errors"
+ 	"fmt"
+ 	"os"
+ 	"path/filepath"
+@@ -35,17 +36,63 @@
+ 	"github.com/containerd/plugin"
+ )
+ 
++// UsageMode selects how the snapshotter answers Usage for active snapshots.
++type UsageMode string
++
++const (
++	// UsageModeAuto uses btrfs quota accounting when the filesystem has quotas
++	// enabled and falls back to walking the snapshot otherwise. This is the
++	// default.
++	UsageModeAuto UsageMode = "auto"
++
++	// UsageModeQgroup always uses btrfs quota accounting, and fails at plugin
++	// init if the filesystem has no quotas enabled.
++	UsageModeQgroup UsageMode = "qgroup"
++
++	// UsageModeWalk always walks the snapshot recursively. This is accurate but
++	// costs O(layers x rootfs) stat calls per stats collection pass, because
++	// every btrfs snapshot physically contains all of its parents.
++	UsageModeWalk UsageMode = "walk"
++
++	// UsageModeNone reports zero usage for active snapshots without measuring
++	// anything.
++	UsageModeNone UsageMode = "none"
++)
++
++// Opt is an option for NewSnapshotter.
++type Opt func(*snapshotter) error
++
++// WithUsageMode selects how disk usage is computed for active snapshots. An
++// empty mode means UsageModeAuto.
++func WithUsageMode(mode UsageMode) Opt {
++	return func(b *snapshotter) error {
++		switch mode {
++		case "":
++			b.usageMode = UsageModeAuto
++		case UsageModeAuto, UsageModeQgroup, UsageModeWalk, UsageModeNone:
++			b.usageMode = mode
++		default:
++			return fmt.Errorf("unknown btrfs usage mode %q, expected one of %q, %q, %q or %q",
++				mode, UsageModeAuto, UsageModeQgroup, UsageModeWalk, UsageModeNone)
++		}
++		return nil
++	}
++}
++
+ type snapshotter struct {
+ 	device string // device of the root
+ 	root   string // root provides paths for internal storage.
+ 	ms     *storage.MetaStore
++
++	usageMode UsageMode // as configured
++	useQgroup bool      // as resolved against the filesystem at init
+ }
+ 
+ // NewSnapshotter returns a Snapshotter using btrfs. Uses the provided
+ // root directory for snapshots and stores the metadata in
+ // a file in the provided root.
+ // root needs to be a mount point of btrfs.
+-func NewSnapshotter(root string) (snapshots.Snapshotter, error) {
++func NewSnapshotter(root string, opts ...Opt) (snapshots.Snapshotter, error) {
+ 	// If directory does not exist, create it
+ 	if st, err := os.Stat(root); err != nil {
+ 		if !os.IsNotExist(err) {
+@@ -87,11 +134,66 @@
+ 		return nil, err
+ 	}
+ 
+-	return &snapshotter{
+-		device: mnt.Source,
+-		root:   root,
+-		ms:     ms,
+-	}, nil
++	b := &snapshotter{
++		device:    mnt.Source,
++		root:      root,
++		ms:        ms,
++		usageMode: UsageModeAuto,
++	}
++
++	for _, opt := range opts {
++		if err := opt(b); err != nil {
++			return nil, err
++		}
++	}
++
++	if err := b.resolveUsageMode(); err != nil {
++		return nil, err
++	}
++
++	return b, nil
++}
++
++// resolveUsageMode decides, once at init, whether Usage reads btrfs quota
++// accounting or walks the snapshot.
++func (b *snapshotter) resolveUsageMode() error {
++	if b.usageMode == UsageModeWalk || b.usageMode == UsageModeNone {
++		return nil
++	}
++
++	quota, err := btrfs.Quota(b.root)
++	if err != nil {
++		if b.usageMode == UsageModeQgroup {
++			return fmt.Errorf("btrfs snapshotter: usage_mode is %q but the quota status of %s could not be read: %w", b.usageMode, b.root, err)
++		}
++		log.L.WithError(err).Warnf("btrfs snapshotter: could not read the quota status of %s, falling back to walking snapshots", b.root)
++		return nil
++	}
++
++	if !quota.Enabled {
++		if b.usageMode == UsageModeQgroup {
++			return fmt.Errorf("btrfs snapshotter: usage_mode is %q but quotas are not enabled on %s, enable them with `btrfs quota enable --simple %s`", b.usageMode, b.root, b.device)
++		}
++		log.L.Infof("btrfs snapshotter: quotas are not enabled on %s, walking snapshots to compute usage", b.root)
++		return nil
++	}
++
++	b.useQgroup = true
++
++	switch {
++	case quota.Simple:
++		log.L.Infof("btrfs snapshotter: using simple quota (squota) accounting on %s to compute snapshot usage", b.root)
++	default:
++		log.L.Warnf("btrfs snapshotter: using full qgroup accounting on %s to compute snapshot usage; simple quotas (btrfs quota enable --simple) are considerably cheaper", b.root)
++	}
++
++	if quota.Rescanning {
++		log.L.Infof("btrfs snapshotter: a qgroup rescan is in progress on %s, usage numbers will be low until it finishes", b.root)
++	} else if quota.Inconsistent {
++		log.L.Warnf("btrfs snapshotter: qgroup accounting on %s is marked inconsistent, run `btrfs quota rescan %s`", b.root, b.root)
++	}
++
++	return nil
+ }
+ 
+ // Stat returns the info for an active or committed snapshot by name or
+@@ -127,10 +229,14 @@
+ 
+ // Usage retrieves the disk usage of the top-level snapshot.
+ func (b *snapshotter) Usage(ctx context.Context, key string) (snapshots.Usage, error) {
+-	return b.usage(ctx, key)
++	// Stats collection calls this for every snapshot on the node on a timer, so
++	// it must not force a transaction commit. Quota accounting that is one
++	// commit behind is close enough here; Commit syncs before it persists a
++	// value.
++	return b.usage(ctx, key, false)
+ }
+ 
+-func (b *snapshotter) usage(ctx context.Context, key string) (usage snapshots.Usage, err error) {
++func (b *snapshotter) usage(ctx context.Context, key string, sync bool) (usage snapshots.Usage, err error) {
+ 	var (
+ 		id, parentID string
+ 		info         snapshots.Info
+@@ -149,23 +255,76 @@
+ 		return snapshots.Usage{}, err
+ 	}
+ 
+-	if info.Kind == snapshots.KindActive {
+-		var du fs.Usage
+-		p := filepath.Join(b.root, "active", id)
+-		if parentID != "" {
+-			du, err = fs.DiffUsage(ctx, filepath.Join(b.root, "snapshots", parentID), p)
+-		} else {
+-			du, err = fs.DiskUsage(ctx, p)
++	// Committed snapshots carry the usage computed when they were committed,
++	// and view snapshots are read-only, so neither needs measuring here.
++	if info.Kind != snapshots.KindActive {
++		return usage, nil
++	}
++
++	p := filepath.Join(b.root, "active", id)
++
++	if b.usageMode == UsageModeNone {
++		return snapshots.Usage{}, nil
++	}
++
++	if b.useQgroup {
++		qgUsage, qgErr := b.qgroupUsage(p, sync)
++		if qgErr == nil {
++			return qgUsage, nil
+ 		}
+-		if err != nil {
+-			// TODO(stevvooe): Consider not reporting an error in this case.
+-			return snapshots.Usage{}, err
++		if b.usageMode == UsageModeQgroup || !errors.Is(qgErr, os.ErrNotExist) {
++			return snapshots.Usage{}, qgErr
+ 		}
++		// Quotas are on, but this subvolume has no qgroup of its own, which is
++		// what a subvolume created before quotas were enabled looks like. Walk
++		// it rather than report nothing.
++		log.G(ctx).WithError(qgErr).Debugf("btrfs snapshotter: no quota accounting for %s, walking it instead", p)
++	}
+ 
+-		usage = snapshots.Usage(du)
++	var du fs.Usage
++	if parentID != "" {
++		du, err = fs.DiffUsage(ctx, filepath.Join(b.root, "snapshots", parentID), p)
++	} else {
++		du, err = fs.DiskUsage(ctx, p)
++	}
++	if err != nil {
++		// TODO(stevvooe): Consider not reporting an error in this case.
++		return snapshots.Usage{}, err
++	}
++
++	return snapshots.Usage(du), nil
++}
++
++// qgroupUsage reads the exclusive byte count of the subvolume's own level 0
++// qgroup.
++//
++// btrfs creates that qgroup along with the subvolume and charges it for the
++// extents only this subvolume references, which for a snapshot is exactly what
++// has been written since it was taken. That is the same quantity fs.DiffUsage
++// walks the tree to compute, without the walk.
++//
++// Inodes are reported as zero: btrfs accounts bytes, not inodes, and a negative
++// or invented count would only mislead the consumers of these stats.
++func (b *snapshotter) qgroupUsage(path string, sync bool) (snapshots.Usage, error) {
++	if sync {
++		// Quota accounting only counts what has reached a transaction. Flush
++		// before reading a value that is about to be persisted.
++		if err := btrfs.Sync(path); err != nil {
++			return snapshots.Usage{}, fmt.Errorf("failed to sync %s before reading quota accounting: %w", path, err)
++		}
++	}
++
++	id, err := btrfs.SubvolID(path)
++	if err != nil {
++		return snapshots.Usage{}, fmt.Errorf("failed to look up the subvolume id of %s: %w", path, err)
++	}
++
++	info, err := btrfs.QgroupInfoByID(path, id)
++	if err != nil {
++		return snapshots.Usage{}, fmt.Errorf("failed to read quota accounting for subvolume %d at %s: %w", id, path, err)
+ 	}
+ 
+-	return usage, nil
++	return snapshots.Usage{Size: int64(info.Exclusive)}, nil
+ }
+ 
+ // Walk the committed snapshots.
+@@ -250,7 +409,7 @@
+ 
+ func (b *snapshotter) Commit(ctx context.Context, name, key string, opts ...snapshots.Opt) (err error) {
+ 	var usage snapshots.Usage
+-	usage, err = b.usage(ctx, key)
++	usage, err = b.usage(ctx, key, true)
+ 	if err != nil {
+ 		return fmt.Errorf("failed to compute usage: %w", err)
+ 	}
+--- a/plugins/snapshots/btrfs/plugin/plugin.go
++++ b/plugins/snapshots/btrfs/plugin/plugin.go
+@@ -34,6 +34,21 @@
+ type Config struct {
+ 	// Root directory for the plugin
+ 	RootPath string `toml:"root_path"`
++
++	// UsageMode selects how the disk usage of an active snapshot is computed:
++	//
++	//   auto   - read btrfs quota accounting when the filesystem has quotas
++	//            enabled, walk the snapshot otherwise (default)
++	//   qgroup - always read quota accounting, and refuse to start if the
++	//            filesystem has no quotas enabled
++	//   walk   - always walk the snapshot recursively
++	//   none   - report zero usage without measuring anything
++	//
++	// Walking is accurate but costs O(layers x rootfs) stat calls per stats
++	// collection pass, because every btrfs snapshot physically contains all of
++	// its parents. Simple quotas (btrfs quota enable --simple, Linux 6.7+)
++	// account for the same bytes at write time and cost a single ioctl to read.
++	UsageMode string `toml:"usage_mode"`
+ }
+ 
+ func init() {
+@@ -55,7 +70,7 @@
+ 			}
+ 
+ 			ic.Meta.Exports[plugins.SnapshotterRootDir] = root
+-			return btrfs.NewSnapshotter(root)
++			return btrfs.NewSnapshotter(root, btrfs.WithUsageMode(btrfs.UsageMode(config.UsageMode)))
+ 		},
+ 	})
+ }
+--- a/vendor/github.com/containerd/btrfs/v2/btrfs.h
++++ b/vendor/github.com/containerd/btrfs/v2/btrfs.h
+@@ -37,3 +37,27 @@
+ 
+ void unpack_root_item(struct gosafe_btrfs_root_item* dst, struct btrfs_root_item* src);
+ /* void unpack_root_ref(struct gosafe_btrfs_root_ref* dst, struct btrfs_root_ref* src); */
++
++/* Simple quotas (squota) landed in Linux 6.7; the flag may be missing from
++   older kernel headers, but the bit is stable and only read, never written. */
++#ifndef BTRFS_QGROUP_STATUS_FLAG_SIMPLE_MODE
++#define BTRFS_QGROUP_STATUS_FLAG_SIMPLE_MODE (1ULL << 3)
++#endif
++
++struct gosafe_btrfs_qgroup_status_item {
++	__le64 version;
++	__le64 generation;
++	__le64 flags;
++	__le64 rescan;
++};
++
++struct gosafe_btrfs_qgroup_info_item {
++	__le64 generation;
++	__le64 rfer;
++	__le64 rfer_cmpr;
++	__le64 excl;
++	__le64 excl_cmpr;
++};
++
++void unpack_qgroup_status_item(struct gosafe_btrfs_qgroup_status_item* dst, struct btrfs_qgroup_status_item* src);
++void unpack_qgroup_info_item(struct gosafe_btrfs_qgroup_info_item* dst, struct btrfs_qgroup_info_item* src);
+--- a/vendor/github.com/containerd/btrfs/v2/btrfs.c
++++ b/vendor/github.com/containerd/btrfs/v2/btrfs.c
+@@ -27,3 +27,18 @@
+ }
+ 
+ /* unpack_root_ref(struct gosafe_btrfs_root_ref* dst, struct btrfs_root_ref* src) { */
++
++void unpack_qgroup_status_item(struct gosafe_btrfs_qgroup_status_item* dst, struct btrfs_qgroup_status_item* src) {
++	dst->version = src->version;
++	dst->generation = src->generation;
++	dst->flags = src->flags;
++	dst->rescan = src->rescan;
++}
++
++void unpack_qgroup_info_item(struct gosafe_btrfs_qgroup_info_item* dst, struct btrfs_qgroup_info_item* src) {
++	dst->generation = src->generation;
++	dst->rfer = src->rfer;
++	dst->rfer_cmpr = src->rfer_cmpr;
++	dst->excl = src->excl;
++	dst->excl_cmpr = src->excl_cmpr;
++}
+--- a/vendor/github.com/containerd/btrfs/v2/qgroup.go
++++ b/vendor/github.com/containerd/btrfs/v2/qgroup.go
+@@ -0,0 +1,224 @@
++/*
++   Copyright The containerd Authors.
++
++   Licensed under the Apache License, Version 2.0 (the "License");
++   you may not use this file except in compliance with the License.
++   You may obtain a copy of the License at
++
++       http://www.apache.org/licenses/LICENSE-2.0
++
++   Unless required by applicable law or agreed to in writing, software
++   distributed under the License is distributed on an "AS IS" BASIS,
++   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
++   See the License for the specific language governing permissions and
++   limitations under the License.
++*/
++
++package btrfs
++
++/*
++#include "btrfs.h"
++*/
++import "C"
++
++import (
++	"errors"
++	"fmt"
++	"os"
++	"syscall"
++	"unsafe"
++)
++
++// ErrQuotaDisabled is returned when the filesystem carries no quota tree, that
++// is, neither full qgroups (btrfs quota enable) nor simple quotas (btrfs quota
++// enable --simple) are turned on.
++var ErrQuotaDisabled = errors.New("btrfs: quota is not enabled on the filesystem")
++
++// QuotaStatus reports the quota accounting mode of a filesystem, as recorded in
++// the BTRFS_QGROUP_STATUS_KEY item of its quota tree.
++type QuotaStatus struct {
++	// Enabled is true when the filesystem has a quota tree at all.
++	Enabled bool
++
++	// Simple is true when the filesystem uses simple quotas ("squota", Linux
++	// 6.7+), where an extent is charged to the subvolume that created it and
++	// stays charged until it is freed. Accounting is done at write time, so
++	// reading it back is cheap and needs no backref walk.
++	Simple bool
++
++	// Rescanning is true while a qgroup rescan is in flight, during which the
++	// reported numbers are still converging.
++	Rescanning bool
++
++	// Inconsistent is true when the kernel has flagged the accounting as out of
++	// date, which happens when quotas are enabled on a populated filesystem and
++	// no rescan has run since.
++	Inconsistent bool
++
++	Generation uint64
++}
++
++// QgroupInfo is the accounting of a single qgroup, as stored in
++// btrfs_qgroup_info_item.
++//
++// Under both full qgroups and simple quotas, creating a subvolume or a snapshot
++// creates a level 0 qgroup whose id equals the subvolume id, so a subvolume's
++// own accounting can be looked up with SubvolID and QgroupInfoByID.
++type QgroupInfo struct {
++	// ID is the qgroup id. For the level 0 qgroups this package looks up, it is
++	// the subvolume id.
++	ID uint64
++
++	Generation uint64
++
++	// Referenced is the total size of the extents the qgroup references,
++	// including those shared with other qgroups. For a btrfs snapshot this is
++	// roughly the size of the whole rootfs it was cloned from.
++	Referenced           uint64
++	ReferencedCompressed uint64
++
++	// Exclusive is the size of the extents referenced only by this qgroup, that
++	// is, the data that would be freed if the subvolume were deleted. For a
++	// snapshot, this is what has been written since it was taken.
++	Exclusive           uint64
++	ExclusiveCompressed uint64
++}
++
++// Sync forces a transaction commit on the filesystem holding path, flushing
++// delayed allocation so that quota accounting reflects everything written so
++// far. It is the BTRFS_IOC_SYNC ioctl, the same one `btrfs filesystem sync`
++// issues.
++func Sync(path string) error {
++	fp, err := openSubvolDir(path)
++	if err != nil {
++		return err
++	}
++	defer fp.Close()
++
++	return ioctl(fp.Fd(), C.BTRFS_IOC_SYNC, 0)
++}
++
++// Quota returns the quota accounting mode of the filesystem holding path. A
++// filesystem without quotas reports QuotaStatus{Enabled: false} and no error.
++func Quota(path string) (QuotaStatus, error) {
++	fp, err := openSubvolDir(path)
++	if err != nil {
++		return QuotaStatus{}, err
++	}
++	defer fp.Close()
++
++	buf, err := searchQuotaTree(fp.Fd(), C.BTRFS_QGROUP_STATUS_KEY, 0)
++	if err != nil {
++		if errors.Is(err, ErrQuotaDisabled) || errors.Is(err, os.ErrNotExist) {
++			return QuotaStatus{}, nil
++		}
++		return QuotaStatus{}, err
++	}
++
++	// Checked against the gosafe struct, not the kernel one: the kernel grew an
++	// enable_gen field in 6.7 that this package does not read, and a kernel
++	// older than the headers it was built against writes the shorter item.
++	if uintptr(len(buf)) < C.sizeof_struct_gosafe_btrfs_qgroup_status_item {
++		return QuotaStatus{}, fmt.Errorf("btrfs: short qgroup status item (%d bytes)", len(buf))
++	}
++
++	var gsi C.struct_gosafe_btrfs_qgroup_status_item
++	C.unpack_qgroup_status_item(&gsi, (*C.struct_btrfs_qgroup_status_item)(unsafe.Pointer(&buf[0])))
++
++	flags := le64ToNative(gsi.flags)
++
++	return QuotaStatus{
++		Enabled:      flags&C.BTRFS_QGROUP_STATUS_FLAG_ON != 0,
++		Simple:       flags&C.BTRFS_QGROUP_STATUS_FLAG_SIMPLE_MODE != 0,
++		Rescanning:   flags&C.BTRFS_QGROUP_STATUS_FLAG_RESCAN != 0,
++		Inconsistent: flags&C.BTRFS_QGROUP_STATUS_FLAG_INCONSISTENT != 0,
++		Generation:   le64ToNative(gsi.generation),
++	}, nil
++}
++
++// QgroupInfoByID returns the accounting of the level 0 qgroup with the given
++// id, which for the qgroups btrfs creates automatically is the subvolume id.
++//
++// The lookup is a single tree search pinned to one key, so its cost does not
++// grow with the number of subvolumes on the filesystem.
++//
++// ErrQuotaDisabled is returned when the filesystem has no quota tree, and an
++// error wrapping os.ErrNotExist when quotas are on but this subvolume has no
++// qgroup, which is the case for subvolumes created before quotas were enabled.
++func QgroupInfoByID(path string, id uint64) (QgroupInfo, error) {
++	fp, err := openSubvolDir(path)
++	if err != nil {
++		return QgroupInfo{}, err
++	}
++	defer fp.Close()
++
++	buf, err := searchQuotaTree(fp.Fd(), C.BTRFS_QGROUP_INFO_KEY, C.__u64(id))
++	if err != nil {
++		return QgroupInfo{}, err
++	}
++
++	if uintptr(len(buf)) < C.sizeof_struct_gosafe_btrfs_qgroup_info_item {
++		return QgroupInfo{}, fmt.Errorf("btrfs: short qgroup info item for 0/%d (%d bytes)", id, len(buf))
++	}
++
++	var gii C.struct_gosafe_btrfs_qgroup_info_item
++	C.unpack_qgroup_info_item(&gii, (*C.struct_btrfs_qgroup_info_item)(unsafe.Pointer(&buf[0])))
++
++	return QgroupInfo{
++		ID:                   id,
++		Generation:           le64ToNative(gii.generation),
++		Referenced:           le64ToNative(gii.rfer),
++		ReferencedCompressed: le64ToNative(gii.rfer_cmpr),
++		Exclusive:            le64ToNative(gii.excl),
++		ExclusiveCompressed:  le64ToNative(gii.excl_cmpr),
++	}, nil
++}
++
++// searchQuotaTree looks up the single quota tree item (0, keyType, offset) and
++// returns a copy of the item body.
++func searchQuotaTree(fd uintptr, keyType C.__u32, offset C.__u64) ([]byte, error) {
++	var args C.struct_btrfs_ioctl_search_args
++
++	args.key.tree_id = C.BTRFS_QUOTA_TREE_OBJECTID
++	args.key.min_type = keyType
++	args.key.max_type = keyType
++	args.key.min_offset = offset
++	args.key.max_offset = offset
++	args.key.max_transid = ^C.__u64(0)
++	args.key.nr_items = 1
++
++	if err := ioctl(fd, C.BTRFS_IOC_TREE_SEARCH, uintptr(unsafe.Pointer(&args))); err != nil {
++		// The quota tree only exists once quotas have been enabled; asking for
++		// it otherwise is how the kernel tells us they are off.
++		if errors.Is(err, syscall.ENOENT) {
++			return nil, ErrQuotaDisabled
++		}
++		return nil, err
++	}
++
++	if args.key.nr_items == 0 {
++		return nil, fmt.Errorf("btrfs: no quota tree item of type %d at offset %d: %w", keyType, offset, os.ErrNotExist)
++	}
++
++	var (
++		sh     C.struct_btrfs_ioctl_search_header
++		shSize = unsafe.Sizeof(sh)
++		buf    = (*[maxByteSliceSize]byte)(unsafe.Pointer(&args.buf[0]))[:C.BTRFS_SEARCH_ARGS_BUFSIZE]
++	)
++
++	sh = *(*C.struct_btrfs_ioctl_search_header)(unsafe.Pointer(&buf[0]))
++	if sh._type != keyType || sh.offset != offset {
++		return nil, fmt.Errorf("btrfs: quota tree item of type %d at offset %d not found: %w", keyType, offset, os.ErrNotExist)
++	}
++
++	if shSize+uintptr(sh.len) > uintptr(len(buf)) {
++		return nil, fmt.Errorf("btrfs: quota tree item of type %d overruns the search buffer (%d bytes)", keyType, sh.len)
++	}
++
++	// args lives on this frame, so hand back a copy rather than a slice
++	// aliasing it.
++	item := make([]byte, sh.len)
++	copy(item, buf[shSize:shSize+uintptr(sh.len)])
++
++	return item, nil
++}
