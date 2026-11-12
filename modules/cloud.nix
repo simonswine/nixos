@@ -152,7 +152,7 @@ in
           preserve_hostname: false
           growpart:
             mode: auto
-            devices: ["/dev/disk/by-label/rpool"]
+            devices: ["${if config.fileSystems."/".fsType == "btrfs" then config.fileSystems."/".device else "/dev/disk/by-label/rpool"}"]
           cloud_init_modules:
             - migrator
             - seed_random

@@ -14,6 +14,7 @@
   boot.kernelPackages = pkgs.linuxPackages_6_12;
   networking.hostId = "deadcafe";
   cloud.provider = "hcloud";
+  services.cloud-init.btrfs.enable = true;
 
   virtualisation.containerd-kubelet.gvisor.enable = true;
 
