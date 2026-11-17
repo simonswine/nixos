@@ -20,55 +20,32 @@ let
   ];
 in
 {
+  imports = [
+    (mkRemovedOptionModule [ "simonswine" "kandev" "webPort" ]
+      "Kandev now serves the frontend on backendPort; the separate Next.js service has been removed.")
+  ];
+
   options.simonswine.kandev = {
     enable = mkEnableOption "kandev AI development task orchestrator";
-
-    webPort = mkOption {
-      type = types.port;
-      default = 37429;
-      description = "Port for the kandev Next.js frontend";
-    };
 
     backendPort = mkOption {
       type = types.port;
       default = 38429;
-      description = "Port for the kandev Go backend";
+      description = "Port for the kandev backend and web frontend";
     };
   };
 
   config = mkIf cfg.enable {
     systemd.user.services = {
-      kandev-web = {
-        Unit = {
-          Description = "kandev Next.js frontend";
-          After = [ "network.target" ];
-        };
-        Service = {
-          ExecStart = "${pkgs.nodejs}/bin/node ${pkgs.kandev-frontend}/web/server.js";
-          Environment = [
-            "HOSTNAME=127.0.0.1"
-            "PORT=${toString cfg.webPort}"
-          ];
-          Restart = "on-failure";
-        };
-        Install = {
-          WantedBy = [ "default.target" ];
-        };
-      };
-
       kandev = {
         Unit = {
           Description = "kandev Go backend";
-          After = [
-            "network.target"
-            "kandev-web.service"
-          ];
-          Requires = [ "kandev-web.service" ];
+          After = [ "network.target" ];
         };
         Service = {
-          ExecStart = "${pkgs.bash}/bin/bash -c '. $HOME/.shell.grafana.secrets; exec ${pkgs.kandev}/bin/kandev -port ${toString cfg.backendPort}'";
+          ExecStart = "${pkgs.bash}/bin/bash -c '. $HOME/.shell.grafana.secrets; exec ${pkgs.kandev}/bin/kandev __backend -port ${toString cfg.backendPort}'";
           Environment = [
-            "KANDEV_WEB_INTERNAL_URL=http://127.0.0.1:${toString cfg.webPort}"
+            "KANDEV_WEB_DIST_DIR=${pkgs.kandev-frontend}"
             "PATH=${path}"
             "GIT_CONFIG_GLOBAL=/home/christian/.config/git/config-kandev"
           ];
