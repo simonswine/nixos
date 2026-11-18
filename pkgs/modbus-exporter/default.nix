@@ -6,16 +6,16 @@
 
 buildGoModule rec {
   pname = "modbus-exporter";
-  version = "0.4.1";
+  version = "0.5.0";
 
   src = fetchFromGitHub {
     owner = "RichiH";
     repo = "modbus_exporter";
     rev = "v${version}";
-    hash = "sha256-ZkES+CDthYZrNZ7wVO0oRx6pBMX23AyUOhU+OBTD42g=";
+    hash = "sha256-QUFYdu8f8OfYCYy4qQ+WIwHpZDIbtOv3CFLGFRraeU0=";
   };
 
-  vendorHash = "sha256-RfpJLoYPR5Ura3GvLIAePg+fuiaiXig6XaSNCPhZ/Vg=";
+  vendorHash = "sha256-qIxlqWxUIG6QFAUGWcUQntWPeX7AGaJ7KszcSa/j8MA=";
 
   subPackages = [ "." ];
 
@@ -26,7 +26,7 @@ buildGoModule rec {
   meta = with lib; {
     homepage = "https://github.com/simonswine/modbus-exporter";
     license = licenses.asl20;
-    maintainers = with maintainers; [ simonswine ];
+    maintainers = lib.optional (lib.maintainers ? simonswine) lib.maintainers.simonswine;
     platforms = platforms.unix;
   };
 }
