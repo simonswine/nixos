@@ -76,10 +76,6 @@
             faillint = pkgs.callPackage ./pkgs/faillint { };
             gvisor = pkgs.callPackage ./pkgs/gvisor { };
             inherit fluidcad;
-            fluidcad-nvim = pkgs.callPackage ./pkgs/fluidcad-nvim {
-              inherit fluidcad;
-              nodejs = pkgs.nodejs_24;
-            };
             inherit kandev;
             kandev-frontend = pkgs.callPackage ./pkgs/kandev-frontend {
               inherit (kandev) version src;

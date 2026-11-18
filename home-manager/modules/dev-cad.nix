@@ -22,12 +22,5 @@ in
 
     home.packages = [ pkgs.fluidcad ];
 
-    programs.nixvim = {
-      extraPlugins = [ pkgs.fluidcad-nvim ];
-
-      extraConfigLua = ''
-        require("fluidcad").setup({})
-      '';
-    };
   };
 }
