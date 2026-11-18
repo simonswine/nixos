@@ -63,7 +63,12 @@
             bambutop = pkgs.callPackage ./pkgs/bambutop { };
             benchstat = pkgs.callPackage ./pkgs/benchstat { };
             cert-updater = pkgs.callPackage ./pkgs/cert-updater { };
-            claude-code = pkgs.callPackage ./pkgs/claude-code { };
+            claude-code = pkgs.callPackage ./pkgs/claude-code {
+              claude-code-unwrapped = (import inputs.nixpkgs-unstable {
+                system = pkgs.stdenv.hostPlatform.system;
+                config.allowUnfreePredicate = pkg: lib.getName pkg == "claude-code";
+              }).claude-code;
+            };
             devfiler = pkgs.callPackage ./pkgs/devfiler { };
             dhclient = pkgs.callPackage ./pkgs/dhclient { };
             docker-machine = pkgs.callPackage ./pkgs/docker-machine { };
