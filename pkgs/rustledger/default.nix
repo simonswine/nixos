@@ -6,16 +6,16 @@
 
 rustPlatform.buildRustPackage rec {
   pname = "rustledger";
-  version = "0.22.0";
+  version = "0.24.0";
 
   src = fetchFromGitHub {
     owner = "rustledger";
     repo = "rustledger";
     rev = "v${version}";
-    hash = "sha256-KNInYM3pVhVxTyP94FJJFOKMy25u+NFOqO1ZR+NXc6A=";
+    hash = "sha256-c5AdipaaMf52Sg84tLN3tcy2ltdVSg43Jv5Qkg1PLe4=";
   };
 
-  cargoHash = "sha256-q6cUezD2VJICm2dfp8kYV4TvUbkBEY3Xfs0EBErRa60=";
+  cargoHash = "sha256-M5dN+u6g+bY4uYbKKiCbJEFdxCbz41Zhlf0m2rYx6ps=";
 
   cargoBuildFlags = [
     "-p"
