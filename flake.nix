@@ -66,7 +66,6 @@
             cert-updater = pkgs.callPackage ./pkgs/cert-updater { };
             claude-code = pkgs.callPackage ./pkgs/claude-code { };
             devfiler = pkgs.callPackage ./pkgs/devfiler { };
-            dezoomify-rs = pkgs.callPackage ./pkgs/dezoomify-rs { };
             dhclient = pkgs.callPackage ./pkgs/dhclient { };
             docker-machine = pkgs.callPackage ./pkgs/docker-machine { };
             docker-machine-driver-hetzner = pkgs.callPackage ./pkgs/docker-machine-driver-hetzner { };
@@ -92,14 +91,12 @@
             get-focused-x-screen = pkgs.callPackage ./pkgs/get-focused-x-screen { };
             gimli-addr2line = pkgs.callPackage ./pkgs/gimli-addr2line { };
             gitlab-runner = pkgs.callPackage ./pkgs/gitlab-runner { };
-            goda = pkgs.callPackage ./pkgs/goda { };
             growatt-proxy-exporter = pkgs.callPackage ./pkgs/growatt-proxy-exporter { };
             heatmiser-exporter = pkgs.callPackage ./pkgs/heatmiser-exporter { };
             herdr = pkgs.callPackage ./pkgs/herdr { };
             inch-exporter = pkgs.callPackage ./pkgs/inch-exporter { };
             intel-gpu-exporter = pkgs.callPackage ./pkgs/intel-gpu-exporter { };
             js-yaml = pkgs.callPackage ./pkgs/js-yaml { };
-            jsonnet-language-server = pkgs.callPackage ./pkgs/jsonnet-language-server { };
             maccy-cli = pkgs.callPackage ./pkgs/maccy-cli { };
             mi-flora-exporter = pkgs.callPackage ./pkgs/mi-flora-exporter { };
             miio = pkgs.callPackage ./pkgs/python-miio { };
@@ -139,7 +136,6 @@
               };
             };
             rustanka = pkgs.callPackage ./pkgs/rustanka { };
-            sleepwatcher = pkgs.callPackage ./pkgs/sleepwatcher { };
             sonora = pkgs.callPackage ./pkgs/sonora { };
             sonnenbatterie-exporter = pkgs.callPackage ./pkgs/sonnenbatterie-exporter { };
             tod0 = pkgs.callPackage ./pkgs/tod0 { };
