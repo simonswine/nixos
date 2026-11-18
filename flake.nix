@@ -59,7 +59,6 @@
             kandev = pkgs.callPackage ./pkgs/kandev { };
           in
           {
-            austin = pkgs.callPackage ./pkgs/austin { };
             bambu-studio = pkgs.callPackage ./pkgs/bambu-studio { };
             bambutop = pkgs.callPackage ./pkgs/bambutop { };
             benchstat = pkgs.callPackage ./pkgs/benchstat { };
@@ -81,7 +80,7 @@
               inherit (kandev) version src;
             };
             falcode-zellij = pkgs.callPackage ./pkgs/falcode-zellij { };
-            opencode = pkgs.callPackage ./pkgs/opencode { };
+            opencode = inputs.nixpkgs-unstable.legacyPackages.${pkgs.stdenv.hostPlatform.system}.opencode;
             openttmgr = pkgs.callPackage ./pkgs/openttmgr { };
             version-check-home-hook = pkgs.callPackage ./pkgs/version-check-home-hook { };
             zellij-attention = pkgs.callPackage ./pkgs/zellij-attention { };
@@ -106,7 +105,6 @@
             mtv-dl = pkgs.callPackage ./pkgs/mtv-dl { };
             nut-exporter = pkgs.callPackage ./pkgs/nut-exporter { };
             orangepi-firmware = pkgs.callPackage ./pkgs/orangepi-firmware { };
-            phpspy = pkgs.callPackage ./pkgs/phpspy { };
             pi-coding-agent = pkgs.callPackage ./pkgs/pi-coding-agent { };
             profilecli = pkgs.callPackage ./pkgs/profilecli { };
             prometheus-node-exporter-restic = pkgs.callPackage ./pkgs/prometheus-node-exporter-restic { };
