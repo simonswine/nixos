@@ -16,7 +16,7 @@ in
 
   config = mkIf cfg.enable {
     home.packages = with pkgs; [
-      jsonnet
+      go-jsonnet
       jsonnet-bundler
       tanka
       rustanka
