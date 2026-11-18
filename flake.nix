@@ -93,7 +93,7 @@
             gitlab-runner = pkgs.callPackage ./pkgs/gitlab-runner { };
             growatt-proxy-exporter = pkgs.callPackage ./pkgs/growatt-proxy-exporter { };
             heatmiser-exporter = pkgs.callPackage ./pkgs/heatmiser-exporter { };
-            herdr = pkgs.callPackage ./pkgs/herdr { };
+            herdr = inputs.nixpkgs-unstable.legacyPackages.${pkgs.stdenv.hostPlatform.system}.herdr;
             inch-exporter = pkgs.callPackage ./pkgs/inch-exporter { };
             intel-gpu-exporter = pkgs.callPackage ./pkgs/intel-gpu-exporter { };
             js-yaml = pkgs.callPackage ./pkgs/js-yaml { };
