@@ -12,7 +12,7 @@
 
 buildGo127Module {
   pname = "gvisor";
-  version = "20261019.0";
+  version = "20261116.0-4-gb29c8320a";
 
   # gvisor provides a synthetic go branch (https://github.com/google/gvisor/tree/go)
   # that can be used to build gvisor without bazel.
@@ -21,9 +21,9 @@ buildGo127Module {
   src = fetchFromGitHub {
     owner = "google";
     repo = "gvisor";
-    # Generated Go tree for release-20261019.0 (760b80785).
-    rev = "02a34e56a43873ddd1ff5efdda37f63af1b6e7cc";
-    hash = "sha256-UNQjk9tJAbyxmf/RFNlIJmhjVT9tEI8uv7/GFVkATKA=";
+    # Generated Go tree for release-20261116.0-4-gb29c8320a.
+    rev = "13a33f77533a899bcc14c66ee83a45b94ef2385a";
+    hash = "sha256-BQl38sXpgpyKzckqR89vvxA7FW19+TVSx819hKQoxf0=";
   };
 
   # Replace the placeholder with the actual path to ldconfig
