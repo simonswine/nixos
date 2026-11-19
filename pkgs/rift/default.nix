@@ -8,16 +8,20 @@
 
 rustPlatform.buildRustPackage {
   pname = "rift";
-  version = "git-2025-10-13";
+  version = "0.8.3";
 
   src = fetchFromGitHub {
     owner = "acsandmann";
     repo = "rift";
-    rev = "62adb05a2fe86004d56f638c69762166e91265fb";
-    hash = "sha256-nQwHDZ/772t+Xqd6AK5mthvSWHqYzx7Utuv9GHe0lyU=";
+    rev = "v0.8.3";
+    hash = "sha256-8imLFJ90Ovb9y19iTN+JgQ+FtiKx7pbgpPzdSl4Agug=";
   };
 
-  cargoHash = "sha256-41QUCNIsbg1mYzJgaMUPKY1jfn9m6a5XzGz9dqYS3eE=";
+  cargoHash = "sha256-OOQhpopVGKhS2QHfRuapVBx6bZdZAxNlOHM54c5JvxI=";
+
+  # Tests exercise global input hooks and WindowServer bridges, which are not
+  # available reliably inside the Nix build sandbox.
+  doCheck = false;
 
   nativeBuildInputs = [
     pkg-config
@@ -34,5 +38,6 @@ rustPlatform.buildRustPackage {
     license = licenses.asl20;
     maintainers = [ ];
     mainProgram = "rift";
+    platforms = platforms.darwin;
   };
 }
