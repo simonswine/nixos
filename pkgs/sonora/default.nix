@@ -3,6 +3,7 @@
   rustPlatform,
   fetchFromGitHub,
   pkg-config,
+  cacert,
   cmake,
   mold,
   makeWrapper,
@@ -25,16 +26,19 @@
 
 rustPlatform.buildRustPackage (finalAttrs: {
   pname = "sonora";
-  version = "0.42.1";
+  version = "0.50.1";
 
   src = fetchFromGitHub {
     owner = "sonorahq";
     repo = "sonora";
     tag = "v${finalAttrs.version}";
-    hash = "sha256-d2GSNySpFxTjAb9fDBEAyQdZUVV8q+Iibotr0e/J+8w=";
+    hash = "sha256-AQwbPtDViucEOHjM/K7wl24t86m3Mse2HLatc6UqDFs=";
   };
 
-  cargoHash = "sha256-jmFe8HnVGR557j+2piGVnMBR9saPQjCDFOd8WBT1fGs=";
+  cargoHash = "sha256-jaDsftAjs1eI/7aXIbNc+RdeZ9+lSdrGmB5rPUdEMlM=";
+
+  # reqwest requires a trust store even for tests using local HTTP servers.
+  env.SSL_CERT_FILE = "${cacert}/etc/ssl/certs/ca-bundle.crt";
 
   # Upstream's Cargo configuration passes -fuse-ld=mold on Linux.
   nativeBuildInputs = [
